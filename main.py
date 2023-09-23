@@ -1,55 +1,55 @@
-import pickle
-import ast
 from poker_calc.deck.deck import Deck as Dk
 from poker_calc.utils.ranker import evaluate_hand
-import pandas as pd
-import h5py
+from phevaluator.card import Card
 import numpy as np
-# import csv
 
-class Deck(Dk):
+class Deck:
     def __init__(self) -> None:
-        super().__init__()
-    
-    def shuffle(self):
-        pass
+        self.cards = np.array([card for card in range(52)])
 """
 TODO: 
     1) Write diffrent shuffling algorithms enhiriting the base class 
-        1.1) Algorithm 1
+        1.1) Algorithm: Fisher-yates (as base test)
+        1.2) Riffle-shuffle
+        1.3) 
     2) Pogram that can save sequences as raw data to be then analysed 
     includes:
-        2.1) Hur många gånger shuffled det(1,2,3..)
-        2.2) Lista av alla kort
+        2.1) 2d np.array[[0 <= x <= 51],[...]...] 
+        2.2) filenameas has following: algorithm_name-num.npy where num is how many shuffles were done by iteration
     3) Build a system that can do our predifined tests and save those charts/digrams and other usefull info.
-        3.1) Frequncie analys 
+        3.1) Frequncie analys / pattern matching
         3.2) Poker test
         3.3) ApEn
     4) Analys of charts and diagrams (self done after)
 """
-output_filename = "poker_hand_data1.csv"
+RUNS = 6000 # how many times will it shuffle
+ALGORITHM = "np_random_shuffle"
+num_shuffles = 1
 
+# Contains an binary 2d np.array where each row is list of [0 <= x <= 51]
+raw_data_file = f"{ALGORITHM}-{num_shuffles}.npy" # algorith-1 means that that it shuffled 1 time
 
-# with open(output_filename, mode="w", newline="") as csvfile:
-#     csvwriter = csv.writer(csvfile)
-#     csvwriter.writerow(["Card 1", "Card 2", "Card 3", "Card 4", "Card 5", "Hand Type"])
-def safe_eval(cell):
-    return [str(item) for item in ast.literal_eval(cell)]
+# Creates an 2d empty raw data set
+# 1mil rows=52mb
+raw_data = np.zeros((RUNS, 52), dtype='int8')  # int8 can store -+127, Do upcasting if numbers could exceed
 
-for i in range(100):
-    deck = Deck()  # Deck instance created
-    # deck.riffle_shuffel()
-    # deck.riffle_shuffel()
-    df = pd.DataFrame({
-        'num_runs': [2],
-        'deck': [deck.cards]
-        })
-    # if i == 1:
-    #     df.to_csv(output_filename, mode='w', index=False)
-    # df.to_csv(output_filename, mode='a', index=False)
-print(f"Poker hand data saved in '{output_filename}'.")
+for i in range(RUNS):
+    deck = Deck()
+    for runs in range(num_shuffles):
+        np.random.shuffle(deck.cards)
 
-dff = pd.read_csv(output_filename)
-dff['deck'] = dff['deck'].apply(safe_eval)
-print(dff['deck'][0])
-# print(dff['cards'].apply(pickle.loads))
+    # adds array to pre existing 2d empty array
+    raw_data[i, :] = deck.cards
+
+np.save(raw_data_file, raw_data)
+
+# load back in the dataset
+loaded_array = np.load(raw_data_file) 
+
+card5 =  Card(int(loaded_array[0, 4])) # turn num repr to card object, if nedeed
+card =  Card(int(loaded_array[RUNS-1, 0])) # last row if RUNS var avialble 
+card2 =  Card(int(loaded_array[len(loaded_array)-1, 1])) # takes the lenght aka size of dataset
+card3 =  Card(int(loaded_array[0, 2])) # Takes 3 card from the first row, np.array syntax
+card4 =  Card(int(loaded_array[0][3])) # Less efficient python list syntax of taking the 4 card from first row
+print(card, card2,card3,card4,card5)
+print(loaded_array[0, 0]) # repr as np.int8 (not python int, be cerefull).has it own repr and str method
