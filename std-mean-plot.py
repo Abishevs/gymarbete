@@ -57,4 +57,6 @@ plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
 plt.xlabel('Card')
 plt.ylabel('Mean position')
 plt.title("Mean and std  dev  of card  position over runs")
-plt.show()
+plt.savefig("output1", facecolor='y', bbox_inches="tight",
+            pad_inches=0.3, transparent=True)
+# plt.show()
