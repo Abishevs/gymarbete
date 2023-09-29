@@ -21,10 +21,11 @@ TODO:
     3) Build a system that can do our predifined tests and save those charts/digrams and other usefull info.
         3.1) Frequncie analys / pattern matching
         3.2) Poker test
-        3.3) ApEn
+        3.3) ApEn (discarded)
+        3.4) Std and Mean of card positions
     4) Analys of charts and diagrams (self done after)
 """
-RUNS = 1000000 # how many times will it shuffle
+RUNS = 1000 # how many times will it shuffle
 ALGORITHM = "np_random_shuffle"
 num_shuffles = 1
 
@@ -38,7 +39,7 @@ raw_data = np.zeros((RUNS, 52), dtype='int8')  # int8 can store -+127, Do upcast
 for i in range(RUNS):
     deck = Deck()
     for runs in range(num_shuffles):
-        np.random.seed(randint(0,15320))
+        # np.random.seed(randint(0,15320))
         np.random.shuffle(deck.cards)
 
     # adds array to pre existing 2d empty array
@@ -54,9 +55,11 @@ mean_pos = np.mean(loaded_array, axis=0)
 std_pos = np.std(loaded_array, axis=0)
 
 plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
+# plt.xlim([0,51])
+# plt.xticks(np.arange(0,51,1))
 plt.xlabel('Card')
 plt.ylabel('Mean position')
 plt.title("Mean and std  dev  of card  position over runs")
-plt.savefig("output1", facecolor='y', bbox_inches="tight",
-            pad_inches=0.3, transparent=True)
-# plt.show()
+# plt.savefig("output1", facecolor='y', bbox_inches="tight",
+#             pad_inches=0.3, transparent=True)
+plt.show()
