@@ -19,47 +19,30 @@ def get_shuffle_runs(file_name:str):
 def evaluate_hand(hand: np.ndarray) -> np.int8:
     """
     :type hand: np.ndarray[np.int8]
+    
+    returns :type np.int8 in range 0-9. indicating handtype
     """
     assert hand.shape == (5,)
     assert hand.dtype == 'int8'
         
     ranks = hand % 13 # ranks 0-12 aka card value
-    ranks.sort()
+    # ranks.sort()
     suites = hand // 13 # suites 0-3
 
-    def is_flush():
-        unique_suites = np.unique(suites)
-        return len(unique_suites) == 1
+    unique_suites = np.unique(suites)
+    is_flush = unique_suites.size == 1
 
-    def is_straight():
-        unique_ranks = np.unique(ranks)
 
-        if len(unique_ranks) != 5:
-            return False # imposible to have an straight, quit checking
+    unique_ranks = np.unique(ranks)
+    max_rank, min_rank = np.max(unique_ranks), np.min(unique_ranks)
+    is_straight = unique_ranks.size == 5 and (max_rank - min_rank == 4 or np.array_equal(unique_ranks, np.array([0,1,2,3,12], dtype=hand.dtype)))
 
-        max_rank, min_rank = np.max(unique_ranks), np.min(unique_ranks)
-        if max_rank - min_rank == 4:
-            return True
-        
-        if max_rank == 12:
-            # hard coded check for wheel :))
-            if set(unique_ranks) == {0,1,2,3,12}:
-                return True 
 
-        return False
-
-    def is_royal_flush():
-        return is_straight() and is_flush() and np.min(ranks) == 8
-
-    def rank_counts():
-        _,counts = np.unique(ranks, return_counts=True)
-        return counts
-
-    counts = rank_counts()
-    if is_royal_flush(): 
+    counts = np.bincount(ranks)
+    if is_straight and is_flush and min_rank == 8: 
         return np.int8(9) # Royal flush
 
-    elif is_flush() and is_straight(): 
+    elif is_flush and is_straight: 
         return np.int8(8) # straight flush
 
     elif 4 in counts: 
@@ -68,10 +51,10 @@ def evaluate_hand(hand: np.ndarray) -> np.int8:
     elif 3 in counts and 2 in counts:
         return np.int8(6) # Full house
 
-    elif is_flush():
+    elif is_flush:
         return np.int8(5) # Flush
 
-    elif is_straight():
+    elif is_straight:
         return np.int8(4) # Straight
 
     elif 3 in counts:
@@ -84,4 +67,4 @@ def evaluate_hand(hand: np.ndarray) -> np.int8:
         return np.int8(1) # Pair
 
     else:
-        return np.int8(0) # no match= High cards 
+        return np.int8(0) # no match= High card

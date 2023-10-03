@@ -2,9 +2,8 @@ from utils import (evaluate_hand,
                    get_shuffle_runs, 
                    get_shuffle_name, 
                    get_path)
-from random import shuffle
+from shuffling_algorithms import shuffle_np_random 
 import matplotlib.pyplot as plt
-import os
 import numpy as np
 
 """
@@ -26,25 +25,10 @@ TODO: Overview
 """
 TODO:
     3.10:
-        1) Implement PokerTest with hand type evaluation applied along axis=1
-        2) Plot graph in PokerTest 
-        3) Theoretical probalities of hand types appearing
-
+        1) Implement PokerTest with hand type evaluation applied along axis=1 DONE
+        2) Plot graph in PokerTest DONE
+        3) Theoretical probalities of hand types appearing DONE, but hard coded!!!
 """
-
-class Deck:
-    def __init__(self) -> None:
-        self.cards = np.array([card for card in range(52)])
-
-    def np_shuffle(self):
-        np.random.shuffle(self.cards) 
-
-    def fisher_yates(self):
-        pass
-        # print("FIsher Yates")
-
-    def riffle_shuffle(self):
-        pass
 
 class Simulation:
     """Defines simulation parameters.
@@ -58,7 +42,8 @@ class Simulation:
         self.num_runs : int = num_runs
         self.num_shuffles : int = num_shuffles 
         self.shuffle_name = ""
-        self.raw_data = np.zeros((self.num_runs, 52), dtype='int8')  # int8 can store -+127, Do upcasting if numbers could exceed
+        self.deck = np.arange(52, dtype='int8')
+        self.raw_data = np.tile(self.deck,(self.num_runs,1))  # int8 can store -+127, Do upcasting if numbers could exceed
 
     def save(self):
         """Saves the 2d np.array to external file
@@ -71,14 +56,8 @@ class Simulation:
         Runs the simulation using predifined parameters
         """
         self.shuffle_name = shuffling_algorithm_name
-        for i in range(self.num_runs):
-            deck = Deck() #  
-            shuffle = getattr(deck, shuffling_algorithm_name) # gets the method of the shuffling algorithm
-            for _ in range(self.num_shuffles):
-                shuffle() # runs deck.chosen_algorithm
+        self.raw_data = np.apply_along_axis(shuffle_np_random, axis=1, arr=self.raw_data)
 
-            # swaps shuffled array with an pre existing 2d zeroed array container
-            self.raw_data[i, :] = deck.cards
 
 class BaseTest:
     """An base class of tests, mby if it has merit
@@ -111,8 +90,8 @@ class PokerTest(BaseTest):
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
         hand_types, occurencies = np.unique(result, return_counts=True)
 
-        print(occurencies)
-        print(hand_types)
+        # print(occurencies)
+        # print(hand_types)
         # Create an array filled with zeros to represent the default counts for all hand types
         observed_counts = np.zeros(10, dtype=int)
 
@@ -143,7 +122,9 @@ class PokerTest(BaseTest):
         plt.legend()
         plt.grid(True)
 
-        plt.show()
+        plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
+                     pad_inches=0.3, transparent=True)
+        # plt.show()
 
 class StdMean(BaseTest):
     """Does pattern matching shaningans
@@ -169,5 +150,8 @@ if __name__ == "__main__":
     ALGORITHM = "np_random_shuffle"
     num_shuffles = 1
     raw_data_file = f"{ALGORITHM}-{num_shuffles}.npy" # algorith-1 means that that it shuffled 1 time
-    test = PokerTest(raw_data_file)
-    test.run()
+    # test = PokerTest("shuffle_np_random-1.npy")
+    # test.run()
+    test = Simulation()
+    test.run("shuffle_np_random")
+    test.save()
