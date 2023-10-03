@@ -1,3 +1,7 @@
+from utils import (evaluate_hand, 
+                   get_shuffle_runs, 
+                   get_shuffle_name, 
+                   get_path)
 from random import shuffle
 import matplotlib.pyplot as plt
 import os
@@ -21,10 +25,10 @@ TODO: Overview
 """
 """
 TODO:
-    2.10:
-        1) Build evaluate hand function DONE
-        2) Implement PokerTest with hand type evaluation applied along axis=1
-        3) ... 
+    3.10:
+        1) Implement PokerTest with hand type evaluation applied along axis=1
+        2) Plot graph in PokerTest 
+        3) Theoretical probalities of hand types appearing
 
 """
 
@@ -76,37 +80,24 @@ class Simulation:
             # swaps shuffled array with an pre existing 2d zeroed array container
             self.raw_data[i, :] = deck.cards
 
-class Test:
+class BaseTest:
     """An base class of tests, mby if it has merit
     """
     def __init__(self, raw_data_file_name:str, folder_name = "Grahs&stuff") -> None:
         self.raw_data_file_name = raw_data_file_name.removesuffix(".npy")
-        self.shuffle_name = sanitise_name(raw_data_file_name)
-        self.shuffle_runs =  sanitise_name(raw_data_file_name, -1)
+        self.shuffle_name = get_shuffle_name(raw_data_file_name)
+        self.shuffle_runs =  get_shuffle_runs(raw_data_file_name)
         self.result_file_name = f"{get_path(folder_name)}/{self.raw_data_file_name}"
         self._shuffled_decks = np.load(raw_data_file_name)
 
     @property
     def shuffled_decks(self):
         return self._shuffled_decks
-    
-def get_path(folder_name):
-        current_dir = os.getcwd()
-        path = os.path.join(current_dir, folder_name)
-        if not os.path.exists(path):
-            os.mkdir(path)
-        return path
 
-def sanitise_name(file_name:str, index:int = 0):
-        """Splits string from shuffle_name-runs.npy 
-        to shuffle name human readable and runs as char 
-        """
-        file_name_split = file_name.removesuffix(".npy").split('-')
-        if index == 0:
-            return file_name_split[index].capitalize().replace("_", " ")
-        return file_name_split[-1]
+    def run(self):
+        pass
      
-class PokerTest(Test):
+class PokerTest(BaseTest):
     """Takes 2darray as an argument
     Does calculations for the poker test.
     Occurencies of poker hands drawn from either the first 5 cards or proper poker way(2hand cards and 3 flop cards)
@@ -119,11 +110,42 @@ class PokerTest(Test):
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
         hand_types, occurencies = np.unique(result, return_counts=True)
-        # theoretical_occurencies = None # calculate theoritcal occurencies of each hand type to draw an red line idicating where idealy it should have landed.
+
         print(occurencies)
         print(hand_types)
+        # Create an array filled with zeros to represent the default counts for all hand types
+        observed_counts = np.zeros(10, dtype=int)
 
-class StdMean(Test):
+        # Fill in the observed counts into the default array
+        observed_counts[hand_types] = occurencies
+
+        # Normalize the counts to probabilities
+        total_counts = np.sum(observed_counts)
+        observed_probabilities = observed_counts / total_counts
+
+        # theoretical probabilities. Copy pasted from internet xd 
+        theoretical_probabilities = np.array([0.501177, 0.422569, 0.047539, 0.021128, 0.003925, 0.001965, 0.001441, 0.0002401, 0.000139, 0.0000154])
+
+        # x-axis labels
+        label_dict = {0: "High Card", 1: "Pair", 2: "Two Pair", 3: "Three of a Kind", 4: "Straight", 5: "Flush", 6: "Full House", 7: "Four of a Kind", 8: "Straight Flush", 9: "Royal Flush"}
+
+        # Plotting
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(10), theoretical_probabilities, 'r-', label='Theoretical Probability')
+        plt.plot(range(10), observed_probabilities, 'bo-', label='Observed Probability')
+        
+        # customasition
+        plt.xlabel('Hand Type')
+        plt.ylabel('Probability')
+        plt.yscale('log')
+        plt.title('Comparison of Theoretical and Observed Poker Hand Probabilities')
+        plt.xticks(range(10), [label_dict[i] for i in range(10)], rotation=-90)
+        plt.legend()
+        plt.grid(True)
+
+        plt.show()
+
+class StdMean(BaseTest):
     """Does pattern matching shaningans
     """
     def __init__(self, shuffled_decks_file) -> None:
@@ -141,75 +163,6 @@ class StdMean(Test):
         plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
 
-def evaluate_hand(hand: np.ndarray) -> np.int8:
-    """
-    :type hand: np.ndarray[np.int8]
-    """
-    assert hand.shape == (5,)
-    assert hand.dtype == 'int8'
-        
-    ranks = hand % 13 # ranks 0-12 aka card value
-    ranks.sort()
-    suites = hand // 13 # suites 0-3
-
-    def is_flush():
-        unique_suites = np.unique(suites)
-        return len(unique_suites) == 1
-
-    def is_straight():
-        unique_ranks = np.unique(ranks)
-
-        if len(unique_ranks) != 5:
-            return False # imposible to have an straight, quit checking
-
-        max_rank, min_rank = np.max(unique_ranks), np.min(unique_ranks)
-        if max_rank - min_rank == 4:
-            return True
-        
-        if max_rank == 12:
-            # hard coded check for wheel :))
-            if set(unique_ranks) == {0,1,2,3,12}:
-                return True 
-
-        return False
-
-    def is_royal_flush():
-        return is_straight() and is_flush() and np.min(ranks) == 8
-
-    def rank_counts():
-        _,counts = np.unique(ranks, return_counts=True)
-        return counts
-
-    counts = rank_counts()
-    if is_royal_flush(): 
-        return np.int8(9) # Royal flush
-
-    elif is_flush() and is_straight(): 
-        return np.int8(8) # straight flush
-
-    elif 4 in counts: 
-        return np.int8(7) # Quads 
-
-    elif 3 in counts and 2 in counts:
-        return np.int8(6) # Full house
-
-    elif is_flush():
-        return np.int8(5) # Flush
-
-    elif is_straight():
-        return np.int8(4) # Straight
-
-    elif 3 in counts:
-        return np.int8(3) # Trips
-
-    elif np.count_nonzero(counts == 2) == 2: 
-        return  np.int8(2) # Two pair
-
-    elif 2 in counts:
-        return np.int8(1) # Pair
-
-    else:
-        return np.int8(0) # no match= High cards 
 
 if __name__ == "__main__":
 

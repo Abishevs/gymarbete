@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from analyser.main import evaluate_hand
+from randomness.utils import evaluate_hand
 
 class TestPokerHandEvaluation(unittest.TestCase):
 
