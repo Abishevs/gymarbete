@@ -28,7 +28,7 @@ TODO:
     4.10:
         1) Think of possible values from poker test that might be used in analys/ result delen. 
         2) Rethink what u want to plot in the graph
-        3) 
+        3) Implement chi-squared test in pokerTest
 """
 
 class Simulation:
@@ -36,10 +36,8 @@ class Simulation:
     In a loop does shuffles and swaps them to pre genereated zerod 2d np.array.
     Saves the simulation data as an .npy file with with filename that gives context of which shuffle it is
     and how many times it shuffled the deck.
-
-
     """
-    def __init__(self, num_runs = 1000000, num_shuffles = 1) -> None:
+    def __init__(self, num_runs = 3248700, num_shuffles = 1) -> None:
         self.num_runs : int = num_runs
         self.num_shuffles : int = num_shuffles 
         self.shuffle_name = ""
@@ -58,6 +56,7 @@ class Simulation:
         """
         self.shuffle_name = shuffling_algorithm.__name__.removeprefix("shuffle_")
         self.raw_data = np.apply_along_axis(shuffling_algo_wrapper, axis=1, arr=self.raw_data, algo=shuffling_algorithm )
+        print(self.raw_data)
 
 
 class BaseTest:
@@ -90,42 +89,45 @@ class PokerTest(BaseTest):
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
         hand_types, occurencies = np.unique(result, return_counts=True)
+        print(occurencies)
+        print(hand_types)
 
         # print(occurencies)
         # print(hand_types)
         # Create an array filled with zeros to represent the default counts for all hand types
-        observed_counts = np.zeros(10, dtype=int)
+
+        # observed_counts = np.zeros(10, dtype=int)
 
         # Fill in the observed counts into the default array
-        observed_counts[hand_types] = occurencies
+        # observed_counts[hand_types] = occurencies
 
         # Normalize the counts to probabilities
-        total_counts = np.sum(observed_counts)
-        observed_probabilities = observed_counts / total_counts
+        # total_counts = np.sum(observed_counts)
+        # observed_probabilities = observed_counts / total_counts
 
         # theoretical probabilities. Copy pasted from internet xd 
-        theoretical_probabilities = np.array([0.501177, 0.422569, 0.047539, 0.021128, 0.003925, 0.001965, 0.001441, 0.0002401, 0.000139, 0.0000154])
+        # theoretical_probabilities = np.array([0.501177, 0.422569, 0.047539, 0.021128, 0.003925, 0.001965, 0.001441, 0.0002401, 0.000139, 0.0000154])
 
         # x-axis labels
-        label_dict = {0: "High Card", 1: "Pair", 2: "Two Pair", 3: "Three of a Kind", 4: "Straight", 5: "Flush", 6: "Full House", 7: "Four of a Kind", 8: "Straight Flush", 9: "Royal Flush"}
-
-        # Plotting
-        plt.figure(figsize=(10, 6))
-        plt.plot(range(10), theoretical_probabilities, 'r-', label='Theoretical Probability')
-        plt.plot(range(10), observed_probabilities, 'bo-', label='Observed Probability')
-        
-        # customasition
-        plt.xlabel('Hand Type')
-        plt.ylabel('Probability')
-        plt.yscale('log')
-        plt.title('Comparison of Theoretical and Observed Poker Hand Probabilities')
-        plt.xticks(range(10), [label_dict[i] for i in range(10)], rotation=-90)
-        plt.legend()
-        plt.grid(True)
-
-        plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
-                     pad_inches=0.3, transparent=True)
-        # plt.show()
+        # label_dict = {0: "High Card", 1: "Pair", 2: "Two Pair", 3: "Three of a Kind", 4: "Straight", 5: "Flush", 6: "Full House", 7: "Four of a Kind", 8: "Straight Flush", 9: "Royal Flush"}
+        #
+        # # Plotting
+        # plt.figure(figsize=(10, 6))
+        # plt.plot(range(10), theoretical_probabilities, 'r-', label='Theoretical Probability')
+        # plt.plot(range(10), observed_probabilities, 'bo-', label='Observed Probability')
+        #
+        # # customasition
+        # plt.xlabel('Hand Type')
+        # plt.ylabel('Probability')
+        # plt.yscale('log')
+        # plt.title('Comparison of Theoretical and Observed Poker Hand Probabilities')
+        # plt.xticks(range(10), [label_dict[i] for i in range(10)], rotation=-90)
+        # plt.legend()
+        # plt.grid(True)
+        #
+        # plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
+        #              pad_inches=0.3, transparent=True)
+        # # plt.show()
 
 class StdMean(BaseTest):
     """Does pattern matching shaningans

@@ -1,10 +1,10 @@
-from randomness.sim_stats import Simulation, StdMean
-import numpy as np
+from randomness.sim_stats import Simulation, PokerTest
+from randomness.shuffling_algorithms import shuffle_np_random
 
 if __name__ == "__main__":
-    # sim = Simulation()
-    # sim.run(np.random.shuffle)
-    # sim.save()
-    test = StdMean("np_random_shuffle-1.npy")
+    sim = Simulation(num_runs=3250000)
+    sim.run(shuffle_np_random)
+    sim.save()
+    test = PokerTest("np_random-1.npy")
     test.run()
         
