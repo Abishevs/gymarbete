@@ -1,6 +1,13 @@
 import numpy as np 
 import os
 
+def shuffling_algo_wrapper(arr, algo):
+    """
+    Args: algo: function, arr: argument
+    Return: calls algo function and passes in argument
+    """
+    return algo(arr)
+
 def get_path(folder_name):
         current_dir = os.getcwd()
         path = os.path.join(current_dir, folder_name)

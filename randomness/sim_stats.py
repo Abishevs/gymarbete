@@ -1,8 +1,9 @@
-from utils import (evaluate_hand, 
+from randomness.utils import (evaluate_hand, 
+                   shuffling_algo_wrapper,
                    get_shuffle_runs, 
                    get_shuffle_name, 
                    get_path)
-from shuffling_algorithms import shuffle_np_random 
+from randomness.shuffling_algorithms import shuffle_np_random 
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -24,10 +25,10 @@ TODO: Overview
 """
 """
 TODO:
-    3.10:
-        1) Implement PokerTest with hand type evaluation applied along axis=1 DONE
-        2) Plot graph in PokerTest DONE
-        3) Theoretical probalities of hand types appearing DONE, but hard coded!!!
+    4.10:
+        1) Think of possible values from poker test that might be used in analys/ result delen. 
+        2) Rethink what u want to plot in the graph
+        3) 
 """
 
 class Simulation:
@@ -51,12 +52,12 @@ class Simulation:
         raw_data_file = f"{self.shuffle_name}-{self.num_shuffles}.npy" # algorith-1 means that that it shuffled 1 time
         np.save(raw_data_file, self.raw_data)
 
-    def run(self, shuffling_algorithm_name:str):
+    def run(self, shuffling_algorithm):
         """
         Runs the simulation using predifined parameters
         """
-        self.shuffle_name = shuffling_algorithm_name
-        self.raw_data = np.apply_along_axis(shuffle_np_random, axis=1, arr=self.raw_data)
+        self.shuffle_name = shuffling_algorithm.__name__.removeprefix("shuffle_")
+        self.raw_data = np.apply_along_axis(shuffling_algo_wrapper, axis=1, arr=self.raw_data, algo=shuffling_algorithm )
 
 
 class BaseTest:
@@ -153,5 +154,5 @@ if __name__ == "__main__":
     # test = PokerTest("shuffle_np_random-1.npy")
     # test.run()
     test = Simulation()
-    test.run("shuffle_np_random")
+    test.run(shuffle_np_random)
     test.save()
