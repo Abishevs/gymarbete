@@ -1,3 +1,4 @@
+import numba
 import numpy as np 
 import os
 
@@ -23,17 +24,17 @@ def get_shuffle_runs(file_name:str):
     base_name = file_name.removesuffix(".npy").split('-')
     return base_name[-1]
 
+@numba.jit('int8(int8[:])', nopython=True) # numba makes this into an binary and executes outside python interpreter, thus being lighting fast
 def evaluate_hand(hand: np.ndarray) -> np.int8:
     """
     :type hand: np.ndarray[np.int8]
     
     returns :type np.int8 in range 0-9. indicating handtype
     """
-    assert hand.shape == (5,)
-    assert hand.dtype == 'int8'
+    # assert hand.shape == (5,)
+    # assert hand.dtype == np.int8 
         
     ranks = hand % 13 # ranks 0-12 aka card value
-    # ranks.sort()
     suites = hand // 13 # suites 0-3
 
     unique_suites = np.unique(suites)

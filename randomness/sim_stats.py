@@ -41,7 +41,7 @@ class Simulation:
         self.num_runs : int = num_runs
         self.num_shuffles : int = num_shuffles 
         self.shuffle_name = ""
-        self.deck = np.arange(52, dtype='int8')
+        self.deck = np.arange(52, dtype=np.int8)
         self.raw_data = np.tile(self.deck,(self.num_runs,1))  # int8 can store -+127, Do upcasting if numbers could exceed
 
     def save(self):

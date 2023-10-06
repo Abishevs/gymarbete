@@ -8,7 +8,7 @@ class TestInPlaceShuffle(unittest.TestCase):
         for name, obj in vars(shuffle_module).items():
             if callable(obj) and 'shuffle_' in name:  # shuffle_ is the naming convetion of shuffle algoriths
                 with self.subTest(msg=f"Testing {name}"):
-                    original_array = np.arange(10)
+                    original_array = np.arange(10, dtype=np.int8)
                     original_id = id(original_array)
 
                     obj(original_array)  # Call the shuffle function
