@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.npy
-
+*.bin
 
 # C extensions
 *.so

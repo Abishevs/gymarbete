@@ -4,7 +4,7 @@ import os
 
 def shuffling_algo_wrapper(arr, algo):
     """
-    Args: algo: function, arr: argument
+    Args: arr: argument, algo: function
     Return: calls algo function and passes in argument
     """
     return algo(arr)
@@ -17,7 +17,7 @@ def get_path(folder_name):
         return path
 
 def get_shuffle_name(file_name:str):
-    base_name = file_name.removesuffix(".npy").split('-')
+    base_name = file_name.removesuffix(".bin").split('-')
     return base_name[0].capitalize().replace('-', ' ')
 
 def get_shuffle_runs(file_name:str):
@@ -27,24 +27,19 @@ def get_shuffle_runs(file_name:str):
 @numba.jit('int8(int8[:])', nopython=True) # numba makes this into an binary and executes outside python interpreter, thus being lighting fast
 def evaluate_hand(hand: np.ndarray) -> np.int8:
     """
-    :type hand: np.ndarray[np.int8]
+    :type hand: np.ndarray[np.int8]; size: 5
     
     returns :type np.int8 in range 0-9. indicating handtype
     """
-    # assert hand.shape == (5,)
-    # assert hand.dtype == np.int8 
-        
     ranks = hand % 13 # ranks 0-12 aka card value
     suites = hand // 13 # suites 0-3
 
     unique_suites = np.unique(suites)
     is_flush = unique_suites.size == 1
 
-
     unique_ranks = np.unique(ranks)
     max_rank, min_rank = np.max(unique_ranks), np.min(unique_ranks)
     is_straight = unique_ranks.size == 5 and (max_rank - min_rank == 4 or np.array_equal(unique_ranks, np.array([0,1,2,3,12], dtype=hand.dtype)))
-
 
     counts = np.bincount(ranks)
     if is_straight and is_flush and min_rank == 8: 

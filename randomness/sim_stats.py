@@ -6,6 +6,7 @@ from randomness.utils import (evaluate_hand,
 from randomness.shuffling_algorithms import shuffle_np_random 
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.stats import chisquare
 
 """
 TODO: Overview
@@ -30,6 +31,9 @@ TODO:
         2) Rethink what u want to plot in the graph
         3) Implement chi-squared test in pokerTest
 """
+DATASET_LENGHT = 3248700
+ROW_LENGHT = 52
+DTYPE = np.int8
 
 class Simulation:
     """Defines simulation parameters.
@@ -37,11 +41,11 @@ class Simulation:
     Saves the simulation data as an .npy file with with filename that gives context of which shuffle it is
     and how many times it shuffled the deck.
     """
-    def __init__(self, num_runs = 3248700, num_shuffles = 1) -> None:
+    def __init__(self, num_runs = DATASET_LENGHT, num_shuffles = 1) -> None:
         self.num_runs : int = num_runs
         self.num_shuffles : int = num_shuffles 
         self.shuffle_name = ""
-        self.deck = np.arange(52, dtype=np.int8)
+        self.deck = np.arange(ROW_LENGHT, dtype=DTYPE)
         self.raw_data = np.tile(self.deck,(self.num_runs,1))  # int8 can store -+127, Do upcasting if numbers could exceed
 
     def save(self):
@@ -63,15 +67,26 @@ class BaseTest:
     """An base class of tests, mby if it has merit
     """
     def __init__(self, raw_data_file_name:str, folder_name = "Grahs&stuff") -> None:
-        self.raw_data_file_name = raw_data_file_name.removesuffix(".npy")
+        # test can only take an specific file extension, change it to more generic way.
+        self.raw_data_file_name = raw_data_file_name.removesuffix(".bin")
         self.shuffle_name = get_shuffle_name(raw_data_file_name)
         self.shuffle_runs =  get_shuffle_runs(raw_data_file_name)
         self.result_file_name = f"{get_path(folder_name)}/{self.raw_data_file_name}"
-        self._shuffled_decks = np.load(raw_data_file_name)
+        # self._shuffled_decks = np.load(raw_data_file_name)
+        self.dataset = np.array([])
 
     @property
     def shuffled_decks(self):
-        return self._shuffled_decks
+        return self.dataset
+    
+    def load_dataset_np(self, file_name:str):
+        self.dataset =  np.load(file_name)
+    
+    def load_dataset_bin(self, file_name:str):
+        # binary file  is an flaten array
+        flatten_dataset = np.fromfile(file_name, dtype=DTYPE)
+        dataset = flatten_dataset.reshape((DATASET_LENGHT, ROW_LENGHT))
+        self.dataset = dataset 
 
     def run(self):
         pass
@@ -86,20 +101,28 @@ class PokerTest(BaseTest):
         super().__init__(shuffled_decks_file)
     
     def run(self):
+        print(self.shuffled_decks)
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
-        hand_types, occurencies = np.unique(result, return_counts=True)
-        print(occurencies)
-        print(hand_types)
-
-        # print(occurencies)
-        # print(hand_types)
         # Create an array filled with zeros to represent the default counts for all hand types
 
-        # observed_counts = np.zeros(10, dtype=int)
+        f_obs = np.zeros(10, dtype=int)
 
+        hand_types, observed = np.unique(result, return_counts=True)
         # Fill in the observed counts into the default array
-        # observed_counts[hand_types] = occurencies
+        f_obs[hand_types] = observed
+        print(hand_types)
+        print(f_obs)
+        # Observed occurencies vs expected. i could of course hard code those expected
+        f_exp = np.array([1628176,1372800,154440,68639,12751,6383,4681,780,45,5])
+        print(f'Sum of observed frequencies: {np.sum(f_obs)}')
+        print(f'Sum of expected frequencies: {np.sum(f_exp)}')
+        chi2_stat ,p_val = chisquare(f_obs=f_obs, f_exp=f_exp)
+        print(chi2_stat)
+        print(p_val)
+
+
+        
 
         # Normalize the counts to probabilities
         # total_counts = np.sum(observed_counts)
