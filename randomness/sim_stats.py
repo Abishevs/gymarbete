@@ -7,6 +7,7 @@ from randomness.shuffling_algorithms import shuffle_np_random
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import chisquare
+import os
 
 """
 TODO: Overview
@@ -35,6 +36,9 @@ DATASET_LENGHT = 3248700
 ROW_LENGHT = 52
 DTYPE = np.int8
 
+class FileLoadingError(Exception):
+    pass
+
 class Simulation:
     """Defines simulation parameters.
     In a loop does shuffles and swaps them to pre genereated zerod 2d np.array.
@@ -62,33 +66,62 @@ class Simulation:
         self.raw_data = np.apply_along_axis(shuffling_algo_wrapper, axis=1, arr=self.raw_data, algo=shuffling_algorithm )
         print(self.raw_data)
 
-
 class BaseTest:
     """An base class of tests, mby if it has merit
     """
-    def __init__(self, raw_data_file_name:str, folder_name = "Grahs&stuff") -> None:
+    dataset = np.array([])
+    dataset_file_name = ""
+
+    def __init__(self, folder_name = "Result") -> None:
         # test can only take an specific file extension, change it to more generic way.
-        self.raw_data_file_name = raw_data_file_name.removesuffix(".bin")
-        self.shuffle_name = get_shuffle_name(raw_data_file_name)
-        self.shuffle_runs =  get_shuffle_runs(raw_data_file_name)
-        self.result_file_name = f"{get_path(folder_name)}/{self.raw_data_file_name}"
-        # self._shuffled_decks = np.load(raw_data_file_name)
-        self.dataset = np.array([])
+        self.dataset_file_name = BaseTest.dataset_file_name
+        self.file_name = self.dataset_file_name.removesuffix(".bin")
+        self.shuffle_name = get_shuffle_name(self.file_name)
+        self.shuffle_runs =  get_shuffle_runs(self.file_name)
+        self.result_file_name = f"{os.path.join(get_path(folder_name), self.file_name)}"
 
     @property
     def shuffled_decks(self):
-        return self.dataset
+        return BaseTest.dataset
     
-    def load_dataset_np(self, file_name:str):
-        self.dataset =  np.load(file_name)
+    @classmethod
+    def load_dataset_np(cls, file_name:str):
+        """Loads .npy file. which contains an 2D array
+        
+        Arguments:
+            file_name (string | path like): Data set file name
+        """
+        try:
+            cls.dataset =  np.load(file_name)
+            cls.dataset_file_name = file_name
+        except Exception as e:
+            raise FileLoadingError(f"Failed to load file {file_name}") from e
+
+    @classmethod
+    def load_dataset_bin(cls, file_name:str):
+        """Loads .npy file. which contains an 2D array
+        
+        Arguments:
+            file_name (string | path like): Data set file name
+        
+        Raises: FileLoadingError  
+        """
+        try:
+            flatten_dataset = np.fromfile(file_name, dtype=DTYPE)
+            dataset = flatten_dataset.reshape((DATASET_LENGHT, ROW_LENGHT))
+            cls.dataset = dataset 
+            cls.dataset_file_name = file_name
+        except Exception as e:
+            raise FileLoadingError(f"Failed to load file {file_name}") from e
     
-    def load_dataset_bin(self, file_name:str):
-        # binary file  is an flaten array
-        flatten_dataset = np.fromfile(file_name, dtype=DTYPE)
-        dataset = flatten_dataset.reshape((DATASET_LENGHT, ROW_LENGHT))
-        self.dataset = dataset 
+    @classmethod
+    def clear_dataset(cls):
+        cls.dataset = np.array([])
 
     def run(self):
+        pass
+        
+    def save(self):
         pass
      
 class PokerTest(BaseTest):
@@ -97,8 +130,8 @@ class PokerTest(BaseTest):
     Occurencies of poker hands drawn from either the first 5 cards or proper poker way(2hand cards and 3 flop cards)
     Saves the image of the plotted result. where x=pokerhand type name and y=Occurencies
     """
-    def __init__(self, shuffled_decks_file) -> None:
-        super().__init__(shuffled_decks_file)
+    def __init__(self) -> None:
+        super().__init__()
     
     def run(self):
         print(self.shuffled_decks)
@@ -155,8 +188,8 @@ class PokerTest(BaseTest):
 class StdMean(BaseTest):
     """Does pattern matching shaningans
     """
-    def __init__(self, shuffled_decks_file) -> None:
-        super().__init__(shuffled_decks_file)
+    def __init__(self) -> None:
+        super().__init__()
 
     def run(self):
 

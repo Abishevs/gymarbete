@@ -1,12 +1,29 @@
-from randomness.sim_stats import Simulation, PokerTest, StdMean
-from randomness.shuffling_algorithms import shuffle_np_random, shuffle_fisher_yates, shuffle_bin_shuffle
+from os.path import isfile
+from randomness.sim_stats import BaseTest, PokerTest, StdMean
+from randomness.utils import get_path
+from multiprocessing import Pool
+import os
+
+def run_tests(file_name:str):
+    try:
+        BaseTest.load_dataset_bin(file_name)
+
+        # define test classes
+        tests = [PokerTest(), StdMean()]
+        for test in tests:
+            test.run()
+            test.save()
+        # reset dataset after tests
+        BaseTest.clear_dataset()
+
+    except Exception as e:
+       print(f"Error: {e}")
 
 if __name__ == "__main__":
-    file_name = "test_bin_shuffle-1.bin"
-    # sim = Simulation()
-    # sim.run(shuffle_bin_shuffle)
-    # sim.save()
-    test = PokerTest(file_name)
-    test.load_dataset_bin(file_name)
-    test.run()
-        
+    data_folder = get_path("raw_data")  
+    # dataset_names = ["test_bin_shuffle-1.bin", "test_bin_shuffle1.bin", "test_bin_shuffle-1.bin"]
+    dataset_names = [os.path.join(data_folder, file_name) for file_name in os.listdir(data_folder)]
+    print(dataset_names)
+
+    with Pool() as pool:
+        pool.map(run_tests, dataset_names)
