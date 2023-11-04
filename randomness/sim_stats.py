@@ -78,7 +78,7 @@ class BaseTest:
         self.file_name = self.dataset_file_name.removesuffix(".bin")
         self.shuffle_name = get_shuffle_name(self.file_name)
         self.shuffle_runs =  get_shuffle_runs(self.file_name)
-        self.result_file_name = f"{os.path.join(get_path(folder_name), self.file_name)}"
+        self.result_file_name = f"{os.path.join(folder_name, self.file_name)}"
 
     @property
     def shuffled_decks(self):
@@ -192,6 +192,8 @@ class StdMean(BaseTest):
         super().__init__()
 
     def run(self):
+        # call it before each run. to clear prev memory.
+        plt.figure()
 
         mean_pos = np.mean(self.shuffled_decks, axis=0)
         std_pos = np.std(self.shuffled_decks, axis=0)
@@ -202,6 +204,8 @@ class StdMean(BaseTest):
         plt.title(f"Shuffle name:{self.shuffle_name}; iterations: {self.shuffle_runs}\nDataset lenght: {len(self.shuffled_decks)} rows")
         plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
+        # 
+        plt.close()
 
 
 if __name__ == "__main__":
