@@ -89,7 +89,7 @@ class BaseTest:
         """Loads .npy file. which contains an 2D array
         
         Arguments:
-            file_name (string | path like): Data set file name
+            file_name (string): Path to dataset
         """
         try:
             cls.dataset =  np.load(file_name)
@@ -98,21 +98,22 @@ class BaseTest:
             raise FileLoadingError(f"Failed to load file {file_name}") from e
 
     @classmethod
-    def load_dataset_bin(cls, file_name:str):
-        """Loads .npy file. which contains an 2D array
+    def load_dataset(cls, file_path:str):
+        """Loads dataset file. which contains an flatten 2d array
         
         Arguments:
-            file_name (string | path like): Data set file name
+            file_path (string): Path to dataset
         
         Raises: FileLoadingError  
         """
+
         try:
-            flatten_dataset = np.fromfile(file_name, dtype=DTYPE)
+            flatten_dataset = np.fromfile(file_path, dtype=DTYPE)
             dataset = flatten_dataset.reshape((DATASET_LENGHT, ROW_LENGHT))
             cls.dataset = dataset 
-            cls.dataset_file_name = file_name
+            cls.dataset_file_name = os.path.basename(file_path) 
         except Exception as e:
-            raise FileLoadingError(f"Failed to load file {file_name}") from e
+            raise FileLoadingError(f"Failed to load file {file_path}") from e
     
     @classmethod
     def clear_dataset(cls):
