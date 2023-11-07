@@ -11,26 +11,15 @@ import os
 
 """
 TODO: Overview
-    1) Write diffrent shuffling algorithms enhiriting the base class 
-        1.1) Algorithm: Fisher-yates (as base test)
-        1.2) Riffle-shuffle
-        1.3) 
-    2) Pogram that can save sequences as raw data to be then analysed 
-    includes:
-        2.1) 2d np.array[[0 <= x <= 51],[...]...] 
-        2.2) filenameas has following: algorithm_name-num.npy where num is how many shuffles were done by iteration
-    3) Build a system that can do our predifined tests and save those charts/digrams and other usefull info.
-        3.1) Frequncie analys / pattern matching
-        3.2) Poker test
-        3.3) ApEn
-    4) Analys of charts and diagrams (self done after)
+    1) Write log file and for each write an .csv file with: 
+        1.1) Chi-square value
+        1.2) p_value 
+        1.3) For stdMean. write mean position and std for each card.
 """
 """
 TODO:
-    4.10:
-        1) Think of possible values from poker test that might be used in analys/ result delen. 
-        2) Rethink what u want to plot in the graph
-        3) Implement chi-squared test in pokerTest
+    Week: 45.
+    - [] Save value ploted in graphs, all of em
 """
 DATASET_LENGHT = 3248700
 ROW_LENGHT = 52
@@ -187,7 +176,11 @@ class PokerTest(BaseTest):
         # # plt.show()
 
 class StdMean(BaseTest):
-    """Does pattern matching shaningans
+    """
+    1) Calculates mean position of each card in the deck
+    2) Calcualtes how much each card deviates from mean position.
+    Expected mean: 26 [52/2] 
+    Expected std: as long as possible :D
     """
     def __init__(self) -> None:
         super().__init__()
@@ -202,7 +195,7 @@ class StdMean(BaseTest):
         plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
         plt.xlabel('Card index')
         plt.ylabel('Mean position')
-        plt.title(f"Shuffle name:{self.shuffle_name}; iterations: {self.shuffle_runs}\nDataset lenght: {len(self.shuffled_decks)} rows")
+        plt.title(f"Shuffle name:{self.shuffle_name}\n iterations: {self.shuffle_runs}\nDataset lenght: {len(self.shuffled_decks)} rows")
         plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
         # 
