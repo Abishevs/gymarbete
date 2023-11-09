@@ -6,6 +6,7 @@ from randomness.utils import (evaluate_hand,
 from randomness.shuffling_algorithms import shuffle_np_random 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 from scipy.stats import chisquare
 import os
 
@@ -55,11 +56,24 @@ class Simulation:
         self.raw_data = np.apply_along_axis(shuffling_algo_wrapper, axis=1, arr=self.raw_data, algo=shuffling_algorithm )
         print(self.raw_data)
 
+def gen_columns():
+    columns = []
+    columns.append("Algoritm")
+    columns.append("Iteration")
+    columns.append("X^2")
+    columns.append("PVärde")
+    columns.append("Gräns värde")
+    for i in range (52):
+        columns.append(f"Kort{i}_Medelvärde")
+        columns.append(f"Kort{i}_Std")
+    return columns
+
 class BaseTest:
     """An base class of tests, mby if it has merit
     """
     dataset = np.array([])
     dataset_file_name = ""
+    table = pd.DataFrame(columns=gen_columns())
 
     def __init__(self, folder_name = "Result") -> None:
         # test can only take an specific file extension, change it to more generic way.
@@ -68,6 +82,14 @@ class BaseTest:
         self.shuffle_name = get_shuffle_name(self.file_name)
         self.shuffle_runs =  get_shuffle_runs(self.file_name)
         self.result_file_name = f"{os.path.join(folder_name, self.file_name)}"
+        self.table = BaseTest.table
+        self.row_index = self.set_row()
+
+    def set_row(self):
+        return len(self.table)
+
+    def add_value(self, column:str, value):
+        self.table.loc[self.row_index, column] = value
 
     @property
     def shuffled_decks(self):
@@ -112,6 +134,7 @@ class BaseTest:
         pass
         
     def save(self):
+        print(self.table)
         pass
      
 class PokerTest(BaseTest):
@@ -124,14 +147,15 @@ class PokerTest(BaseTest):
         super().__init__()
     
     def run(self):
-        print(self.shuffled_decks)
+        # print(self.shuffled_decks)
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
-        # Create an array filled with zeros to represent the default counts for all hand types
 
+        # Create an array filled with zeros to represent the default counts for all hand types
         f_obs = np.zeros(10, dtype=int)
 
         hand_types, observed = np.unique(result, return_counts=True)
+
         # Fill in the observed counts into the default array
         f_obs[hand_types] = observed
         print(hand_types)
@@ -141,6 +165,9 @@ class PokerTest(BaseTest):
         print(f'Sum of observed frequencies: {np.sum(f_obs)}')
         print(f'Sum of expected frequencies: {np.sum(f_exp)}')
         chi2_stat ,p_val = chisquare(f_obs=f_obs, f_exp=f_exp)
+        self.add_value("X^2", chi2_stat)
+        # self.table["x^2"].append(p_val)
+        # self.table["critical value"].append(chi2_stat)
         print(chi2_stat)
         print(p_val)
 
@@ -191,6 +218,9 @@ class StdMean(BaseTest):
 
         mean_pos = np.mean(self.shuffled_decks, axis=0)
         std_pos = np.std(self.shuffled_decks, axis=0)
+        for i in range(52):
+            self.add_value(f"Kort{i}_Medelvärde", mean_pos[i])
+            self.add_value(f"Kort{i}_Std", std_pos[i])
         
         plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
         plt.xlabel('Card index')
