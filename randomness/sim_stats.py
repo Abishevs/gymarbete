@@ -2,26 +2,14 @@ from randomness.utils import (evaluate_hand,
                    shuffling_algo_wrapper,
                    get_shuffle_runs, 
                    get_shuffle_name, 
-                   get_path)
-from randomness.shuffling_algorithms import shuffle_np_random 
+                   get_path,
+                   gen_columns)
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import chisquare
 import os
 
-"""
-TODO: Overview
-    1) Write log file and for each write an .csv file with: 
-        1.1) Chi-square value
-        1.2) p_value 
-        1.3) For stdMean. write mean position and std for each card.
-"""
-"""
-TODO:
-    Week: 45.
-    - [] Save value ploted in graphs, all of em
-"""
 DATASET_LENGHT = 3248700
 ROW_LENGHT = 52
 DTYPE = np.int8
@@ -56,26 +44,33 @@ class Simulation:
         self.raw_data = np.apply_along_axis(shuffling_algo_wrapper, axis=1, arr=self.raw_data, algo=shuffling_algorithm )
         print(self.raw_data)
 
-def gen_columns():
-    columns = []
-    columns.append("Algoritm")
-    columns.append("Iteration")
-    columns.append("X^2")
-    columns.append("PVärde")
-    columns.append("Gräns värde")
-    for i in range (52):
-        columns.append(f"Kort{i}_Medelvärde")
-        columns.append(f"Kort{i}_Std")
-    return columns
 
 class BaseTest:
-    """An base class of tests, mby if it has merit
+    """
+    A base class for performing various statistical tests on shuffled decks.
+
+    This class provides common functionalities and shared values like loading 
+    dataset, clearing dataset, saving table and maintaining results in a 
+    structured format. It's designed to be subclassed by specific statistical
+    test implementions like Poker test or StdMean.
+
+    Attributes:
+    dataset (numpy.ndarray): loaded dataset for the tests.
+    dataset_file_name (str): dataset file name for extracting name and iterations
+    table (pandas.DataFrame): Table to store test results from all tests 
+
+    Methods:
+    load_dataset(file_path:str): given path to dataset loads it, should be an 1d array stored in .bin 
+    save_table(file_name:str): Saves the result to a csv file
+    run(): Abstract method, to be implemented by subclasses
+    save(): Abstract method, save grahps/tables, to be implemnted by subclasses for specific tests
+    
     """
     dataset = np.array([])
     dataset_file_name = ""
     table = pd.DataFrame(columns=gen_columns())
 
-    def __init__(self, folder_name = "Result") -> None:
+    def __init__(self,row_index=None, folder_name = "Result") -> None:
         # test can only take an specific file extension, change it to more generic way.
         self.dataset_file_name = BaseTest.dataset_file_name
         self.file_name = self.dataset_file_name.removesuffix(".bin")
@@ -83,10 +78,17 @@ class BaseTest:
         self.shuffle_runs =  get_shuffle_runs(self.file_name)
         self.result_file_name = f"{os.path.join(folder_name, self.file_name)}"
         self.table = BaseTest.table
-        self.row_index = self.set_row()
+        self.row_index = row_index
+        
+        # add general values to the table
+        self.add_value("Algoritm", self.shuffle_name)
+        self.add_value("Iteration", self.shuffle_runs)
 
-    def set_row(self):
-        return len(self.table)
+    @classmethod
+    def create_new_row(cls):
+        new_row_index = len(cls.table)
+        cls.table.loc[new_row_index] = [np.nan] * len(cls.table.columns)  # Initialize with NaNs
+        return new_row_index
 
     def add_value(self, column:str, value):
         self.table.loc[self.row_index, column] = value
@@ -110,12 +112,19 @@ class BaseTest:
 
     @classmethod
     def load_dataset(cls, file_path:str):
-        """Loads dataset file. which contains an flatten 2d array
-        
+        """
+        Loads a dataset given path, should follow an specific file format.
+        and contain an flatten 2D array. 
+
+        Example:
+        riffle_shuffle-3.bin 
+
         Arguments:
             file_path (string): Path to dataset
         
-        Raises: FileLoadingError  
+        Raises: 
+        FileLoadingError: If it can't find file, or it's in wrong format
+
         """
 
         try:
@@ -130,12 +139,16 @@ class BaseTest:
     def clear_dataset(cls):
         cls.dataset = np.array([])
 
+    @classmethod
+    def save_table(cls, result:str="table"):
+        cls.table.to_csv(f"{result}.csv", index=False)
+
     def run(self):
         pass
         
     def save(self):
-        print(self.table)
         pass
+
      
 class PokerTest(BaseTest):
     """Takes 2darray as an argument
@@ -143,64 +156,37 @@ class PokerTest(BaseTest):
     Occurencies of poker hands drawn from either the first 5 cards or proper poker way(2hand cards and 3 flop cards)
     Saves the image of the plotted result. where x=pokerhand type name and y=Occurencies
     """
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, row_index) -> None:
+        super().__init__(row_index)
     
     def run(self):
-        # print(self.shuffled_decks)
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
 
         # Create an array filled with zeros to represent the default counts for all hand types
-        f_obs = np.zeros(10, dtype=int)
+        f_obs = np.zeros(10, dtype=int) # init observed
 
         hand_types, observed = np.unique(result, return_counts=True)
 
-        # Fill in the observed counts into the default array
+        # Fill in the observed counts into the init array
         f_obs[hand_types] = observed
-        print(hand_types)
-        print(f_obs)
-        # Observed occurencies vs expected. i could of course hard code those expected
+
+        # expected frequencies
         f_exp = np.array([1628176,1372800,154440,68639,12751,6383,4681,780,45,5])
-        print(f'Sum of observed frequencies: {np.sum(f_obs)}')
-        print(f'Sum of expected frequencies: {np.sum(f_exp)}')
+
+        CRITICAL_VALUE = 16.918977604620448 # with p-value 0.05 and df= 9
+        P_VALUE = 0.05
         chi2_stat ,p_val = chisquare(f_obs=f_obs, f_exp=f_exp)
         self.add_value("X^2", chi2_stat)
-        # self.table["x^2"].append(p_val)
-        # self.table["critical value"].append(chi2_stat)
-        print(chi2_stat)
-        print(p_val)
+        self.add_value("PVärde", p_val)
+        self.add_value("Gräns värde", CRITICAL_VALUE)
 
-
-        
-
-        # Normalize the counts to probabilities
-        # total_counts = np.sum(observed_counts)
-        # observed_probabilities = observed_counts / total_counts
-
-        # theoretical probabilities. Copy pasted from internet xd 
-        # theoretical_probabilities = np.array([0.501177, 0.422569, 0.047539, 0.021128, 0.003925, 0.001965, 0.001441, 0.0002401, 0.000139, 0.0000154])
-
-        # x-axis labels
-        # label_dict = {0: "High Card", 1: "Pair", 2: "Two Pair", 3: "Three of a Kind", 4: "Straight", 5: "Flush", 6: "Full House", 7: "Four of a Kind", 8: "Straight Flush", 9: "Royal Flush"}
-        #
-        # # Plotting
-        # plt.figure(figsize=(10, 6))
-        # plt.plot(range(10), theoretical_probabilities, 'r-', label='Theoretical Probability')
-        # plt.plot(range(10), observed_probabilities, 'bo-', label='Observed Probability')
-        #
-        # # customasition
-        # plt.xlabel('Hand Type')
-        # plt.ylabel('Probability')
-        # plt.yscale('log')
-        # plt.title('Comparison of Theoretical and Observed Poker Hand Probabilities')
-        # plt.xticks(range(10), [label_dict[i] for i in range(10)], rotation=-90)
-        # plt.legend()
-        # plt.grid(True)
-        #
-        # plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
-        #              pad_inches=0.3, transparent=True)
-        # # plt.show()
+        if p_val <= P_VALUE:
+            # reject null hypothes, indicator of bias / non-randomness
+            self.add_value("Signifikant", "Ja")
+        else:
+            # failed to reject null hypothes, it's random
+           self.add_value("Signifikant", "Nej")
 
 class StdMean(BaseTest):
     """
@@ -209,8 +195,8 @@ class StdMean(BaseTest):
     Expected mean: 26 [52/2] 
     Expected std: as long as possible :D
     """
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, row_index) -> None:
+        super().__init__(row_index)
 
     def run(self):
         # call it before each run. to clear prev memory.
@@ -219,26 +205,19 @@ class StdMean(BaseTest):
         mean_pos = np.mean(self.shuffled_decks, axis=0)
         std_pos = np.std(self.shuffled_decks, axis=0)
         for i in range(52):
+            # add values to tabel
             self.add_value(f"Kort{i}_Medelvärde", mean_pos[i])
             self.add_value(f"Kort{i}_Std", std_pos[i])
         
         plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
-        plt.xlabel('Card index')
-        plt.ylabel('Mean position')
-        plt.title(f"Shuffle name:{self.shuffle_name}\n iterations: {self.shuffle_runs}\nDataset lenght: {len(self.shuffled_decks)} rows")
-        plt.savefig(self.result_file_name, facecolor='y', bbox_inches="tight",
+        plt.xlabel('Korts position')
+        plt.ylabel('Positons medelvärde')
+        plt.title(f"Algortim: {self.shuffle_name}\niterationer: {self.shuffle_runs}\nDatamängds längd: {len(self.shuffled_decks)}")
+        plt.savefig(self.result_file_name, facecolor='w', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
-        # 
+
         plt.close()
 
 
 if __name__ == "__main__":
-
-    ALGORITHM = "np_random_shuffle"
-    num_shuffles = 1
-    raw_data_file = f"{ALGORITHM}-{num_shuffles}.npy" # algorith-1 means that that it shuffled 1 time
-    # test = PokerTest("shuffle_np_random-1.npy")
-    # test.run()
-    test = Simulation()
-    test.run(shuffle_np_random)
-    test.save()
+    pass

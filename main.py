@@ -6,9 +6,10 @@ import os
 def run_tests(file_path:str):
     try:
         BaseTest.load_dataset(file_path)
+        row_index = BaseTest.create_new_row()
 
         # define test classes
-        tests = [PokerTest(), StdMean()]
+        tests = (PokerTest(row_index), StdMean(row_index))
         for test in tests:
             test.run()
             test.save()
@@ -24,7 +25,9 @@ if __name__ == "__main__":
     datasets = [os.path.join(data_folder, file_name) for file_name in os.listdir(data_folder)]
     # print(dataset_names)
 
-    with Pool(processes=4) as pool:
-    # for dataset_name in dataset_names:
-        # run_tests(dataset_name)
-        pool.map(run_tests, datasets)
+    # with Pool(processes=4) as pool:
+    for dataset_name in datasets:
+        run_tests(dataset_name)
+    print(BaseTest.table)
+    BaseTest.save_table()
+        # pool.map(run_tests, datasets)
