@@ -9,18 +9,6 @@ def shuffling_algo_wrapper(arr, algo):
     """
     return algo(arr)
 
-def gen_columns():
-    columns = []
-    columns.append("Algoritm")
-    columns.append("Iteration")
-    columns.append("X^2")
-    columns.append("PVärde")
-    columns.append("Gräns värde")
-    columns.append("Signifikant") # Ja/Nej
-    for i in range (52):
-        columns.append(f"Kort{i}_Medelvärde")
-        columns.append(f"Kort{i}_Std")
-    return columns
 
 def get_path(folder_name):
         current_dir = os.getcwd()
