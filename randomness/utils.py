@@ -18,11 +18,11 @@ def get_path(folder_name):
         return path
 
 def get_shuffle_name(file_name:str):
-    base_name = file_name.removesuffix(".bin").split('-')
+    base_name = file_name.split('-')
     return base_name[0].capitalize().replace('-', ' ')
 
 def get_shuffle_runs(file_name:str):
-    base_name = file_name.removesuffix(".npy").split('-')
+    base_name = file_name.split('-')
     return base_name[-1]
 
 @numba.jit('int8(int8[:])', nopython=True) # numba makes this into an binary and executes outside python interpreter, thus being lighting fast

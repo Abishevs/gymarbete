@@ -1,21 +1,18 @@
-from enum import Enum
-import math
-import re
-from typing import Union
 from randomness.utils import (evaluate_hand, 
                    shuffling_algo_wrapper,
                    get_shuffle_runs, 
                    get_shuffle_name, 
                    get_path,
                    )
+from enum import Enum
+from typing import Union
+from scipy.stats import chisquare, chi2
+import logging, math, re, os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.stats import chisquare
-import os
 
-# DATASET_LENGHT = 3248700
-DATASET_LENGHT = 3250000
+DATASET_LENGHT = 3248700
 ROW_LENGHT = 52
 DTYPE = np.int8
 
@@ -117,8 +114,10 @@ class BaseTest:
     dataset = np.array([])
     dataset_file_name = ""
     table = pd.DataFrame(columns=gen_columns())
+    
+    logger = logging.getLogger(f"{__name__}.BaseTest")
 
-    def __init__(self,row_index=None, folder_name = "Result") -> None:
+    def __init__(self,row_index:int | None = None, folder_name = "Result") -> None:
         """
         Arguments:
             row_index(BaseTest.create_new_row()): create a shared row for subclassed tests
@@ -148,6 +147,9 @@ class BaseTest:
         """
         new_row_index = len(cls.table)
         cls.table.loc[new_row_index] = [np.nan] * len(cls.table.columns)  # Initialize with NaNs
+
+        cls.logger.debug(f"Creating new row...with index {new_row_index}")
+        cls.logger.debug(f"row created...\n{cls.table}")
         return new_row_index
 
     def add_value(self, column: Union[Column, str] , value):
@@ -165,12 +167,13 @@ class BaseTest:
             self.add_value(Column.card_mean(card_index), 123.234)
 
         """
+
         column_name = column.value if isinstance(column, Column) else column
         self.table.loc[self.row_index, column_name] = value
 
     @property
     def shuffled_decks(self):
-        return BaseTest.dataset
+        return self.dataset
     
     @classmethod
     def validate_file_name(cls, file_name:str):
@@ -187,6 +190,7 @@ class BaseTest:
 
         pattern = re.compile(r'^[a-zA-Z0-9_]+-\d+$')
         if not pattern.match(file_name):
+            cls.logger.error(f"Wrong file format for: {file_name}")
             raise InvalidFileNameFormatError(f"Invalid file name format: '{file_name}'. Expected format 'algo_name-iterationsnum'")
 
 
@@ -210,6 +214,8 @@ class BaseTest:
             DatasetShapeError: if it can't reshape given array
 
         """
+        cls.logger.info(f"Loading dataset file from: {file_path}")
+
         file_name, file_extension = os.path.splitext(file_path)
         file_name = os.path.basename(file_name)
 
@@ -219,6 +225,8 @@ class BaseTest:
 
             if file_extension == ".npy":
                 cls.dataset = np.load(file_path)
+                cls.logger.info(f"Loaded .npy dataset from: {file_path}")
+
                 if cls.dataset.ndim != 2 or cls.dataset.shape[1] != ROW_LENGHT:
                     raise DatasetShapeError(f"Shape mismatch for .npy file: Expected 2D array with {ROW_LENGHT} columns, got {cls.dataset.shape}")
 
@@ -234,6 +242,7 @@ class BaseTest:
 
                 # reshape back into 2D array and set it as class global variable
                 cls.dataset = flatten_dataset.reshape((dataset_lenght, ROW_LENGHT))
+                cls.logger.info(f"Loaded and reshaped dataset from: {file_path}")
         
             # extract shuffle name + iterations from file name
             cls.dataset_file_name = os.path.basename(file_name)
@@ -244,7 +253,11 @@ class BaseTest:
 
         # if file was not found
         except OSError as e:
+            cls.logger.error(f"File not found {file_path}")
             raise FileLoadingError(f"File not found {file_path}") from e
+
+        except DatasetShapeError as e:
+            cls.logger.error(f"Datashape error: {e}")
 
     
     @classmethod
@@ -255,7 +268,13 @@ class BaseTest:
     def save_table(cls, result_folder:str = "Result", result_file_name:str="table"):
         result_file_name =f"{result_file_name}.csv" 
         result_file_name = f"{os.path.join(result_folder, result_file_name)}"
-        cls.table.to_csv(result_file_name, index=False)
+
+        try:
+            cls.table.to_csv(result_file_name, index=False)
+            cls.logger.info(f"Saved table data to: {result_file_name}")
+        except Exception as e:
+            cls.logger.error(f"Failed saving file to: {result_file_name}. Error: {e}")
+            raise OSError(f"Failed saving file to: {result_file_name}. Error: {e}")
 
     def run(self):
         pass
@@ -275,8 +294,13 @@ class PokerTest(BaseTest):
     add results to the pandas dataframe.
 
     """
-    def __init__(self, row_index) -> None:
+    logger = logging.getLogger(f"{__name__}.PokerTest(BaseTest)")
+
+    def __init__(self, row_index, alfa = 0.05, df = 9) -> None:
         super().__init__(row_index)
+        self.alfa: float = alfa
+        self.degress_of_freedom: int = df
+        self.critical_value = chi2.ppf(1 - alfa, df)
         
     
     def run(self):
@@ -298,6 +322,7 @@ class PokerTest(BaseTest):
         # min is default * 1.25 to get atleast 5 expected royal flushes
         default = math.comb(52, 5)
         if self.shuffled_decks.shape[0] < (default*1.25):
+            self.logger.error(f"Dataset: {self.shuffled_decks.shape[0]} is too small to perform pokertest")
             raise InvalidFrequencyError(f"Dataset: {self.shuffled_decks.shape[0]} is too small to perform pokertest")
 
         f_exp = np.array([1302540,1098240,123552 ,54912,10200,5108, 3744, 624, 36, 4], dtype=np.float64)
@@ -309,24 +334,31 @@ class PokerTest(BaseTest):
         f_exp *= factor
 
         five_card_decks = self.shuffled_decks[:,[0,2,5,6,7]] # two player poker game, p1 two cards + flop
+        self.logger.debug(f"Evaluating 5 card hands: {five_card_decks}")
         result = np.apply_along_axis(evaluate_hand, axis=1, arr=five_card_decks) # returns 1d array containing hand_types
 
         # Create an array filled with zeros to represent the default counts for all hand types
         f_obs = np.zeros(10, dtype=int) # init observed
 
         hand_types, observed = np.unique(result, return_counts=True)
+        self.logger.debug(f"Hand types: {hand_types}\n Observed: {observed}")
 
         # Fill in the observed counts into the init array
         f_obs[hand_types] = observed
-
-        CRITICAL_VALUE = 16.918977604620448 # with p-value 0.05 and df= 9
-        P_VALUE = 0.05
+        
+         
+        # CRITICAL_VALUE = 16.918977604620448 # with p-value 0.05 and df= 9
+        # P_VALUE = 0.05
         chi2_stat ,p_val = chisquare(f_obs=f_obs, f_exp=f_exp)
+        self.logger.debug(f"Chi 2 stat: {chi2_stat}")
+        self.logger.debug(f"P_value: {p_val}")
+        self.logger.debug(f"critical_value: {self.critical_value}")
+
         self.add_value(Column.CHI2_STAT, chi2_stat)
         self.add_value(Column.P_VALUE, p_val)
-        self.add_value(Column.CRITICAL_VALUE, CRITICAL_VALUE)
+        self.add_value(Column.CRITICAL_VALUE, self.critical_value)
 
-        if p_val <= P_VALUE:
+        if p_val <= self.alfa:
             # reject null hypothes, indicator of bias / non-randomness
             self.add_value(Column.ISSIGNIFICANT, "Ja")
         else:
@@ -342,12 +374,15 @@ class StdMean(BaseTest):
 
     Saves result as image of the plot in result directory
     """
+    logger = logging.getLogger(f"{__name__}.StdMean(BaseTest)")
+
     def __init__(self, row_index) -> None:
         super().__init__(row_index)
 
     def run(self):
         # call it before each run. to clear prev memory.
         plt.figure()
+        self.logger.info(f"Started std_mean test...")
 
         mean_pos = np.mean(self.shuffled_decks, axis=0)
         std_pos = np.std(self.shuffled_decks, axis=0)
@@ -356,13 +391,18 @@ class StdMean(BaseTest):
             # add values to tabel
             self.add_value(Column.card_mean(i), mean_pos[i])
             self.add_value(Column.card_std(i), std_pos[i])
-        
+        self.logger.info(f"Added values to the table")
+
         plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
         plt.xlabel('Korts position')
         plt.ylabel('Positons medelvärde')
         plt.title(f"Algortim: {self.shuffle_name}\niterationer: {self.shuffle_runs}\nDatamängds längd: {len(self.shuffled_decks)}")
+
         plt.savefig(self.result_file_name, facecolor='w', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
+
+        self.logger.info(f"Saved graph to file: {self.result_file_name}")
+        self.logger.info(f"Finnishing std_mean test...")
 
         plt.close()
 
