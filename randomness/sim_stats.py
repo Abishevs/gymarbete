@@ -9,6 +9,7 @@ from typing import Union
 from scipy.stats import chisquare, chi2
 import logging, math, re, os
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import numpy as np
 import pandas as pd
 
@@ -125,7 +126,7 @@ class BaseTest:
         """
 
         self.file_name = BaseTest.dataset_file_name
-        self.shuffle_name = get_shuffle_name(self.file_name)
+        self.shuffle_name = get_shuffle_name(self.file_name).replace("_", " ")
         self.shuffle_runs =  get_shuffle_runs(self.file_name)
         self.result_folder = folder_name
         self.result_file_name = f"{os.path.join(self.result_folder, self.file_name)}"
@@ -380,6 +381,15 @@ class StdMean(BaseTest):
         super().__init__(row_index)
 
     def run(self):
+        # Set Matplotlib to use LaTeX to render text
+        mpl.use("pgf")
+        mpl.rcParams.update({
+            "pgf.texsystem": "pdflatex",
+            'font.family': 'serif',
+            'text.usetex': True,
+            'pgf.rcfonts': False,
+        })
+
         # call it before each run. to clear prev memory.
         plt.figure()
         self.logger.info(f"Started std_mean test...")
@@ -400,6 +410,8 @@ class StdMean(BaseTest):
 
         plt.savefig(self.result_file_name, facecolor='w', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
+
+        plt.savefig(f'{self.result_file_name}.pgf')
 
         self.logger.info(f"Saved graph to file: {self.result_file_name}")
         self.logger.info(f"Finnishing std_mean test...")
