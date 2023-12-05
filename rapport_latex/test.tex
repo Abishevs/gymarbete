@@ -1,0 +1,309 @@
+\documentclass[a4paper]{article}
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{csquotes} % Recommended
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage[titletoc]{appendix}
+\usepackage{listings, listings-rust}
+\usepackage{longtable}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+\usepackage{pgfplots}
+\usepackage{color}
+\usepackage[margin=1in]{geometry}
+\usepackage[
+style=authoryear,
+sorting=nty,
+backend=biber, 
+natbib=true]{biblatex}
+\usepackage{hyperref}
+\usepackage[nameinlink]{cleveref}
+
+\pgfplotsset{compat=1.14}
+\lstset{ % General settings for listings
+  basicstyle=\ttfamily\small, 
+  commentstyle=\color{green},
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  tabsize=4,
+  showstringspaces=false,
+  breaklines=true
+}
+
+% Redefine the listing name after loading cleveref
+\renewcommand{\lstlistingname}{Kodlistning}
+\crefname{lstinputlisting}{kodlistning}{kodlistningar} % For cleveref, singular and plural
+\Crefname{lstinputlisting}{Kodlistning}{Kodlistningar} % For cleveref, singular and plural, capitalized
+
+\addbibresource{references.bib}
+\renewcommand{\appendixpagename}{Bilagor}
+\renewcommand*{\bibfont}{\small} % Adjust font size
+\setlength{\bibitemsep}{1.5em} % Increase space between entries
+\setlength{\bibhang}{2em} % Indent bibliography entries
+
+\title{Vet inte än DEN kula TITLEN}
+\author{Leo Altebro & Eduards Abisevs}
+\date{ }
+
+\renewcommand*\contentsname{Innehåll}
+
+\begin{document}
+\begin{titlepage}
+    \begin{minipage}[t]{0.48\textwidth}
+        \raggedright
+        NTI Nacka \\
+        Teknikprogrammet-Teknikvetenskap \\
+        Gymnasiearbete 100p \\
+        HT 2023 - VT 2024
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \raggedleft
+        \includegraphics[width=\linewidth]{images/logo.jpg} % Replace with the path to the logo
+    \end{minipage}
+
+    \vspace*{\fill} % Add vertical space to center the title
+
+    \begin{center}
+        \Large\textbf{Den Kula titeln}\\
+        \large\textit{o mycket kulare under titlen}
+    \end{center}
+
+    \vspace*{\fill} % Add vertical space to center the title
+
+    \begin{minipage}[b]{1\textwidth}
+        \raggedright
+        Eduards Abisevs\\
+        eduards.abisevs@elev.ga.ntig.se\\
+        Leo Altebro\\
+        leo.altebro@elev.ga.ntig.se\\
+        Handledare: Elias
+    \end{minipage}
+\end{titlepage}
+
+% \maketitle
+
+\tableofcontents
+\newpage
+
+\section{Inledning}
+\subsection{Introduktion till ämnet}
+
+Spelbranschen är en industri som omsätter miljardbelopp och precis som alla
+industrier utvecklas den med resten av världen. Industrier över hela världen har
+som mål att hitta nya sätt att effektivisera och sänka kostnad på det arbete som
+utförs för att bedriva vinst och spelbranschen har följt denna långvariga trend
+med till exempel online casinon. Inom spelbranschen är kortspel vanligt
+förekommande, att försöka automatisera dem är ett logiskt steg att ta, men för
+en så stor industri vill man vara extra säker på att allt utförs på bästa sätt.
+Alla sätt att blanda kort är nämligen inte lika bra, vilken sorteringsmetod som
+används kan ha påverkan på resultatet. Teknologins inflytande inom spelbranschen
+ökar kraftigt, de största delarna av branschen bedrivs mer och mer av maskiner
+och algoritmer som får stor potentiellt inflytande på spelresultat, därför är
+det bäst att börja tänka på möjliga problem så snart som möjligt. Redan nu finns
+det blandningsmaskiner för kortlekar som vi inte vet någonting om; varken hur de
+funkar eller hur bra de är. Allt som vi vet är de är certifierade av
+tredjepartsföretag. Faktumet att de kan kosta upp till 100 000 kr betyder att
+inte vem som helst kan ha tillgång till en kortblandningsmaskin.
+
+\subsection{Syfte}
+
+Syftet med denna undersökning är att ta fram den hypotetiskt bästa kortblandaren
+utifrån två faktorer: 1) hur slumpmässigt den algoritm som den byggs efter kan
+blanda kort; 2) till vilken grad den potentiella maskinen byggd efter algoritmen
+skulle fungera i verkligheten. Med resultaten förväntas variationen i
+slumpmässighet för olika blandningsmetoder kunna visas upp samt kunna använda de
+resultaten för att komma fram till den hypotetiskt definitiva maskinen, något
+som är viktigt då spelbranschen handlar mycket om chans. Det är därför viktigt
+att se till så allt funkar på bästa sätt. I den här vetenskapliga rapporten
+kommer en jämförelse av hur effektivt framtagna blandningsmetoder kan fungera i
+en hypotetisk blandningsmaskin att utföras. Samtidigt som man kan utforska hur
+en dator kan göra slumpmässiga sekvenser på ett effektivt sätt med tanken att
+den ska tillämpas till en potentiell kortblandare. Detta är viktigt för att
+spelbranschen är en stor industri som handlar mycket om tur, att se till att de
+slumpmässiga resultaten är framtagna på bästa möjliga sätt är en essentiell del.
+Vi söker med hjälp av data svaret på frågan:
+
+Utifrån slumpmässighet och effektivitet, vilken kort blandningsmetod är bäst för
+en potentiell spelkortsblandare som uppfyller följande:
+
+\section{Teori}
+\subsection{Beräkningsteori}
+
+Beräkningsteori är en del av matematik vars syfte är grundat i hur och om
+problem kan bli lösta på olika beräkningssätt. Beräkningsteori har flera olika
+grenar. En gren handlar om vad som går att bevisa inom matematik angående om
+nummer och funktioner är beräknelig eller inte. Med beräknelig menas något som
+kan beräknas, det vill säga värderas, uppfattas eller förutses, när det kommer
+till matematik syftar det på att bestämma något via matematiska
+modeller/processer, alltså att kalkylera.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{images/test.jpg}
+  \caption{Your caption here}
+  \label{fig: a very cool test image}
+\end{figure}
+
+\subsection{Slumpmässighet}
+
+Slumpmässighet är en egenskap som anger att något sker utan klart mönster, när
+något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
+inom matematik är byggd beräknings\-teori och den delas upp i två beroende på om
+det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt \parencite{Terwijn2016}.
+
+\subsection{Chi-square}
+Om chi-square.
+$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
+Vart $O_i$ är observerade frekvensen för bin $i$ och $E_i$ är förväntade frekvensen för bin $i$.
+\section{Metod}
+
+Ett av målet med undersökningen var att avgöra hur slumpmässiga algoritmerna
+var. För att undersöka detta kriterium valdes det att simulera stora mängder av
+kortblandningar. Metoden kunde indelas i tre huvudområdena 1) framtagande av
+algoritmerna 2) rådata generering via simulation 3) normalisering av
+rådata och statistiska tester 
+
+\subsection{Testmiljö}
+
+Datan insamlades från digital simulation på olika kortblandningsmetoder. De
+algoritmerna som undersöktes var skrivna i programspråk Rust i försök att göra
+dem så likt verkligheten som möjligt. För insamling av data användes
+programmeringsspråket  Python 3.11 och utnyttjades bibliotek som Numpy till
+datamängd bearbetning, Scipy till statistisk analys (Chi-square) och Matplotlib
+till visualisering av resultat. Undersökningen kördes på en linux dator med
+följande specifikationer:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|p{7cm}|} 
+\hline
+Typ & Specification  \\ \hline
+Processor & AMD Ryzen 5 3600 \newline 6 cores / 12 threads \newline 3.6 GHz \\ \hline
+RAM & 15.93 GB \\ \hline
+Hårdisk & KINGSTON SA400S3, 447 GB \\ \hline
+Operativsystem & \texttt{Ubuntu 22.04.3 (LTS) x86\_64, \newline linux kernel 6.2.0-36-generic} \\ \hline
+\end{tabular}
+\caption{Linux Dator}
+\label{table: testmiljö linux dators specification}
+\end{table}
+
+
+\subsection{Algoritmer som undersöktes}
+
+Då tanken var att  algoritmerna skulle potentiellt användas i ett fysiskt
+inbäddad system fanns det vissa  kriterier som algoritmerna skulle följa: det
+skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
+skulle vara så lik verkligheten som möjligt. Med det sagt så måste vi bestämma
+oss för en pseudo-random number generator (PRNG) algoritm bestämmas. En väldigt
+känd och testad algoritm är Mersenne Twister (MT 19937) som har en väldigt långt
+period innan siffrorna börjar att upprepa sig, mer exakt $2^{19937}$.
+
+\subsubsection{Riffle shuffle}
+Det här är riffle shuffle, vi ska nu parata om detta närmare...
+så funkar det här då?? Yeeep det gör det $\binom{55}{2} = \theta$
+\subsection{Simulation för kortblandningar och implemenation}
+\label{sec:poker_test}
+
+Simulationen utvecklades med Rust (version 1.73.0) och användes bibliotek (Rust
+Crates) som Rand (version 0.8) för PRNG (rand utvecklare 2023). Rayon för enkel
+användning av  parallell multiprocessing (rayon utvecklare 2023). Simulation
+utgår från att man genererar matris med bestämd mängd av kortlekar. Vart varje
+kort, låt kalla dem till $x$ som följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
+Resulterande datamängden är en matris $D$ med 52 kolumner och $m$ antal rader, vart
+$m$ värde visar hur många kortlekar det finns i datamängden.
+
+\begin{align}
+	D = \begin{bmatrix}
+		x_{0,0} & x_{0,1} & x_{0,2} & \cdots & x_{0,51}\\ 
+		x_{1,0} & x_{1,1} & x_{1,2} & \cdots & x_{1,51}\\
+		x_{2,0} & x_{2,1} & x_{2,2} & \cdots & x_{2,51}\\
+		\vdots & \vdots & \vdots & \; & \vdots \\
+		x_{m,0} & x_{m,1} & x_{m,2} & \cdots & x_{m,51}
+	\end{bmatrix}
+\end{align}
+
+För att bestämma $m$ värde följdes ett kriterium från ett av testerna som ska
+utföras, klassiskt poker test mer i  detalj beskriven i underrubriken \ref{sec:poker_test} .
+Till hjälps användes \parencite{nist} internätkälla, i denna nämns det att det
+är viktigt för chi-square approximationens trovärdighet att minsta kategorin
+ska inte vara mindre än fem teoretiska framkommande i den kategorin.
+Detta ska tillämpas till simulationen på följande sätt. Det
+är viktigt att hitta den minsta kategorin som kan förekomma. I poker är den
+mest sällsynta pokerhand kungliga färgstege (Royal Flush) som kan räknas ut på
+följande sätt antal av alla kortkombinationer med fem kort.
+$\binom{52}{5} = 2\,598\,960$ 
+Kungliga färgstege finns det fyra  kombinationer av i kortleken
+som kan räknas ut på följande sätt totala antal kombinationer av kungliga
+färgstege delat med totala antal femkorts kombinationer från standardkortlek.
+$$ P(\text{Kungliga färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} = \frac{4}{2\,598\,960} \approx 
+\frac{1}{649\,740} $$ 
+$$m = P(\text{Kungliga färgstege})  \times 5 = 3\,248\,700$$ detta blir den
+minimala datamängden. 
+en kunglig färgstege per 649'740 händer. För
+att datamängd ska uppfylla minsta kravet för poker testet beräknades längden
+av matrisens m  så att m= 649'740 5 = 3’248’700
+
+\subsubsection{Datatyp \& lagring av datamängder}
+Efter teoretiska beräkningar av datamängden är det viktigt att välja lämplig
+datatyp att representera datan i. Man inser att högsta talet som behövs är 51
+definerad tidigare och betecknat med $x$. 
+detta betyder att minsta datatypen får användas som är 8 bit långa som kan
+inehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ överns\-
+stämmer med talet 51. Detta ger möjlighet att använda den fundemantala datatypeni minne addressen. Fördelen med detta är det simplifierar lagring och inmatning
+av datamängder i t.ex Python med NumPy.
+
+Andra aspektet till varför datatypen är viktigt är att spara minnen för att det
+kommer att simuleras och sparas tiotals rådata filer varje fil kommer att väga
+$161 MB$,
+detta kan räknas ut på följande sätt $$ 1 MB = 1024 \times 1024 \Rightarrow \\
+52 \times m = \dots = 161 MB $$
+som det är enkelt att spara datan i binärt format för att 8 bits eller 1 byte
+är en fundamental och uniform mått i minnesadressen. Med det sagt ingen data
+bearbetning behövs och det är enkelt att ladda in denna i till exempel Python
+med numpy till statistiska testerna av rådatan. En till argument till varför
+valdes  minsta möjliga datatyp är för det kommer relativt många rådata
+filerna och varje fil kommer att ta upp: 52 m=52   3'248'700 = 168'932'400
+bytes delar man detta värdet med 1 MB = 1024  1024= 1,048,576 bytes  så att
+168'932'4001,048,576161 MB / datafil    Att räkna hur mycket minne
+datamängden ska ta är viktigt för att det inte bara är en fil som ska
+undersökas men relativt många. Därför att sista teoretiska delen att bestämma
+är hur många iterationer per algoritm ska genomföras. Med iterationer menas
+hur många gånger kortleken blandas följande på varandra i bilaga.
+
+
+\printbibliography[heading=bibintoc, title={Referenser}]
+
+\appendix
+\section*{\appendixpagename} 
+\addcontentsline{toc}{section}{\appendixpagename} 
+
+\section{Github}
+\label{app:github}
+github link: https://github.com/Abishevs/gymarbete
+
+\section{Källkod simulation}
+\label{sec:source_code}
+\begin{lstlisting}[language=Python, caption=Python example]
+# Your source code here
+print("Hello, World!")
+\end{lstlisting}
+
+\section{Källkod algorithm 1 implemention}
+\label{app:source_code2}
+\lstinputlisting[language=Rust, caption={algorithm 1 implemention},label=selection-sort, label={lst:algo_1},firstline=24, lastline=50]{../simulation_rust/src/main.rs}
+
+\section{Figure example}
+\begin{figure}[h]
+    \begin{center}
+        \input{images/figure_1.pgf}
+    \end{center}
+    \caption{A PGF figure example från \texttt{matplotlib}.}
+\end{figure}
+
+
+\end{document}
+
