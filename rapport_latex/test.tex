@@ -159,6 +159,20 @@ det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av ob
 Om chi-square.
 $$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 Vart $O_i$ är observerade frekvensen för bin $i$ och $E_i$ är förväntade frekvensen för bin $i$.
+
+\subsection{Pseudoslumptalsgenerator (PRNG)}
+Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
+\parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
+hands val
+\parencite{mersenne_twister} men som vi sedan bytte till ChaCha för att i rust
+är det relativt svårt att implemntera och använda mersenne twister. Berätta om
+dem skillanderna som finns.
+Alltså nämn att för att det här är som et proof of concept, borde vid
+senare tillfälle användas en hårdvara PRNG och icke software PRNG.
+Men pga detta undersökning handlar mesta dels om stora mängder av data
+simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
+skapa simulationer!
+
 \section{Metod}
 
 Ett av målet med undersökningen var att avgöra hur slumpmässiga algoritmerna
@@ -215,6 +229,7 @@ utgår från att man genererar matris med bestämd mängd av kortlekar. Vart var
 kort, låt kalla dem till $x$ som följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
 Resulterande datamängden är en matris $D$ med 52 kolumner och $m$ antal rader, vart
 $m$ värde visar hur många kortlekar det finns i datamängden.
+rust is nice crazy
 
 \begin{align}
 	D = \begin{bmatrix}
@@ -227,52 +242,53 @@ $m$ värde visar hur många kortlekar det finns i datamängden.
 \end{align}
 
 För att bestämma $m$ värde följdes ett kriterium från ett av testerna som ska
-utföras, klassiskt poker test mer i  detalj beskriven i underrubriken \ref{sec:poker_test} .
-Till hjälps användes \parencite{nist} internätkälla, i denna nämns det att det
-är viktigt för chi-square approximationens trovärdighet att minsta kategorin
-ska inte vara mindre än fem teoretiska framkommande i den kategorin.
-Detta ska tillämpas till simulationen på följande sätt. Det
-är viktigt att hitta den minsta kategorin som kan förekomma. I poker är den
-mest sällsynta pokerhand kungliga färgstege (Royal Flush) som kan räknas ut på
-följande sätt antal av alla kortkombinationer med fem kort.
-$\binom{52}{5} = 2\,598\,960$ 
-Kungliga färgstege finns det fyra  kombinationer av i kortleken
+utföras, klassiskt poker test mer i  detalj beskriven i underrubriken
+\ref{sec:poker_test} . Till hjälps användes \parencite{nist} internätkälla, i
+denna nämns det att det är viktigt för chi-square approximationens trovärdighet
+att minsta kategorin ska inte vara mindre än fem teoretiska framkommande i den
+kategorin. Detta ska tillämpas till simulationen på följande sätt. Det är
+viktigt att hitta den minsta kategorin som kan förekomma. I poker är den mest
+sällsynta pokerhand kungliga färgstege (Royal Flush) som kan räknas ut på
+följande sätt antal av alla kortkombinationer med fem kort. $\binom{52}{5} =
+2\,598\,960$ Kungliga färgstege finns det fyra  kombinationer av i kortleken
 som kan räknas ut på följande sätt totala antal kombinationer av kungliga
 färgstege delat med totala antal femkorts kombinationer från standardkortlek.
-$$ P(\text{Kungliga färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} = \frac{4}{2\,598\,960} \approx 
-\frac{1}{649\,740} $$ 
-$$m = P(\text{Kungliga färgstege})  \times 5 = 3\,248\,700$$ detta blir den
-minimala datamängden. 
-en kunglig färgstege per 649'740 händer. För
-att datamängd ska uppfylla minsta kravet för poker testet beräknades längden
-av matrisens m  så att m= 649'740 5 = 3’248’700
+$$ P(\text{Kunglig färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} =
+\frac{4}{2\,598\,960} \approx \frac{1}{649\,740} $$ $$m = P(\text{Kunglig
+färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden. en
+kunglig färgstege per 649'740 händer. För att datamängd ska uppfylla minsta
+kravet för poker testet beräknades längden av matrisens m  så att m= 649'740 5
+= 3’248’700
 
-\subsubsection{Datatyp \& lagring av datamängder}
-Efter teoretiska beräkningar av datamängden är det viktigt att välja lämplig
-datatyp att representera datan i. Man inser att högsta talet som behövs är 51
-definerad tidigare och betecknat med $x$. 
-detta betyder att minsta datatypen får användas som är 8 bit långa som kan
-inehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ överns\-
-stämmer med talet 51. Detta ger möjlighet att använda den fundemantala datatypeni minne addressen. Fördelen med detta är det simplifierar lagring och inmatning
-av datamängder i t.ex Python med NumPy.
+\subsubsection{Val av datatyp \& rådatalagring} Efter teoretiska beräkningar av
+datamängden är det viktigt att välja lämplig datatyp att representera datan i.
+Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
+betyder att minsta datatypen får användas som är 8 bit eller 1 byte långa som
+kan inehålla följande värden $\{b \in \mathbb{N},  0 \leq b \leq 255 \}$ som
+överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
+använda den fundemantala datatypen som används i minnes addressen. Fördelen med
+detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
+med NumPy.
 
 Andra aspektet till varför datatypen är viktigt är att spara minnen för att det
 kommer att simuleras och sparas tiotals rådata filer varje fil kommer att väga
 $161 MB$,
-detta kan räknas ut på följande sätt $$ 1 MB = 1024 \times 1024 \Rightarrow \\
-52 \times m = \dots = 161 MB $$
+detta kan räknas ut på följande sätt
+$$ \frac{\text{totala bytes}}{\text{megabyte (MB)}} = \frac{52 \times m }{1024 \times
+1024} = \frac{52 \times 3\,248\,700}{1024 \times 1024} = \frac{168\,932\,400}{1\,048\,576} \approx 161 MB 
+$$
 som det är enkelt att spara datan i binärt format för att 8 bits eller 1 byte
 är en fundamental och uniform mått i minnesadressen. Med det sagt ingen data
 bearbetning behövs och det är enkelt att ladda in denna i till exempel Python
-med numpy till statistiska testerna av rådatan. En till argument till varför
-valdes  minsta möjliga datatyp är för det kommer relativt många rådata
-filerna och varje fil kommer att ta upp: 52 m=52   3'248'700 = 168'932'400
-bytes delar man detta värdet med 1 MB = 1024  1024= 1,048,576 bytes  så att
-168'932'4001,048,576161 MB / datafil    Att räkna hur mycket minne
-datamängden ska ta är viktigt för att det inte bara är en fil som ska
-undersökas men relativt många. Därför att sista teoretiska delen att bestämma
+med numpy till statistiska testerna av rådatan
+
+Därför att sista teoretiska delen att bestämma
 är hur många iterationer per algoritm ska genomföras. Med iterationer menas
-hur många gånger kortleken blandas följande på varandra i bilaga.
+hur många gånger kortleken blandas följande på varandra.
+
+\subsection{Poker test}
+till denna användes \textcite{scipy}
+
 
 
 \printbibliography[heading=bibintoc, title={Referenser}]
