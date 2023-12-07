@@ -2,6 +2,7 @@
 \usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
+
 \usepackage{amssymb}
 \usepackage{csquotes} % Recommended
 \usepackage{graphicx}
@@ -52,7 +53,7 @@ natbib=true]{biblatex}
 
 \begin{document}
 \begin{titlepage}
-    \begin{minipage}[t]{0.48\textwidth}
+	\begin{minipage}[t]{0.5\textwidth}
         \raggedright
         NTI Nacka \\
         Teknikprogrammet-Teknikvetenskap \\
@@ -60,7 +61,7 @@ natbib=true]{biblatex}
         HT 2023 - VT 2024
     \end{minipage}
     \hfill
-    \begin{minipage}[t]{0.48\textwidth}
+    \begin{minipage}[t]{0.5\textwidth}
         \raggedleft
         \includegraphics[width=\linewidth]{images/logo.jpg} % Replace with the path to the logo
     \end{minipage}
@@ -74,7 +75,7 @@ natbib=true]{biblatex}
 
     \vspace*{\fill} % Add vertical space to center the title
 
-    \begin{minipage}[b]{1\textwidth}
+    \begin{minipage}[b]{0.48\textwidth}
         \raggedright
         Eduards Abisevs\\
         eduards.abisevs@elev.ga.ntig.se\\
@@ -129,7 +130,11 @@ Vi söker med hjälp av data svaret på frågan:
 
 Utifrån slumpmässighet och effektivitet, vilken kort blandningsmetod är bäst för
 en potentiell spelkortsblandare som uppfyller följande:
-
+\begin{itemize}
+	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
+	\item Tillräckligt snabbt med tillräckligt bra slumpmässighet- en bra
+		kompromiss
+\end{itemize}
 \section{Teori}
 \subsection{Beräkningsteori}
 
@@ -153,12 +158,22 @@ modeller/processer, alltså att kalkylera.
 Slumpmässighet är en egenskap som anger att något sker utan klart mönster, när
 något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
 inom matematik är byggd beräknings\-teori och den delas upp i två beroende på om
-det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt \parencite{Terwijn2016}.
+det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt
+\parencite{Terwijn2016}.
+
+\subsection{algoritms}
+Theoretical Whats and whys angånde algorithmer
+
+\subsubsection{riffle shuffle}
+Mest kända kortleksblandings metoden som har undersökets under många tiotals år.
 
 \subsection{Chi-square}
-Om chi-square.
+\label{sec:chi_square}
+Chi-square, chi-två testing eller som den också betecknas $\chi^2$ är statistikt test
+som oftas används till att definera och beräkna slumpmässighet av bestämd sannolikhet.
 $$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
-Vart $O_i$ är observerade frekvensen för bin $i$ och $E_i$ är förväntade frekvensen för bin $i$.
+Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
+frekvensen för kategorin $i$.
 
 \subsection{Pseudoslumptalsgenerator (PRNG)}
 Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
@@ -205,8 +220,7 @@ Operativsystem & \texttt{Ubuntu 22.04.3 (LTS) x86\_64, \newline linux kernel 6.2
 \label{table: testmiljö linux dators specification}
 \end{table}
 
-
-\subsection{Algoritmer som undersöktes}
+\subsection{Kortblandings algoritmernas implemenation}
 
 Då tanken var att  algoritmerna skulle potentiellt användas i ett fysiskt
 inbäddad system fanns det vissa  kriterier som algoritmerna skulle följa: det
@@ -214,17 +228,16 @@ skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
 skulle vara så lik verkligheten som möjligt. Med det sagt så måste vi bestämma
 oss för en pseudo-random number generator (PRNG) algoritm bestämmas. En väldigt
 känd och testad algoritm är Mersenne Twister (MT 19937) som har en väldigt långt
-period innan siffrorna börjar att upprepa sig, mer exakt $2^{19937}$.
+period innan siffrorna börjar att upprepa sig, mer exakt $2^{19937}$ \parencite{mersenne_twister}.
 
 \subsubsection{Riffle shuffle}
 Det här är riffle shuffle, vi ska nu parata om detta närmare...
 så funkar det här då?? Yeeep det gör det $\binom{55}{2} = \theta$
 \subsection{Simulation för kortblandningar och implemenation}
-\label{sec:poker_test}
 
-Simulationen utvecklades med Rust (version 1.73.0) och användes bibliotek (Rust
-Crates) som Rand (version 0.8) för PRNG (rand utvecklare 2023). Rayon för enkel
-användning av  parallell multiprocessing (rayon utvecklare 2023). Simulation
+Simulationen utvecklades med Rust version 1.73.0 och användes bibliotek (Rust
+Crates) som Rand version 0.8 för PRNG \parencite{rand_crate}. Rayon för enkel
+användning av  parallell multiprocessing \parencite{rayon_crate}. Simulation
 utgår från att man genererar matris med bestämd mängd av kortlekar. Vart varje
 kort, låt kalla dem till $x$ som följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
 Resulterande datamängden är en matris $D$ med 52 kolumner och $m$ antal rader, vart
@@ -243,7 +256,7 @@ rust is nice crazy
 
 För att bestämma $m$ värde följdes ett kriterium från ett av testerna som ska
 utföras, klassiskt poker test mer i  detalj beskriven i underrubriken
-\ref{sec:poker_test} . Till hjälps användes \parencite{nist} internätkälla, i
+\ref{sec:chi_square} . Till hjälps användes \parencite{nist} internätkälla, i
 denna nämns det att det är viktigt för chi-square approximationens trovärdighet
 att minsta kategorin ska inte vara mindre än fem teoretiska framkommande i den
 kategorin. Detta ska tillämpas till simulationen på följande sätt. Det är
@@ -255,16 +268,14 @@ som kan räknas ut på följande sätt totala antal kombinationer av kungliga
 färgstege delat med totala antal femkorts kombinationer från standardkortlek.
 $$ P(\text{Kunglig färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} =
 \frac{4}{2\,598\,960} \approx \frac{1}{649\,740} $$ $$m = P(\text{Kunglig
-färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden. en
-kunglig färgstege per 649'740 händer. För att datamängd ska uppfylla minsta
-kravet för poker testet beräknades längden av matrisens m  så att m= 649'740 5
-= 3’248’700
+färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden i simulationen
+.
 
 \subsubsection{Val av datatyp \& rådatalagring} Efter teoretiska beräkningar av
 datamängden är det viktigt att välja lämplig datatyp att representera datan i.
 Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
 betyder att minsta datatypen får användas som är 8 bit eller 1 byte långa som
-kan inehålla följande värden $\{b \in \mathbb{N},  0 \leq b \leq 255 \}$ som
+kan inehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
 överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
 använda den fundemantala datatypen som används i minnes addressen. Fördelen med
 detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
@@ -286,10 +297,36 @@ Därför att sista teoretiska delen att bestämma
 är hur många iterationer per algoritm ska genomföras. Med iterationer menas
 hur många gånger kortleken blandas följande på varandra.
 
-\subsection{Poker test}
+\subsection{statistiska tester}
+Rådata som sparades efter simulationen är laddat in som en dimensionell serie
+med hjälp av Numpy  efter det är rådatan återställt tillbaka till
+tvådimensionell matris för vidare bearbetning och analys med följande metoder:
+Klassisk Poker Test och medelvärde av korta positioner i kortleken över hela
+datamängden kalkylerad såsom avvikelser av dessa positioner. Utförligt
+beskrivning i underrubriker. 
+
+\subsubsection{Klasiskt poker test}
 till denna användes \textcite{scipy}
+Poker Test utgår till att man karaktäriserar typer av mönster till pokerhänder.
+Poker Test kan anpassas till vilken som helst sekvens av nummer 3-5 stora
+mängder. Men för att vår simulation använder vi samma nummer som pokerkort
+därför kan vi anpassa klassiska poker test var man använder alla möjliga
+pokerhänder av sekvens av 5 kort. Resultatet från karakterisering av händer
+använder man i en chi-square testet. För att göra testet rätt följde jag
+Engineering Statistics handbok (NIST 2012). Dvs för att avgöra hur många händer
+uppkom med avseende till teoretiska värdena EXPECTED vs OBSERVED värdena. sen
+jämför man chi-square resultatet till en CRITICAL värde om den värden som vi
+fick är mindre kan vi med säkerhet säga att algoritmen är slumpmässigt och vice
+versa.
 
-
+\subsubsection{StdMean testet}
+Datanmängden är utformat på sätt att kort värde är alltså dess position i
+kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
+columns korts medelvärde och standarvvikelse ska man förustpå att medelvärde
+borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
+i, och om standaravviklse i figurer är höga torn har position 0 stort varition
+av vilka kort som var där. Detta är då en indikator på en unifrom distribution
+som betyder en slumpmässigt algoritm.
 
 \printbibliography[heading=bibintoc, title={Referenser}]
 
