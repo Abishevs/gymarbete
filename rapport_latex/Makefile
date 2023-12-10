@@ -7,6 +7,7 @@ all: $(DOCNAME).pdf
 $(DOCNAME).pdf: $(DOCNAME).tex
 	pdflatex $(DOCNAME)
 	biber $(DOCNAME)
+	makeglossaries $(DOCNAME)
 	pdflatex $(DOCNAME)
 	pdflatex $(DOCNAME)
 
