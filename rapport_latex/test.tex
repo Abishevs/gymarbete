@@ -15,25 +15,26 @@
 \usepackage{color}
 \usepackage[margin=2cm]{geometry}
 \usepackage[
-	style=authoryear,
-	sorting=nty,
-	backend=biber, 
-	natbib=true]{biblatex}
+style=authoryear,
+sorting=nty,
+backend=biber, 
+natbib=true]{biblatex}
 
 \usepackage{hyperref}
 \usepackage[swedish]{cleveref}
 \usepackage{adjustbox}
+\usepackage{float}
 % \overfullrule=5pt % diognosing overflow, draws an black line 
 
 \pgfplotsset{compat=1.14}
 \lstset{ % General settings for listings
-  basicstyle=\ttfamily\small, 
-  commentstyle=\color{green},
-  keywordstyle=\color{blue},
-  stringstyle=\color{red},
-  tabsize=4,
-  showstringspaces=false,
-  breaklines=true
+basicstyle=\ttfamily\small, 
+commentstyle=\color{green},
+keywordstyle=\color{blue},
+stringstyle=\color{red},
+tabsize=4,
+showstringspaces=false,
+breaklines=true
 }
 
 % Redefine the listing name after loading cleveref
@@ -55,44 +56,43 @@
 
 \begin{document}
 \begin{titlepage}
-	\begin{minipage}[t]{0.45\textwidth}
-        \raggedright
-        NTI Gymnasiet - Nacka Strand \\
-        Teknikprogrammet-Teknikvetenskap \\
-        Gymnasiearbete 100p \\
-        HT 2023 - VT 2024
-    \end{minipage}
-    % \hfill
-    \begin{minipage}[t]{0.5\textwidth}
-        \raggedleft
-	\begin{adjustbox}{valign=t}
-        \includegraphics[width=\linewidth]{images/logo.jpg}
-    	\end{adjustbox}
-    \end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+\raggedright
+NTI Gymnasiet - Nacka Strand \\
+Teknikprogrammet-Teknikvetenskap \\
+Gymnasiearbete 100p \\
+HT 2023 - VT 2024
+\end{minipage}
+% \hfill
+\begin{minipage}[t]{0.5\textwidth}
+\raggedleft
+\begin{adjustbox}{valign=t}
+\includegraphics[width=\linewidth]{images/logo.jpg}
+\end{adjustbox}
+\end{minipage}
 
-    \vspace*{\fill} % Add vertical space to center the title
+\vspace*{\fill} % Add vertical space to center the title
 
-    \begin{center}
-	\Large\textbf{Ett nytt potentiell automatiskt kortleksblandare till
-	kortspel}\\
-        \large\textit{Proof of Concept av en kortblandare}
-    \end{center}
+\begin{center}
+\Large\textbf{En ny potentiell automatiskt kortleksblandare}\\
+\large\textit{Proof of Concept av en kortblandare}
+\end{center}
 
-    \vspace*{\fill} % Add vertical space to center the title
+\vspace*{\fill} % Add vertical space to center the title
 
-    \begin{minipage}[b]{0.45\textwidth}
-        \raggedright
-        Namn: Eduards Abisevs\\
-        E-post: eduards.abisevs@elev.ga.ntig.se\\
-        Namn: Leo Altebro\\
-        E-post: leo.altebro@elev.ga.ntig.se\\
-        Handledare: Elias
-    \end{minipage}
-    \begin{minipage}[b]{0.5\textwidth}
-	\raggedleft
-	Typsatt med \LaTeX. \\
-	Kompilerad \today.
-    \end{minipage}
+\begin{minipage}[b]{0.45\textwidth}
+\raggedright
+Namn: Eduards Abisevs\\
+E-post: eduards.abisevs@elev.ga.ntig.se\\
+Namn: Leo Altebro\\
+E-post: leo.altebro@elev.ga.ntig.se\\
+Handledare: Elias
+\end{minipage}
+\begin{minipage}[b]{0.5\textwidth}
+\raggedleft
+Typsatt med \LaTeX. \\
+Kompilerad \today.
+\end{minipage}
 \end{titlepage}
 
 % \maketitle
@@ -142,8 +142,8 @@ Utifrån slumpmässighet och effektivitet, vilken kort blandningsmetod är bäst
 en potentiell spelkortsblandare som uppfyller följande:
 \begin{itemize}
 	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
-	\item Tillräckligt snabbt med tillräckligt bra slumpmässighet- en bra
-		kompromiss
+	\item Effektivet: Utifrån mjukvaras och hårdvaras perspektiv
+        \item Kortblandnings slumpmässighet
 \end{itemize}
 \section{Teori}
 \subsection{Beräkningsteori}
@@ -172,54 +172,88 @@ det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av ob
 \parencite{Terwijn2016}.
 
 \subsection{algoritms}
-Theoretical Whats and whys angånde algorithmer
+Theoretical Whats and whys  angående algorithmer
+\subsubsection{Pile shuffle}
+\label{sec:pile_shuffle}
+Pile shuffle är en typ av kortleksblandings metod som genomförs med fysiska kort. Processen utgår att ett kort
+från kortleken läggs i en av högar. Processen försätts tills alla kort från kortleken är i sina högar. Sedan läggs ihop alla högar i ett nytt kortlek. 
 
-\subsubsection{riffle shuffle}
+
+\begin{figure}[ht]
+	\begin{center}
+		\includegraphics{images/pile_shuffle.pdf}
+	\end{center}
+	\captionsetup{justification=centering,margin=4cm}
+	\caption{Steg i processen för Pile Shuffle. Illustrationen visar de
+	iterativa stegen från den ursprungliga högen (A), genom uppdelning i
+	högar (B), temporara högar (C), omarrangering av temporara högar (D),
+	och tillbaka till en enda hög (E). Pilar indikerar riktningen för
+	blandningsprocessen.
+	}
+	\label{fig:pile_shuffle_1}
+\end{figure}
+
+\subsubsection{Riffle shuffle}
 Mest kända kortleksblandings metoden som har undersökets under många tiotals år.
 
 
-\subsection{Klassikt poker test}
-Klassiskt poker test är ett test för att avgöra slump\-mässighet i nummer 
-sekvenserna oftast använd i att testa slumptalsgeneratorer. Testet utgår till
-att 3 till 5 nummer ur sekvensen väljs och dem är katigoriserad i poker
-händer. Vanligaste examplet är som i \cref{tab:num_poker_hands}.
+\subsection{Klassiskt poker test}
+\label{sec:poker_test}
+Ett klassiskt poker test används att avgöra slump\-mässighet i numeriska 
+sekvenser, oftast för att testa slumptalsgeneratorer. Testet utförs genom
+att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju  kategorier beroende på mönstret som talen har. Mönsterna är baserade på händer i poker vilket är varför testet kallas poker test. 
+Det olika mönster som letas efter i talen visas i\cref{tab:num_poker_hands}.
 
 \begin{table}[h] % h as i here, place it here (as in source code!)
 	\centering
 	\begin{tabular}{|l|c|}
 	\hline 
-	poker hand & Mönster \\ \hline  
-	Five of a kind & AAAAA \\ \hline
-	Four of a kind & AAAAB \\ \hline
-	Full house & AAABB \\ \hline
-	Three of a kind & AAABC \\ \hline
-	Two pairs & AABBC \\ \hline
-	One pair & AABCD \\ \hline
-	All diffrent & ABCDE \\ \hline
+	Pokerhand & Mönster \\ \hline  
+	Femtal & AAAAA \\ \hline
+	Fyrtal & AAAAB \\ \hline
+	Kåk & AAABB \\ \hline
+	Tretal & AAABC \\ \hline
+	Tvåpar & AABBC \\ \hline
+	    Par & AABCD \\ \hline
+	    Högt kort & ABCDE \\ \hline
 	
 \end{tabular}
 \caption{Vanliga kategorier till poker testet}
 \label{tab:num_poker_hands}
 \end{table}
 
+ 
+
 \begin{equation*}
 \end{equation*}
 
-\subsubsection{Chi-två testet}
+\subsubsection{Chi-två-test}
 \label{sec:chi_square}
+Inom statistik används ett \textit{goodness-of-fit} test
+för att mäta hur pass väl fördelningen för den data som observerats 
+stämmer överens med fördelningen som data förväntas ha utifrån en model. 
+Karl Pearsons chi-två-test kan användas som \textit{goodness-of-fit} test, 
+det använder chitvåfördeling. I testet jämnförs ett värde 
+$\chi^2$ med ett kritiskt värde för att bestäma om den observerade
+följer den förväntade fördelningen. $\chi^2$ beräknas enligt formlen
+$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
+Där $O_i$ är observerade frekvensen för en kategori av data $i$ och $E_i$ är förväntade frekvensen för kategorin $i$ \parencite{nist}. Det kritiska värdet 
+fås av antalet frihetsgrader(kategorier - parametrar) och signifikansnivån som bestämts för testet.
+
+
 Chi-square, chi-två testing eller som den också betecknas $\chi^2$ är statistikt test
 som oftas används till att definera och beräkna slumpmässighet av bestämd sannolikhet.
 $$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
-frekvensen för kategorin $i$.
+frekvensen för kategorin $i$ \parencite{nist}.
 
 \subsection{Pseudoslumptalsgenerator (PRNG)}
 Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
 \parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
 hands val
 \parencite{mersenne_twister} men som vi sedan bytte till ChaCha för att i rust
-är det relativt svårt att implemntera och använda mersenne twister. Berätta om
-dem skillanderna som finns.
+är det relativt svårt att  implementera och använda mersenne twister. Berätta om
+dem skillnaderna som finns.
 Alltså nämn att för att det här är som et proof of concept, borde vid
 senare tillfälle användas en hårdvara PRNG och icke software PRNG.
 Men pga detta undersökning handlar mesta dels om stora mängder av data
@@ -240,10 +274,10 @@ algoritmerna som undersöktes var skrivna i programspråk Rust i försök att g�
 dem så likt verkligheten som möjligt. För insamling av data användes
 programmeringsspråket  Python 3.11 och utnyttjades bibliotek som Numpy till
 datamängd bearbetning, Scipy till statistisk analys (Chi-square) och Matplotlib
-till visualisering av resultat. Undersökningen kördes på en linux dator med
+till visualisering av resultat. Undersökningen kördes på en Linux dator med
 följande specifikationer:
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabular}{|l|p{7cm}|} 
 \hline
@@ -251,10 +285,10 @@ Typ & Specification  \\ \hline
 Processor & AMD Ryzen 5 3600 \newline 6 cores / 12 threads \newline 3.6 GHz \\ \hline
 RAM & 15.93 GB \\ \hline
 Hårdisk & KINGSTON SA400S3, 447 GB \\ \hline
-Operativsystem & \texttt{Ubuntu 22.04.3 (LTS) x86\_64, \newline linux kernel 6.2.0-36-generic} \\ \hline
+Operativsystem & \texttt{Ubuntu 22.04.3 (LTS) x86\_64, \newline Linux kernel 6.2.0-36-generic} \\ \hline
 \end{tabular}
 \caption{Linux Dator}
-\label{table: testmiljö linux dators specification}
+\label{table: testmiljö Linux dators specification}
 \end{table}
 
 \subsection{Kortblandings algoritmernas implemenation}
@@ -270,7 +304,12 @@ period innan siffrorna börjar att upprepa sig, mer exakt $2^{19937}$ \parencite
 \subsubsection{Riffle shuffle}
 Det här är riffle shuffle, vi ska nu parata om detta närmare...
 så funkar det här då?? Yeeep det gör det $\binom{55}{2} = \theta$
-\subsection{Simulation för kortblandningar och implemenation}
+
+\subsubsection{Implementation av Pile shuffle}
+Inspiration att undersöka pile shuffle kom ifrån \textcite{3DprintedLife2021},
+där pile shuffle implementerades i en 3d printat kortleksblandare.  
+
+\subsection{Simulation för kortblandningar och implementation}
 
 Simulationen utvecklades med Rust version 1.73.0 och användes bibliotek (Rust
 Crates) som Rand version 0.8 för PRNG \parencite{rand_crate}. Rayon för enkel
@@ -309,26 +348,26 @@ färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden i si
 .
 
 \subsubsection{Val av datatyp \& rådatalagring} Efter teoretiska beräkningar av
-datamängden är det viktigt att välja lämplig datatyp att representera datan i.
+datamängden är det viktigt att välja lämplig datatyp att representera data i.
 Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
 betyder att minsta datatypen får användas som är 8 bit eller 1 byte långa som
-kan inehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
+kan  innehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
 överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
-använda den fundemantala datatypen som används i minnes addressen. Fördelen med
+använda den  fundermantala datatypen som används i minnes adressen. Fördelen med
 detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
 med NumPy.
 
-Andra aspektet till varför datatypen är viktigt är att spara minnen för att det
+Andra aspekten till varför datatypen är viktigt är att spara minnen för att det
 kommer att simuleras och sparas tiotals rådata filer varje fil kommer att väga
 $161 MB$,
 detta kan räknas ut på följande sätt
 $$ \frac{\text{totala bytes}}{\text{megabyte (MB)}} = \frac{52 \times m }{1024 \times
 1024} = \frac{52 \times 3\,248\,700}{1024 \times 1024} = \frac{168\,932\,400}{1\,048\,576} \approx 161 MB 
 $$
-som det är enkelt att spara datan i binärt format för att 8 bits eller 1 byte
+som det är enkelt att spara data i binärt format för att 8 bits eller 1 byte
 är en fundamental och uniform mått i minnesadressen. Med det sagt ingen data
 bearbetning behövs och det är enkelt att ladda in denna i till exempel Python
-med numpy till statistiska testerna av rådatan
+med numpy till statistiska testerna av rådata
 
 Därför att sista teoretiska delen att bestämma
 är hur många iterationer per algoritm ska genomföras. Med iterationer menas
@@ -336,36 +375,163 @@ hur många gånger kortleken blandas följande på varandra.
 
 \subsection{statistiska tester}
 Rådata som sparades efter simulationen är laddat in som en dimensionell serie
-med hjälp av Numpy  efter det är rådatan återställt tillbaka till
+med hjälp av Numpy  efter det är rådata återställt tillbaka till
 tvådimensionell matris för vidare bearbetning och analys med följande metoder:
 Klassisk Poker Test och medelvärde av korta positioner i kortleken över hela
 datamängden kalkylerad såsom avvikelser av dessa positioner. Utförligt
 beskrivning i underrubriker. 
 
-\subsubsection{implemention av Klasiskt poker test}
-till denna användes \textcite{scipy}
-Poker Test utgår till att man karaktäriserar typer av mönster till pokerhänder.
+\subsubsection{implemention av Klassiskt poker test}
+Poker Test utgår ifrån att man karaktäriserar typer av mönster till 
+pokerhänder och kalkylerar  den absolutvärdet $\chi^2$ i detalj beskrevs
+teorin bakom $\chi^2$ testet i sektion
+\ref{sec:poker_test}. 
+
+I standardkortlek finns det 52 kort med fyra olika 
+färger (Spader, Hjärter, Ruter och klöver) och 13 valörer 
+(2, 3, 4, 5, 6, 7, 8, 9, 10, Knekt, Dam, Kung, Ess).
+Av skall att testerna utförs med standard kortleken,
+
+\begin{table}[ht] 
+\captionsetup{justification=centering,margin=4cm}
+\caption{Alla pokerhänders namn, relativt mönster och antal av kombinationer }
+\label{tab:all_poker_hands}
+	\centering
+	\begin{tabular}{|l|c|r|}
+	
+	% Header
+	\hline 
+	Pokerhand 
+	& Example på mönster 
+	& Antal kombinationer 
+	\\ \hline  
+
+	% rows
+	Kunglig färgstege 
+	& $A\spadesuit\, K\spadesuit\, Q\spadesuit\, J\spadesuit\, 10\spadesuit$
+	& 4 
+	\\ \hline
+
+	Färgstege
+	& $K\spadesuit\, Q\spadesuit\, J\spadesuit\, 10\spadesuit\, 9\spadesuit$
+	& 36 
+	\\ \hline
+
+	Fyrtal 
+	& $A\spadesuit\,A\heartsuit\,A\diamondsuit\,A\clubsuit\, K\spadesuit$ 
+	& 624 
+	\\ \hline
+
+	Kåk 
+	& $A\spadesuit\, A\heartsuit\, A\diamondsuit\, K\clubsuit\,K\spadesuit$ 
+	& 3\,744
+	\\ \hline
+
+	Färg
+	& $K\spadesuit\, Q\spadesuit\, J\spadesuit, 10\spadesuit\, 8\spadesuit$
+	& 5\,108
+	\\ \hline
+
+	Stege 
+	& $K\spadesuit\, Q\heartsuit\, J\diamondsuit\, 10\clubsuit\,9\spadesuit$ 
+	& 10\,200
+	\\ \hline
+	Triss 
+	& $A\spadesuit\, A\heartsuit\, A\diamondsuit\, K\clubsuit\, Q\spadesuit$
+	& 54\,912
+	\\ \hline
+
+	Två par 
+	& $A\spadesuit\, A\heartsuit\, K\diamondsuit\, K\clubsuit\, Q\spadesuit$
+	& 123\,552
+	\\ \hline
+
+	Ett par 
+	& $A\spadesuit\, A\heartsuit, K\diamondsuit\, Q\clubsuit\, J\spadesuit$ 
+	& 1\,098\,240 
+	\\ \hline
+
+	Högt kort
+	& $A\spadesuit\, Q\heartsuit\, J\diamondsuit\, 5\clubsuit\, 4\spadesuit$
+	& 1\,302\,540
+	\\ \hline
+
+	 
+	\multicolumn{2}{|r|}{Summan:} 
+	& 2\,598\,960 
+	\\ \hline
+\end{tabular}
+\end{table}
+
+valdes det att anpassa $\chi^2$ testet att använda alla poker händer. Matematiken
+speciellt kombinatoriken att räkna ut sannolikheter och frekvensen av alla poker\-
+händer är relativt svårt uppdrag därför addopterdes det \textcite{Drew2006} 
+uträkningar se tabell \ref{tab:all_poker_hands}. Detta medföljde med mer komplex
+karakterisering av poker\-händer än när man använder $\chi^2$ testet 
+att till example testa slumptalsgeneratorer. Valet log med att datamängderna 
+innehåller kortlekar till att göra simulationer mer  realistiska och anpassade
+till hur ett riktigt kortleksblandare skulle fungera i drift. Därför valet att
+anpassa statistiska tester till slutmål användnings sätt verkade vara ett
+logiskt steg att ta.
+
 Poker Test kan anpassas till vilken som helst sekvens av nummer 3-5 stora
 mängder. Men för att vår simulation använder vi samma nummer som pokerkort
 därför kan vi anpassa klassiska poker test var man använder alla möjliga
 pokerhänder av sekvens av 5 kort. Resultatet från karakterisering av händer
 använder man i en chi-square testet. För att göra testet rätt följde jag
-Engineering Statistics handbok (NIST 2012). Dvs för att avgöra hur många händer
+Engineering Statistics handbok (NIST 2012). Dvs för att avgöra hur många 
+händer
 uppkom med avseende till teoretiska värdena EXPECTED vs OBSERVED värdena. sen
 jämför man chi-square resultatet till en CRITICAL värde om den värden som vi
-fick är mindre kan vi med säkerhet säga att algoritmen är slumpmässigt och vice
-versa.
+fick är mindre kan vi med säkerhet säga att algoritmen är slumpmässigt och 
+vice versa.
+
+Testet utgår i två generella steg kategorisera fem kort och seden 
 
 \subsubsection{Implemention av StdMean testet}
-Datanmängden är utformat på sätt att kort värde är alltså dess position i
+Datamängden är utformat på sätt att kort värde är alltså dess position i
 kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
-columns korts medelvärde och standarvvikelse ska man förustpå att medelvärde
+columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
 borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
-i, och om standaravviklse i figurer är höga torn har position 0 stort varition
-av vilka kort som var där. Detta är då en indikator på en unifrom distribution
+i, och om standaravviklse i figuren är höga torn har position 0 stort variation
+av vilka kort som var där. Detta är då en indikator på en uniform distribution
 som betyder en slumpmässigt algoritm.
 
-\printbibliography[heading=bibintoc, title={Referenser}]
+\section{Resulat}
+Result är icke bestämt i vilken format kommer att skrivas
+Men dem kommer att innehålla figur \ref{fig:test_figure}. Antagligen mest 
+intresanta figurer kommer att visas här och alla andra Bilagas i Appendix.
+För att det kommer att vara minst 30 figurer och chi två tabeller(dem 
+kan göras i ett större tabel, antar jag)
+
+\begin{figure}[ht]
+    \begin{center}
+        \input{images/figure_1.pgf}
+    \end{center}
+    \caption{Ett test resultat från StdMean testet}
+    \label{fig:test_figure}
+\end{figure}
+
+Och tabeller över resultat ifrån $\chi^2$ testet.
+\begin{table}[h]
+	\centering
+	\caption{Test table resultat från v1 bin shuffle algoritmen}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Pokerhand & Observerad frekvens & Förväntad frekvens & $\chi^2$ \\ \hline
+		Total & 3\,248\,700 & 3\,248\,700 & 8.85 \\ \hline
+		
+	\end{tabular}
+	
+\end{table}
+
+\section{Diskussion}
+Och sista sektionen här, men den är relativt straightforward. 
+
+%\nocite{*}
+
+
+\printbibliography[heading=bibintoc, title={Bibliografi}]
 
 \appendix
 \section*{\appendixpagename} 
@@ -373,27 +539,21 @@ som betyder en slumpmässigt algoritm.
 
 \section{Github}
 \label{app:github}
-github link: https://github.com/Abishevs/gymarbete
+Länk till Github repository vart Rust och Python källkod till simulationen 
+respektive statistikst anlys är samlad, samt källkod till latex med
+vilken detta rapport hade skrivits
+länk: https://github.com/Abishevs/gymarbete
 
-\section{Källkod simulation}
+\section{Template att bifoga ett inline kod}
 \label{sec:source_code}
 \begin{lstlisting}[language=Python, caption=Python example]
 # Your source code here
 print("Hello, World!")
 \end{lstlisting}
 
-\section{Källkod algorithm 1 implemention}
+\section{Template att bigoga källkod ifrån git repo}
 \label{app:source_code2}
-\lstinputlisting[language=Rust, caption={algorithm 1 implemention},label=selection-sort, label={lst:algo_1},firstline=24, lastline=50]{../simulation_rust/src/main.rs}
-
-\section{Figure example}
-\begin{figure}[h]
-    \begin{center}
-        \input{images/figure_1.pgf}
-    \end{center}
-    \caption{A PGF figure example från \texttt{matplotlib}.}
-\end{figure}
+%\lstinputlisting[language=Rust, caption={algorithm 1 implemention},label=selection-sort, label={lst:algo_1},firstline=24, lastline=50]{../simulation_rust/src/main.rs}
 
 
 \end{document}
-
