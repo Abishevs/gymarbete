@@ -122,6 +122,7 @@ breaklines=true
 
 \section{Inledning}
 \subsection{Introduktion till ämnet}
+
 Spelbranschen är en industri som omsätter miljardbelopp och precis som alla
 industrier utvecklas den med resten av världen. Industrier över hela världen har
 som mål att hitta nya sätt att effektivisera och sänka kostnad på det arbete som
@@ -161,7 +162,7 @@ Utifrån slumpmässighet och effektivitet, vilken kort blandningsmetod är bäst
 en potentiell spelkortsblandare som uppfyller följande:
 \begin{itemize}
 	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
-	\item Effektivet: Utifrån mjukvaras och hårdvaras perspektiv
+	\item Effektivitet: Utifrån mjukvaras och hårdvaras perspektiv
         \item Kortblandnings slumpmässighet
 \end{itemize}
 
@@ -183,18 +184,18 @@ Slumpmässighet är en egenskap som anger att något sker utan klart mönster, n
 något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
 inom matematik är byggd beräknings\-teori och den delas upp i två beroende på om
 det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt
-\parencite{Terwijn2016}.
+\parencite[49-66]{Terwijn2016}.
 
-\subsection{Algoritmer}
-Theoretical Whats and whys  angående algorithmer
+\subsection{Bakgrund av blandings metoder}
+Theoretical Whats, Whys and Hows angående algorithmer.
 
 \subsubsection{Pile shuffle}
 \label{sec:pile_shuffle}
-Pile shuffle är en typ av kortleksblandings metod som genomförs med fysiska kort. Processen utgår att ett kort
-från kortleken läggs i en av högar. Processen försätts tills alla kort från kortleken är i sina högar. Sedan läggs ihop alla högar i ett nytt kortlek. 
+Pile shuffle är en kortleksblandings metod som genomförs med fysiska kort. Processen ut går på att ett kort
+från kortleken läggs i en av flera olika högar. Processen försätts tills alla kort från kortleken har flyttats till en av högarna. Sedan läggs alla högar ihop för att bilda en ny kortlek. 
 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\begin{center}
 		\includegraphics{images/pile_shuffle.pdf}
 	\end{center}
@@ -209,7 +210,22 @@ från kortleken läggs i en av högar. Processen försätts tills alla kort frå
 \end{figure}
 
 \subsubsection{Riffle shuffle}
-Mest kända kortleksblandings metoden som har undersökets under många tiotals år.
+Det finns många olika metoder att blanda kort med riffle shuffle. Undersökningar har genomförts och dem har kommit fram till att 
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics{images/rifflle-shuffle.pdf}
+	\end{center}
+	\captionsetup{justification=centering,margin=2cm}
+	\caption{Steg i processen för Riffle Shuffle. Illustrationen visar de
+	iterativa stegen från den ursprungliga högen (A), uppdelning i två
+	högar (B), infoga dem två högarna med varandra för att bilda en ny hög.
+        Pilar indikerar riktningen för blandningsprocessen.}
+	\label{fig:riffle_shuffle_1}
+\end{figure}
+
+\subsubsection{Spinny thingie shuffle}
+
 
 
 \subsection{Klassiskt poker test}
@@ -219,8 +235,10 @@ sekvenser, oftast för att testa slumptalsgeneratorer. Testet utförs genom
 att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju  kategorier beroende på mönstret som talen har, mönsterna är baserade på händer i poker vilket är varför testet kallas poker test \parencite{Abdel2014}. 
 Det olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 
-\begin{table}[h] % h as i here, place it here (as in source code!)
+\begin{table}[H] % h as i here, place it here (as in source code!)
 	\centering
+        \caption{Vanliga kategorier till poker test}
+        \label{tab:num_poker_hands}
 	\begin{tabular}{|l|c|}
 	\hline 
 	Pokerhand & Mönster \\ \hline  
@@ -233,15 +251,14 @@ Det olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 	Högt kort & ABCDE \\ \hline
 	
 \end{tabular}
-\caption{Vanliga kategorier till poker test}
-\label{tab:num_poker_hands}
+
 \end{table}
 
  Antalet mönster i varje kategori räknas för att få en distribution, som
  då jämförs med en distribution som stämmer överens med sannolikheten
- att få dem olika mönster. Om det total antalet mönster är $n$ och
+ att få dem olika mönsterna. Om det total antalet mönster är $n$ och
  sanolikheten för en pokerhand $i$ är $p_i$, så borde antalet mönster i
- den kategori vara $$o_i = p_i * n$$ Där $o_i$ är antalet mönster som
+ den kategori vara $$e_i = p_i * n$$ Där $o_i$ är antalet mönster som
  borde matcha pokerhand $i$. För att bestäma om resultaten kan komma
  från en rättvis kortlek så jämnförs de resultat som fåtts av att plocka
  ut nummer mot de resultat som fås av sannolikhet via ett chi-två-test.
@@ -257,19 +274,23 @@ med fördelningen som data förväntas ha utifrån en model. Karl Pearsons
 chi-två-test kan användas som \textit{goodness-of-fit} test, det
 använder chitvåfördeling. I testet jämnförs ett värde $\chi^2$ med ett
 kritiskt värde för att bestäma om den observerade följer den förväntade
-fördelningen. $\chi^2$ beräknas enligt formlen $$ \chi^2 = \sum_{i=1}^k
-\frac{(O_i - E_i)^2}{E_i}$$ Där $O_i$ är observerade frekvensen för en
-kategori av data $i$ och $E_i$ är förväntade frekvensen för kategorin
-$i$ \parencite{nist}. Det kritiska värdet fås av antalet
-frihetsgrader(kategorier - parametrar) och signifikansnivån som bestämts
-för testet.
+fördelningen. $\chi^2$ beräknas enligt formlen
+$$\chi^2 = \sum_{i=1}^k\frac{(O_i - E_i)^2}{E_i}$$
+Där $O_i$ är observerade frekvensen för en kategori av data $i$ och $E_i$
+är förväntade frekvensen för kategorin $i$ \parencite{nist}.
+Det kritiska värdet fås av antalet frihetsgrader(kategorier - parametrar)
+och signifikansnivån som bestämts för testet.
 
+Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för små. Det rekommenderas att $O_i$ inte är mindre en 5.
 
 %Chi-square, chi-två testing eller som den också betecknas $\chi^2$ är statistikt test
 %som oftas används till att definera och beräkna slumpmässighet av bestämd sannolikhet.
 %$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 %Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
 %frekvensen för kategorin $i$ \parencite{nist}.
+\subsection{StdMean-testet}
+Förklara logiken till stanardavvikelse och medelvärdet
+i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
 
 \subsection{Pseudoslumptalsgenerator (PRNG)}
 Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
@@ -289,6 +310,30 @@ senare tillfälle användas en hårdvara PRNG och icke software PRNG.
 Men på grund av detta undersökning handlar mesta dels om stora mängder av data
 simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
 skapa simulationer!
+\subsection{Programmerings verktyg}
+Python är en objektorienterad, dynamiskt typad programmerings språk med
+fokus på läsbarhet med en enkelt syntax som tillför att det finns stora
+mängder av biblioteker (samling av färdig kod).
+% \parencite{python}. 
+Python används ofta i statiskt och numeriskt analys på grund av dens
+läsbarhet och lätt använding. På grund av Python är skriven i
+programmeringspråket C finns det också tilgännliga C API's med andra
+betecknat CPython. Dem gör det möjligt att skapa program som är snabba
+och effektiva i stora datamängd analys. Dessa egenskaper har medföljt
+början av skapande av tiotals avancerade numeriska och
+bibliotek som är snabba i utförande och minskar antal radar av kod som
+behövs att skrivas i färdigt program. Dem bibliotek som är speciellt
+intressenta i detta undersökning är NumPy, Matplotlib, SciPy och Numba.
+NumPy som är snabbt i vektoriserad aritmetik och SciPy som har många
+inbygga statistiska tester som $\chi^2$-testet \parencite{numpy, scipy}.
+
+Rust är ett programmeringsspråk som fokuserar på
+minnessäkerhet, parallellism och minneseffektivitet. Rust är känt för
+sina avancerade funktioner som ägarskapssystemet (ownership), vilket
+hjälper till att förhindra minnesläckor och tillåter säker
+minneshantering utan en skräpsamlare (garbage collector)
+\parencite{rust}. Detta har ökad populäritet i användning av Rust i
+inbyggda system som ett motkandidat till c/c++. 
 
 \section{Metod} 
 Metoden kan indelas i tre huvudområderna
@@ -306,7 +351,7 @@ kortleks\-blandare under sin livscykel.
 
 
 \subsection{Testmiljö} 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|p{7cm}|} 
 \hline
@@ -340,13 +385,7 @@ Linux dator med specifikationerna listade i tabell \ref{tab:linux_env}.
 
 \subsection{Simulation för kortblandningar och implementation}
 Simulation och blandnings algoritmerna implementerades i programmerings
-språk Rust. Rust är ett programmeringsspråk som fokuserar på
-minnessäkerhet, parallellism och minneseffektivitet. Rust är känt för
-sina avancerade funktioner som ägarskapssystemet (ownership), vilket
-hjälper till att förhindra minnesläckor och tillåter säker
-minneshantering utan en skräpsamlare (garbage collector)
-\parencite{rust}. Detta har ökad populäritet i användning av Rust i
-inbyggda system som ett motkandidat till c/c++. 
+språk Rust.
 %Rådata ifrån simulationer sparades. Sedan lästes in i Python program.  
 
 Programmet utvecklades med Rust version 1.73.0 och användes bibliotek
@@ -418,44 +457,63 @@ Då tanken var att  algoritmerna skulle potentiellt användas i ett fysiskt
 inbäddad system fanns det vissa  kriterier som algoritmerna skulle följa: det
 skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
 
-\subsubsection{Riffle shuffle}
-Det här är riffle shuffle, vi ska nu parata om detta närmare...
-så funkar det här då?? Yeeep det gör det $\binom{55}{2} = \theta$
+\subsubsection{Implemenation av Riffle shuffle}
+Mekaniskt och mjukvarumässigt enklaste versionen av riffle shuffle är perfekt riffle shuffle
 
 \subsubsection{Implementation av Pile shuffle}
-Inspiration att undersöka pile shuffle kom ifrån \textcite{3DprintedLife2021},
+Inspiration att undersöka pile shuffle kom ifrån
+
+\textcite{3DprintedLife2021},
 där pile shuffle implementerades i en 3d printat kortleksblandare.  
 
-\subsection{statistiska tester}
-Statistiska tester utfördes med Python version 3.11. Python är en
-objektorienterad, dynamiskt typad programmerings språk med fokus på
-läsbarhet \parencite{python}. Python används ofta i statiskt analys på
-grund av dens läsbarhet och lätt använding därför finns det många
-avancerade bibliotek (samling av färdig kod) till numerisk analys som
-NumPy som är snabbt i vektoriserad aritmetik och SciPy som har många
-inbygga statistiska tester som $\chi^2$-testet \parencite{numpy, scipy}.
-Därför valdes det att utföra statistika tester som Poker test och
-StdMean testet i Python 3. Pga att avgörande av slumpmässighet är domän
-specifikt och rent matematiskt komplex som kräver högre förstålse i
-matematiska området inom statistiska. Därför valdes det bort att utföra
-metoder som entropi, ApEn \parencite{ApEn}. Från andra sidan är
-simulation enklare att utföra och analysera data med avseende på
-förväntade frekvensen ($\chi^2$-testet) samt enklare statistiska koncept
-som mediana och standardavviklse (StdMean-testet).    
+
+\subsection{Statistiska tester}
+Detta sektion handlar om hur statistiska metoder som Poker test och 
+StdMean-testet implementerades för att analyser slumpmässighet av valda
+och simulerade algoritmerna.
+
+Statistiska tester utfördes med Python version 3.11. Python valdes på
+grund av dens rika utbud av bibliotek, speciellt inom
+veten\-skaplig data\-behandling och data\-analys. Därför valdes det
+att utföra statistika tester som Poker test och StdMean-testet i Python.
+En till perspektiv till varför Python valdes är att analys och avgörande
+av slumpmässighet är fundementalt komplex process icke räknebart, men det som
+underlättar framtagande av resulat är visuella grafer och tabeller. I
+denna studie saknas det erfaranhet och kunskaper inom högre grads
+områden inom matematiken som statistikt analys. Detta betyder att rent
+matematiska modeller till avgörande av slumpmässighet som entropi eller
+ApEn var för komplexa att förstå \parencite{ApEn}. Därför valdes dem
+bort på grund av bristande kunksper. Men för att avgörande av
+slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
+det högre förstålse i matematatikens området inom statistik.  Istället
+valdes det att fokuser på normal distrabition av kortlekar och kort.
+Dessutom implementerades det metoder som är visuellt representativa.
+
+% Från
+% andra sidan är simulation enklare att utföra och analysera data med
+% avseende på förväntade frekvensen ($\chi^2$-testet) samt enklare
+% statistiska koncept som mediana och standardavviklse (StdMean-testet).
+
+Med detta sagt Pythons Matplotlib bibliotek underlättar processen av
+graf ritanade tillsammans i en symbious relation med NumPy som har styrka i
+datamängd represention och vektoriserad data\-bearbetning. Utfördes det
+mindre matematisk komplicerade tester med fokus på storleken av
+datamägderna som ger en god överblick av slumpmässighet av dem olika
+blandnings algoritmerna som simulerades. På avseende på ett teoretiskt
+perfekt blandnings resulat för samtliga metoder.
 
 % För statistikst analys av data användes programmeringsspråket Python
 % 3.11 och utnyttjades bibliotek som Numpy till datamängd bearbetning,
 % Scipy till statistisk analys och Matplotlib till visualisering av
 % resultat. 
 
+% \subsubsection*{Bearbetning av simulerade rådata}
 Rådata som sparades efter simulationen är laddat in som en dimensionell
 \gls{enarray} med hjälp av Numpy  efter det är rådata återställt tillbaka till
-tvådimensionell matris för vidare bearbetning och analys med följande
-metoder: Klassisk Poker Test \ref{sec:poker_test} och medelvärde av
-korta positioner i kortleken över hela datamängden kalkylerad såsom
-avvikelser av dessa positioner. Utförligt beskrivning i underrubriker. 
+tvådimensionell matris för vidare analys. Statiska tester delar
+datamängden.
 
-\subsubsection{implemention av Klassiskt poker test}
+\subsubsection{Implemention av Klassiskt poker test}
 Poker Test utgår ifrån att man karaktäriserar typer av mönster till 
 pokerhänder och kalkylerar  den absolutvärdet $\chi^2$ i detalj beskrevs
 teorin bakom $\chi^2$ testet i sektion
@@ -482,7 +540,7 @@ Av skall att testerna utförs med standard kortleken,
 	\\ \hline  
 
 	% rows
-	Kunglig färgstege 
+	Royal flush 
 	& $A\spadesuit\, K\spadesuit\, Q\spadesuit\, J\spadesuit\, 10\spadesuit$
 	& 4 
 	\\ \hline
