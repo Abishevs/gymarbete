@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\randomness",
+    "\\simulation_rust",
+    "\\simulation_rust\\src"
   ],
-  "SelectedNode": "\\C:\\Users\\leo.altebro\\Source\\Repos\\gymarbete",
+  "SelectedNode": "\\simulation_rust\\src\\main.rs",
   "PreviewInSolutionExplorer": false
 }

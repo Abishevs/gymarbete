@@ -20,6 +20,8 @@ trait ShufflingAlgorithm: Send + Sync {
 
 struct Algorithm1;
 struct Algorithm2;
+struct FixedRiffle;
+struct GSRRiffle;
 
 impl  ShufflingAlgorithm for Algorithm1{
     fn name(&self) -> &str {
@@ -49,7 +51,6 @@ impl  ShufflingAlgorithm for Algorithm1{
 
 }
 
-
 impl  ShufflingAlgorithm for Algorithm2{
     fn name(&self) -> &str {
         "v2_bin_shuffle"
@@ -76,6 +77,109 @@ impl  ShufflingAlgorithm for Algorithm2{
         }
     }
 
+}
+
+impl ShufflingAlgorithm for FixedRiffle{
+    fn name(&self) -> &str {
+        "fixed_riffle_shuffle"
+    }
+
+    fn shuffle(&self, deck: &mut Deck){
+        let mut deck_vec: Vec<Card> = Vec::with_capacity(52);
+        let mut deck_half_1: Vec<Card> = Vec::new();
+        let mut deck_half_2: Vec<Card> = Vec::new();
+
+        for _n in 0..26 {
+            // put the fisrt half of the deck in a vec
+            // deck_half_1.push(deck.iter().nth(0));
+            if let Some(&card) = deck.iter().nth(0) {
+                deck_half_1.push(card);
+            }
+        }
+
+        for _n in 0..=26 {
+            // put secound half of the deck in a vec
+            if let Some(&card) = deck.iter().nth(0) {
+                deck_half_1.push(card);
+            }
+        }
+
+        let mut take_from_half_1 = true;
+       
+        while !deck_half_1.is_empty() && !deck_half_2.is_empty(){
+            if take_from_half_1 {
+                if let Some(card) = deck_half_1.pop() {
+                    deck_vec.insert(0, card);
+                    take_from_half_1 = false;
+                }
+            } else {
+                if let Some(card) = deck_half_2.pop() {
+                    deck_vec.insert(0, card);
+                    take_from_half_1 = true;
+                }
+            }
+        }
+
+        let mut deck_position = 0;
+
+        for card in deck_vec {
+            deck[deck_position] = card;
+            deck_position += 1;
+        }
+    }
+}
+
+impl ShufflingAlgorithm for GSRRiffle{
+    fn name(&self) -> &str {
+        "gsr_riffle_shuffle"
+    }
+
+    fn shuffle(&self, deck: &mut Deck){
+        let mut deck_vec: Vec<Card> = Vec::with_capacity(52);
+        let mut deck_half_1: Vec<Card> = Vec::new();
+        let mut deck_half_2: Vec<Card> = Vec::new();
+
+        for _n in 0..26 {
+            // put the fisrt half of the deck in a vec
+            // deck_half_1.push(deck.iter().nth(0));
+            if let Some(&card) = deck.iter().nth(0) {
+                deck_half_1.push(card);
+            }
+        }
+        println!("{:?}", deck_half_1);
+
+        for _n in 0..=26 {
+            // put secound half of the deck in a vec
+            if let Some(&card) = deck.iter().nth(0) {
+                deck_half_1.push(card);
+            }
+        }
+
+        let mut rng = rand::thread_rng();
+        let mut rand_id;
+        
+        while !deck_half_1.is_empty() && !deck_half_2.is_empty() {
+            rand_id = rng.gen_range(0.0..=1.0);
+            if rand_id <= (deck_half_1.len() as f64)/((deck_half_1.len() as f64)+(deck_half_2.len() as f64)){
+                if let Some(card) = deck_half_1.pop(){
+                    deck_vec.insert(0, card);
+                }   
+            }
+            else {
+                if let Some(card) = deck_half_2.pop() {
+                    deck_vec.insert(0, card);
+                }
+            }
+        }
+        println!("{:?}", deck_vec);
+
+        let mut deck_position = 0;
+        
+        for card in deck_vec {
+            deck[deck_position] = card;
+            deck_position += 1;
+        }
+    }
 }
 
 fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> Dataset{
@@ -111,6 +215,8 @@ fn main() {
         // Box::new(Algorithm1),
         Box::new(Algorithm2),
         // Box::new(Algorithm2),
+        Box::new(FixedRiffle),
+        Box::new(GSRRiffle),
     ];
 
     // each algo simulation runs in parallel
