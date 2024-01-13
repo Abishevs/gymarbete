@@ -106,13 +106,13 @@ impl ShufflingAlgorithm for FixedRiffle{
 struct WheelSpiny;
 impl  ShufflingAlgorithm for WheelSpiny {
     fn name(&self) -> &str {
-        "v1_wheel_spinie"
+        "wheel_spiny"
     }
 
     fn shuffle(&self, deck: &mut Deck) {
         let mut rng = rand::thread_rng();
 
-        // Run riffle shuffle to create random indexs.
+        // Run fisher yates shuffle to create random indexs.
         let mut random_indexs = (0..52).collect::<Vec<_>>();
         random_indexs.shuffle(&mut rng);
         
@@ -216,6 +216,14 @@ fn write_to_file(dataset: Dataset, file_name: &String) -> std::io::Result<()>{
     Ok(())
 }
 
+// #!derive(debug)
+#[derive(Debug)]
+struct BenchmarkStats {
+    algorithm_name: String,
+    iteration: i32,
+    duration: Duration,
+}
+
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
         Box::new(PileShuffle),
@@ -225,38 +233,52 @@ fn main() {
     ];
 
     const ITERATIONS:i32 = 10;
-    
-    // each algo simulation runs in parallel
-    algorithms.par_iter().for_each(|algorithm| {
-        // i will be used as runs
-        let mut total_duration = Duration::new(0, 0);
-        for runs in 1..=ITERATIONS {
 
-            let (dataset, time) = generate_dataset(algorithm, runs);
+    // each algo simulation runs in parallel
+    let results: Vec<BenchmarkStats> = algorithms.par_iter()
+        .flat_map(|algorithm| {
+
+        (1..=ITERATIONS).into_par_iter().map(move |runs| {
+
+            let (dataset,  time) = generate_dataset(algorithm, runs);
+            let each_run_stats = BenchmarkStats {
+                algorithm_name: algorithm.name().to_string(),
+                iteration: runs,
+                duration: time,
+
+            };
+
             let file_name = format!("{}-{}.bin", algorithm.name(), runs);
             match write_to_file(dataset, &file_name) {
                 Ok(_) => {
                     println!("File {} written succesfully", file_name); 
-                    total_duration += time;
                     
                 },
                 Err(e) => eprintln!("Error writing to file {}: {}", file_name, e),
 
             }
-        }
-        let average_duration = total_duration / ITERATIONS as u32;
+            
+            return each_run_stats;
+        })
 
-        let file_name = format!("{}_avg_time.txt", algorithm.name());
-        match File::create(&file_name) {
-            Ok(mut file) => {
-                if let Err(e) = writeln!(file, "{}", average_duration.as_nanos()) {
-                    eprintln!("Error writing average duration to file {}: {}", file_name, e);
-                }
-            },
-            Err(e) => {
-                eprintln!("Error creating file {}: {}", file_name, e);
-            }
-        }
+    }).collect();
 
-    });
+    let file_name = "benchmark_stats.csv";
+    let mut file = File::create(file_name).expect("Error creating file");
+
+    // Write headers
+    writeln!(file, "Alogorithm, Iteration, Duration(ns)").expect("Error writing headers");
+    
+
+    // Write each row
+    for row in results {
+        println!("{:?}", row);
+        writeln!(file, 
+                 "{}, {}, {}",
+                 row.algorithm_name,
+                 row.iteration,
+                 row.duration.as_nanos(),
+                 ).expect("Error writing rows");
+    }
+
 }
