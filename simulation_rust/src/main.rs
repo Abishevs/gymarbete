@@ -1,9 +1,10 @@
 extern crate rand;
 extern crate rayon;
 use rayon::prelude::*;
+use rand::Rng;
 use std::fs::File;
 use std::io::Write;
-use rand::Rng;
+use std::time::{Duration, Instant};
 
 const DATASET_LENGHT:usize = 3_248_700;
 const DECK_SIZE:usize = 52;
@@ -18,22 +19,29 @@ trait ShufflingAlgorithm: Send + Sync {
     fn shuffle(&self, deck: &mut Deck);
 }
 
-
-struct Algorithm1;
-impl  ShufflingAlgorithm for Algorithm1{
+struct PileShuffle;
+impl  ShufflingAlgorithm for PileShuffle {
     fn name(&self) -> &str {
-        "v1_bin_shuffle"
+        "SOC_pile_shuffle"
     }
 
     fn shuffle(&self, deck: &mut Deck){
-        const BIN_COUNTS:usize = 6;
+        const BIN_COUNTS:usize = 8;
+        const MAX_CARDS_PER_BIN:usize = 10;
+
+
         let mut bins: Vec<Vec<Card>> = vec![Vec::new(); BIN_COUNTS];
 
         let mut rng = rand::thread_rng();
         for &card in deck.iter() {
-            let random_bin = rng.gen_range(0..BIN_COUNTS);
-            // put the cards in random bins
-            bins[random_bin].push(card);
+            loop {
+                let random_bin = rng.gen_range(0..BIN_COUNTS);
+                if bins[random_bin].len() < MAX_CARDS_PER_BIN { 
+                    // put the cards in random bins
+                    bins[random_bin].push(card);
+                    break;
+                }
+            }
         }
 
         let mut deck_position = 0;
@@ -141,7 +149,7 @@ impl ShufflingAlgorithm for GSRRiffle{
     }
 }
 
-fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> Dataset{
+fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> (Dataset, Duration) {
     let mut dataset: Dataset = vec![[0; DECK_SIZE]; DATASET_LENGHT];
     for deck in dataset.iter_mut() { 
         // build out deck
@@ -150,13 +158,20 @@ fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> Data
         }
     }
 
+    let mut total_duration = Duration::new(0, 0);
     for _ in 1..=runs{
         for deck in dataset.iter_mut() {
+            let start = Instant::now();
             algorithm.shuffle(deck);
+            let duration = start.elapsed();
+
+            total_duration += duration;
+
         }
     }
 
-    dataset
+    let avg_duration = total_duration / (DATASET_LENGHT as u32 * runs as u32);
+    (dataset, avg_duration)
 }
 
 fn write_to_file(dataset: Dataset, file_name: &String) -> std::io::Result<()>{
@@ -170,22 +185,42 @@ fn write_to_file(dataset: Dataset, file_name: &String) -> std::io::Result<()>{
 
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
-        // Box::new(Algorithm2),
-        Box::new(Algorithm1),
+        Box::new(PileShuffle),
         Box::new(FixedRiffle),
         Box::new(GSRRiffle),
     ];
 
+    const ITERATIONS:i32 = 10;
+    
     // each algo simulation runs in parallel
     algorithms.par_iter().for_each(|algorithm| {
         // i will be used as runs
-        for runs in 1..=10 {
-            let dataset: Dataset = generate_dataset(algorithm, runs);
+        let mut total_duration = Duration::new(0, 0);
+        for runs in 1..=ITERATIONS {
+
+            let (dataset, time) = generate_dataset(algorithm, runs);
             let file_name = format!("{}-{}.bin", algorithm.name(), runs);
             match write_to_file(dataset, &file_name) {
-                Ok(_) => println!("File {} written succesfully", file_name),
+                Ok(_) => {
+                    println!("File {} written succesfully", file_name); 
+                    total_duration += time;
+                    
+                },
                 Err(e) => eprintln!("Error writing to file {}: {}", file_name, e),
 
+            }
+        }
+        let average_duration = total_duration / ITERATIONS as u32;
+
+        let file_name = format!("{}_avg_time.txt", algorithm.name());
+        match File::create(&file_name) {
+            Ok(mut file) => {
+                if let Err(e) = writeln!(file, "{}", average_duration.as_nanos()) {
+                    eprintln!("Error writing average duration to file {}: {}", file_name, e);
+                }
+            },
+            Err(e) => {
+                eprintln!("Error creating file {}: {}", file_name, e);
             }
         }
 
