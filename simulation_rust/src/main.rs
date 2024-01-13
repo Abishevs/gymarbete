@@ -23,7 +23,7 @@ trait ShufflingAlgorithm: Send + Sync {
 struct PileShuffle;
 impl  ShufflingAlgorithm for PileShuffle {
     fn name(&self) -> &str {
-        "SOC_pile_shuffle"
+        "soc_pile_shuffle"
     }
 
     fn shuffle(&self, deck: &mut Deck){
@@ -57,6 +57,51 @@ impl  ShufflingAlgorithm for PileShuffle {
 
 }
 
+struct FixedRiffle;
+impl ShufflingAlgorithm for FixedRiffle{
+    fn name(&self) -> &str {
+        "fixed_riffle_shuffle"
+    }
+
+    fn shuffle(&self, deck: &mut Deck){
+        let mut deck_vec: Vec<Card> = Vec::with_capacity(52);
+        let mut deck_half_1: Vec<Card> = Vec::new();
+        let mut deck_half_2: Vec<Card> = Vec::new();
+
+        let mut card_count = 1;
+        for &card in deck.iter() {
+            if card_count <= (deck.len() / 2) {
+                deck_half_1.push(card);
+                card_count += 1;
+            } else {
+                deck_half_2.push(card);
+            }
+        }
+
+        let mut take_from_half_1 = true;
+        while !deck_half_1.is_empty() && !deck_half_2.is_empty(){
+            if take_from_half_1 {
+                if let Some(card) = deck_half_1.pop() {
+                    deck_vec.insert(0, card);
+                    take_from_half_1 = false;
+                }
+            } else {
+                if let Some(card) = deck_half_2.pop() {
+                    deck_vec.insert(0, card);
+                    take_from_half_1 = true;
+                }
+            }
+
+        }
+
+        let mut deck_position = 0;
+        for card in deck_vec {
+            deck[deck_position] = card;
+            deck_position += 1;
+        }
+        // println!("{:?}", deck);
+    }
+}
 
 struct WheelSpiny;
 impl  ShufflingAlgorithm for WheelSpiny {
@@ -85,8 +130,56 @@ impl  ShufflingAlgorithm for WheelSpiny {
             deck[deck_position] = card;
             deck_position += 1;
         }
+
+        // println!("{:?}", deck);
+    }
+}
+
+struct GSRRiffle;
+impl ShufflingAlgorithm for GSRRiffle{
+    fn name(&self) -> &str {
+        "gsr_riffle_shuffle"
     }
 
+    fn shuffle(&self, deck: &mut Deck){
+        let mut deck_vec: Vec<Card> = Vec::with_capacity(52);
+        let mut deck_half_1: Vec<Card> = Vec::new();
+        let mut deck_half_2: Vec<Card> = Vec::new();
+        
+        let mut card_count = 1;
+        for &card in deck.iter() {
+            if card_count <= (deck.len() / 2) {
+                deck_half_1.push(card);
+                card_count += 1;
+            } else {
+                deck_half_2.push(card);
+            }
+        }
+
+        let mut rng = rand::thread_rng();
+        let mut rand_id;
+        while !deck_half_1.is_empty() && !deck_half_2.is_empty() {
+            rand_id = rng.gen_range(0.0..=1.0);
+            if rand_id <= (deck_half_1.len() as f64)/((deck_half_1.len() as f64)+(deck_half_2.len() as f64)){
+                if let Some(card) = deck_half_1.pop(){
+                    deck_vec.insert(0, card);
+                }   
+
+            } else {
+                if let Some(card) = deck_half_2.pop() {
+                    deck_vec.insert(0, card);
+                }
+            }
+        }
+
+        let mut deck_position = 0;
+        for card in deck_vec {
+            deck[deck_position] = card;
+            deck_position += 1;
+        }
+
+        // println!("{:?}", deck);
+    }
 }
 
 fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> (Dataset, Duration) {
@@ -116,7 +209,6 @@ fn generate_dataset(algorithm: &Box<dyn ShufflingAlgorithm>, runs: i32 ) -> (Dat
 
 fn write_to_file(dataset: Dataset, file_name: &String) -> std::io::Result<()>{
     let flatten_dataset: Vec<Card> = dataset.into_iter().flatten().collect();
-
     let mut file = File::create(&file_name)?;
 
     file.write_all(&flatten_dataset)?;
@@ -128,6 +220,8 @@ fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
         Box::new(PileShuffle),
         Box::new(WheelSpiny),
+        Box::new(FixedRiffle),
+        Box::new(GSRRiffle),
     ];
 
     const ITERATIONS:i32 = 10;
@@ -137,6 +231,7 @@ fn main() {
         // i will be used as runs
         let mut total_duration = Duration::new(0, 0);
         for runs in 1..=ITERATIONS {
+
             let (dataset, time) = generate_dataset(algorithm, runs);
             let file_name = format!("{}-{}.bin", algorithm.name(), runs);
             match write_to_file(dataset, &file_name) {
