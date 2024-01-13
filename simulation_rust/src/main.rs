@@ -1,5 +1,6 @@
 extern crate rand;
 extern crate rayon;
+use rand::seq::SliceRandom;
 use rayon::prelude::*;
 use rand::Rng;
 use std::fs::File;
@@ -22,7 +23,7 @@ trait ShufflingAlgorithm: Send + Sync {
 struct PileShuffle;
 impl  ShufflingAlgorithm for PileShuffle {
     fn name(&self) -> &str {
-        "SOC_pile_shuffle"
+        "soc_pile_shuffle"
     }
 
     fn shuffle(&self, deck: &mut Deck){
@@ -90,10 +91,42 @@ impl ShufflingAlgorithm for FixedRiffle{
                     take_from_half_1 = true;
                 }
             }
+
         }
 
         let mut deck_position = 0;
         for card in deck_vec {
+            deck[deck_position] = card;
+            deck_position += 1;
+        }
+        // println!("{:?}", deck);
+    }
+}
+
+struct WheelSpiny;
+impl  ShufflingAlgorithm for WheelSpiny {
+    fn name(&self) -> &str {
+        "v1_wheel_spinie"
+    }
+
+    fn shuffle(&self, deck: &mut Deck) {
+        let mut rng = rand::thread_rng();
+
+        // Run riffle shuffle to create random indexs.
+        let mut random_indexs = (0..52).collect::<Vec<_>>();
+        random_indexs.shuffle(&mut rng);
+        
+        let mut wheel_slots: Vec<Card> = vec![0; 52];
+        // map index to an slot on the wheel.
+        for &card in deck.iter() {
+            if let Some(index) = random_indexs.pop() {
+                wheel_slots[index] = card;
+            }
+        }
+
+        // take all the slots from the beginning and place them in it's new deck.
+        let mut deck_position = 0;
+        for card in wheel_slots {
             deck[deck_position] = card;
             deck_position += 1;
         }
@@ -186,6 +219,7 @@ fn write_to_file(dataset: Dataset, file_name: &String) -> std::io::Result<()>{
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
         Box::new(PileShuffle),
+        Box::new(WheelSpiny),
         Box::new(FixedRiffle),
         Box::new(GSRRiffle),
     ];
