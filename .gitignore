@@ -1,9 +1,15 @@
+# editors
+.vs/
+.vscode/
+*.csproj.user
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.npy
 *.bin
+randomness-sim
 
 # C extensions
 *.so
