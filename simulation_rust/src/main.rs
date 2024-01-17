@@ -20,8 +20,8 @@ trait ShufflingAlgorithm: Send + Sync {
     fn shuffle(&self, deck: &mut Deck);
 }
 
-struct PileShuffle;
-impl  ShufflingAlgorithm for PileShuffle {
+struct SOCPileShuffle;
+impl  ShufflingAlgorithm for SOCPileShuffle {
     fn name(&self) -> &str {
         "soc_pile_shuffle"
     }
@@ -30,7 +30,6 @@ impl  ShufflingAlgorithm for PileShuffle {
         const BIN_COUNTS:usize = 8;
         const MAX_CARDS_PER_BIN:usize = 10;
 
-
         let mut bins: Vec<Vec<Card>> = vec![Vec::new(); BIN_COUNTS];
 
         let mut rng = rand::thread_rng();
@@ -38,6 +37,42 @@ impl  ShufflingAlgorithm for PileShuffle {
             loop {
                 let random_bin = rng.gen_range(0..BIN_COUNTS);
                 if bins[random_bin].len() < MAX_CARDS_PER_BIN { 
+                    // put the cards in random bins
+                    bins[random_bin].push(card);
+                    break;
+                }
+            }
+        }
+
+        let mut deck_position = 0;
+        // Reassemble the deck
+        for bin in bins {
+            for card in bin {
+                deck[deck_position] = card;
+                deck_position += 1;
+            }
+        }
+    }
+
+}
+
+struct SIXPileShuffle;
+impl  ShufflingAlgorithm for SIXPileShuffle {
+    fn name(&self) -> &str {
+        "six_pile_shuffle"
+    }
+
+    fn shuffle(&self, deck: &mut Deck){
+        const BIN_COUNTS:usize = 6;
+        const MAX_CARDS_PER_BIN:usize = 9;
+
+        let mut bins: Vec<Vec<Card>> = vec![Vec::new(); BIN_COUNTS];
+
+        let mut rng = rand::thread_rng();
+        for &card in deck.iter() {
+            loop {
+                let random_bin = rng.gen_range(0..BIN_COUNTS);
+                if bins[random_bin].len() <= MAX_CARDS_PER_BIN { 
                     // put the cards in random bins
                     bins[random_bin].push(card);
                     break;
@@ -226,13 +261,14 @@ struct BenchmarkStats {
 
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
-        // Box::new(PileShuffle),
-        // Box::new(WheelSpiny),
+        Box::new(SOCPileShuffle),
+        Box::new(SIXPileShuffle),
+        Box::new(WheelSpiny),
         Box::new(FixedRiffle),
         Box::new(GSRRiffle),
     ];
 
-    const ITERATIONS:i32 = 10;
+    const ITERATIONS:i32 = 15;
 
     // each algo simulation runs in parallel
     let results: Vec<BenchmarkStats> = algorithms.par_iter()
