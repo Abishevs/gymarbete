@@ -226,8 +226,8 @@ struct BenchmarkStats {
 
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
-        // Box::new(PileShuffle),
-        // Box::new(WheelSpiny),
+        Box::new(PileShuffle),
+        Box::new(WheelSpiny),
         Box::new(FixedRiffle),
         Box::new(GSRRiffle),
     ];
