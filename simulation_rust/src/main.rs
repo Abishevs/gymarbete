@@ -79,7 +79,7 @@ impl ShufflingAlgorithm for FixedRiffle{
         }
 
         let mut take_from_half_1 = true;
-        while !deck_half_1.is_empty() && !deck_half_2.is_empty(){
+        while !deck_half_1.is_empty() || !deck_half_2.is_empty(){
             if take_from_half_1 {
                 if let Some(card) = deck_half_1.pop() {
                     deck_vec.insert(0, card);
@@ -158,7 +158,7 @@ impl ShufflingAlgorithm for GSRRiffle{
 
         let mut rng = rand::thread_rng();
         let mut rand_id;
-        while !deck_half_1.is_empty() && !deck_half_2.is_empty() {
+        while !deck_half_1.is_empty() || !deck_half_2.is_empty() {
             rand_id = rng.gen_range(0.0..=1.0);
             if rand_id <= (deck_half_1.len() as f64)/((deck_half_1.len() as f64)+(deck_half_2.len() as f64)){
                 if let Some(card) = deck_half_1.pop(){
@@ -226,8 +226,8 @@ struct BenchmarkStats {
 
 fn main() {
     let algorithms: Vec<Box<dyn ShufflingAlgorithm>> = vec![
-        Box::new(PileShuffle),
-        Box::new(WheelSpiny),
+        // Box::new(PileShuffle),
+        // Box::new(WheelSpiny),
         Box::new(FixedRiffle),
         Box::new(GSRRiffle),
     ];

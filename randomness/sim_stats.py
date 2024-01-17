@@ -390,7 +390,8 @@ class StdMean(BaseTest):
             'pgf.rcfonts': False,
         })
 
-        # call it before each run. to clear prev memory.
+        # # call it before each run. to clear prev memory.
+        # plt.figure(figsize=(9, 4.8))
         plt.figure()
         self.logger.info(f"Started std_mean test...")
 
@@ -404,9 +405,12 @@ class StdMean(BaseTest):
         self.logger.info(f"Added values to the table")
 
         plt.errorbar(range(52), mean_pos, yerr=std_pos,fmt='o')
-        plt.xlabel('Korts position')
-        plt.ylabel('Positons medelvärde')
-        plt.title(f"Algortim: {self.shuffle_name}\niterationer: {self.shuffle_runs}\nDatamängds längd: {len(self.shuffled_decks)}")
+        labels = ['' if x % 2 != 0 else str(x) for x in range(52) ]
+        plt.xticks(range(52),labels, rotation=45)
+        plt.tick_params(axis='x',which='major', labelsize=7)
+        plt.xlabel('Position av Kort')
+        plt.ylabel('Medelvärde av Position')
+        # plt.title(f"Algoritm: {self.shuffle_name}\niterationer: {self.shuffle_runs}\nDatamängds längd: {len(self.shuffled_decks)}")
 
         plt.savefig(self.result_file_name, facecolor='w', bbox_inches="tight",
                     pad_inches=0.3, transparent=True)
