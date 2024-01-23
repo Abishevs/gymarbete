@@ -21,6 +21,7 @@ sorting=nty,
 backend=biber, 
 natbib=true]{biblatex}
 
+
 \usepackage{hyperref}
 \usepackage[swedish]{cleveref}
 \usepackage{adjustbox}
@@ -87,7 +88,7 @@ breaklines=true
 	\begin{minipage}[t]{0.5\textwidth}
 		\raggedleft
 		\begin{adjustbox}{valign=t}
-			\includegraphics[width=\linewidth]{images/logo.jpg}
+			\includegraphics[width=\linewidth]{images/logo.png}
 		\end{adjustbox}
 	\end{minipage}
 
@@ -126,10 +127,10 @@ breaklines=true
 Spelbranschen är en industri som omsätter miljardbelopp och precis som alla
 industrier utvecklas den med resten av världen. Industrier över hela världen har
 som mål att hitta nya sätt att effektivisera och sänka kostnad på det arbete som
-utförs för att bedriva vinst och spelbranschen har följt denna långvariga trend
+utförs för att bedriva vinst, och spelbranschen har följt denna långvariga trend
 med till exempel online casinon. Inom spelbranschen är kortspel vanligt
-förekommande, att försöka automatisera dem är ett logiskt steg att ta, men för
-en så stor industri vill man vara extra säker på att allt utförs på bästa sätt.
+förekommande, att försöka automatisera dem är därför ett logiskt steg att ta, men för
+en stor industri vill man vara extra säker på att allt utförs på bästa sätt.
 Alla sätt att blanda kort är nämligen inte lika bra, vilken sorteringsmetod som
 används kan ha påverkan på resultatet. Teknologins inflytande inom spelbranschen
 ökar kraftigt, de största delarna av branschen bedrivs mer och mer av maskiner
@@ -149,7 +150,7 @@ skulle fungera i verkligheten. Med resultaten förväntas variationen i
 slumpmässighet för olika blandningsmetoder kunna visas upp samt kunna använda de
 resultaten för att komma fram till den hypotetiskt definitiva maskinen, något
 som är viktigt då spelbranschen handlar mycket om chans. Det är därför viktigt
-att se till så allt funkar på bästa sätt. I den här vetenskapliga rapporten
+att se till att allt funkar på bästa sätt. I den här vetenskapliga rapporten
 kommer en jämförelse av hur effektivt framtagna blandningsmetoder kan fungera i
 en hypotetisk blandningsmaskin att utföras. Samtidigt som man kan utforska hur
 en dator kan göra slumpmässiga sekvenser på ett effektivt sätt med tanken att
@@ -158,7 +159,7 @@ spelbranschen är en stor industri som handlar mycket om tur, att se till att de
 slumpmässiga resultaten är framtagna på bästa möjliga sätt är en essentiell del.
 Vi söker med hjälp av data svaret på frågan:
 
-Utifrån slumpmässighet och effektivitet, vilken kort blandningsmetod är bäst för
+Utifrån slumpmässighet och effektivitet, vilken kortblandningsmetod är bäst för
 en potentiell spelkortsblandare som uppfyller följande:
 \begin{itemize}
 	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
@@ -173,14 +174,14 @@ en potentiell spelkortsblandare som uppfyller följande:
 Beräkningsteori är en del av matematik vars syfte är grundat i hur och om
 problem kan bli lösta på olika beräkningssätt. Beräkningsteori har flera olika
 grenar. En gren handlar om vad som går att bevisa inom matematik angående om
-nummer och funktioner är beräknelig eller inte. Med beräknelig menas något som
+nummer och funktioner är beräkneliga eller inte. Med beräknelig menas något som
 kan beräknas, det vill säga värderas, uppfattas eller förutses, när det kommer
 till matematik syftar det på att bestämma något via matematiska
 modeller/processer, alltså att kalkylera.
 
 \subsection{Slumpmässighet}
 
-Slumpmässighet är en egenskap som anger att något sker utan klart mönster, när
+Slumpmässighet är en egenskap som anger att något sker utan klart mönster. När
 något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
 inom matematik är byggd beräknings\-teori och den delas upp i två beroende på om
 det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt
@@ -191,8 +192,11 @@ Theoretical Whats, Whys and Hows angående algorithmer.
 
 \subsubsection{Pile shuffle}
 \label{sec:pile_shuffle}
-Pile shuffle är en kortleksblandings metod som genomförs med fysiska kort. Processen ut går på att ett kort
-från kortleken läggs i en av flera olika högar. Processen försätts tills alla kort från kortleken har flyttats till en av högarna. Sedan läggs alla högar ihop för att bilda en ny kortlek. 
+Pile shuffle är en kortleksblandingsmetod som genomförs med fysiska
+kort. Processen utgår från att ett kort
+från kortleken läggs i en av flera olika högar. Processen försätter
+tills alla kort från kortleken har flyttats till en av högarna. Sedan
+läggs  alla högar ihop i en ny kortlek. 
 
 
 \begin{figure}[H]
@@ -210,6 +214,7 @@ från kortleken läggs i en av flera olika högar. Processen försätts tills al
 \end{figure}
 
 \subsubsection{Riffle shuffle}
+% Riffle Shuffle är den mest kända kortleksblandningsmetoden.
 Det finns många olika metoder att blanda kort med riffle shuffle. Undersökningar har genomförts och dem har kommit fram till att 
 
 \begin{figure}[H]
@@ -232,8 +237,9 @@ Det finns många olika metoder att blanda kort med riffle shuffle. Undersökning
 \label{sec:poker_test}
 Ett klassiskt poker test används att avgöra slump\-mässighet i numeriska 
 sekvenser, oftast för att testa slumptalsgeneratorer. Testet utförs genom
-att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju  kategorier beroende på mönstret som talen har, mönsterna är baserade på händer i poker vilket är varför testet kallas poker test \parencite{Abdel2014}. 
-Det olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
+att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju
+kategorier beroende på mönstret som talen har.  Mönstren är baserade på händer i poker vilket är varför testet kallas poker test \parencite{Abdel2014}. 
+De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 
 \begin{table}[H] % h as i here, place it here (as in source code!)
 	\centering
@@ -253,15 +259,14 @@ Det olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 \end{tabular}
 
 \end{table}
-
  Antalet mönster i varje kategori räknas för att få en distribution, som
  då jämförs med en distribution som stämmer överens med sannolikheten
- att få dem olika mönsterna. Om det total antalet mönster är $n$ och
- sanolikheten för en pokerhand $i$ är $p_i$, så borde antalet mönster i
+ att få de olika mönstren. Om det total antalet mönster är $n$ och
+ sanolikheten för en pokerhand $i$ är $p_i$, därför borde antalet mönster i
  den kategori vara $$e_i = p_i * n$$ Där $o_i$ är antalet mönster som
  borde matcha pokerhand $i$. För att bestäma om resultaten kan komma
- från en rättvis kortlek så jämnförs de resultat som fåtts av att plocka
- ut nummer mot de resultat som fås av sannolikhet via ett chi-två-test.
+ från en rättvis kortlek jämnförs de resultat som fåtts av att plocka
+ ut nummer mot de resultat som fås av sannolikheten via ett chi-två-test.
 
 \begin{equation*}
 \end{equation*}
@@ -271,10 +276,10 @@ Det olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 Inom statistik används ett \textit{goodness-of-fit} test för att mäta
 hur pass väl fördelningen för den data som observerats stämmer överens
 med fördelningen som data förväntas ha utifrån en model. Karl Pearsons
-chi-två-test kan användas som \textit{goodness-of-fit} test, det
+chi-två-test kan användas som \textit{goodness-of-fit} test. Det
 använder chitvåfördeling. I testet jämnförs ett värde $\chi^2$ med ett
 kritiskt värde för att bestäma om den observerade följer den förväntade
-fördelningen. $\chi^2$ beräknas enligt formlen
+fördelningen. $\chi^2$ beräknas enligt formeln
 $$\chi^2 = \sum_{i=1}^k\frac{(O_i - E_i)^2}{E_i}$$
 Där $O_i$ är observerade frekvensen för en kategori av data $i$ och $E_i$
 är förväntade frekvensen för kategorin $i$ \parencite{nist}.
@@ -336,7 +341,7 @@ minneshantering utan en skräpsamlare (garbage collector)
 inbyggda system som ett motkandidat till c/c++. 
 
 \section{Metod} 
-Metoden kan indelas i tre huvudområderna
+Metoden kan indelas i tre huvudområden:
 1) framtagande av algoritmerna. 
 2) simulation av kortlkesblandningar. 
 3) statistiska tester av rådata.
@@ -351,6 +356,13 @@ kortleks\-blandare under sin livscykel.
 
 
 \subsection{Testmiljö} 
+I valet av testmiljö prioriterades operativsystemets kompatabilitet av
+de utvecklingsverktyg som användes. Linux valdes på grund av dess
+robusta stöd för programmeringsmiljöer och breda stöd för
+mjukvaruutvecklingsverktyg. Dessutom erbjuder Linux bättre kontroll
+över systems\-resurer, vilket är avgörande för att uppnå följdriktiga
+och till\-för\-litliga testresulat. Därför kördes undersökningen på en
+ dator med  Linux som operativsystem med specifikationerna listade i Tabell \ref{tab:linux_env}.
 \begin{table}[H]
 \centering
 \begin{tabular}{|l|p{7cm}|} 
@@ -358,19 +370,13 @@ kortleks\-blandare under sin livscykel.
 Typ & Specification  \\ \hline
 Processor & AMD Ryzen 5 3600 \newline 6 cores / 12 threads \newline 3.6 GHz \\ \hline
 RAM & 15.93 GB \\ \hline
-Hårdisk & KINGSTON SA400S3, 447 GB \\ \hline
-Operativsystem & \texttt{Ubuntu 22.04.3 (LTS) x86\_64, \newline Linux kernel 6.2.0-36-generic} \\ \hline
+Hårddisk & KINGSTON SA400S3, 447 GB \\ \hline
+Operativsystem & \texttt{Arch Linux x86\_64, \newline Linux kernel
+6.6.9-arch1-1} \\ \hline
 \end{tabular}
 \caption{Linux Dator}
 \label{tab:linux_env}
 \end{table}
-I valet av testmiljö prioriterades operativsystemets kompatabilitet av
-dem utvecklingsverktyg som användes. Linux valdes på grund av dess
-robusta stöd för programmeringsmiljöer och bred stöd för
-mjukvaruutvecklingsverktyg. Dessutom erbjuder Linux bättre kontroll
-över systems\-resurer. Vilket är avgörande för att uppnå följdriktiga
-och till\-för\-litliga testresulat. Därför kördes undersökningen på en
-Linux dator med specifikationerna listade i tabell \ref{tab:linux_env}.
 
 % Datan insamlades från digitalt simulation på olika kortblandningsmetoder
 % i Rust version 1.73. De algoritmerna som undersöktes var skrivna i
@@ -384,7 +390,7 @@ Linux dator med specifikationerna listade i tabell \ref{tab:linux_env}.
 
 
 \subsection{Simulation för kortblandningar och implementation}
-Simulation och blandnings algoritmerna implementerades i programmerings
+Simulations- och blandningsalgoritmerna implementerades i programmerings
 språk Rust.
 %Rådata ifrån simulationer sparades. Sedan lästes in i Python program.  
 
@@ -407,15 +413,15 @@ rader, vart $m$ värde visar hur många kortlekar det finns i datamängden.
 		x_{m,0} & x_{m,1} & x_{m,2} & \cdots & x_{m,51}
 	\end{bmatrix}
 \end{equation*}
-
-För att bestämma $m$ värde följdes ett kriterium från ett av testerna som ska
-utföras, klassiskt poker test mer i  detalj beskriven i underrubriken
-\ref{sec:chi_square} . Till hjälps användes \parencite{nist} internätkälla, i
+För att bestämma värdet för $m$ följdes ett kriterium ifrån klassiskt
+poker test (mer i  detalj beskriven i underrubriken
+\ref{sec:chi_square}).
+Till hjälps användes NIST internätkälla   i
 denna nämns det att det är viktigt för chi-square approximationens trovärdighet
 att minsta kategorin ska inte vara mindre än fem teoretiska framkommande i den
-kategorin. Detta ska tillämpas till simulationen på följande sätt. Det är
+kategorin \parencite{nist}. Därför är det
 viktigt att hitta den minsta kategorin som kan förekomma. I poker är den mest
-sällsynta pokerhand kungliga färgstege (Royal Flush) som kan räknas ut på
+sällsynta pokerhanden den kungliga färgstegen (Royal Flush) som kan räknas ut på
 följande sätt antal av alla kortkombinationer med fem kort. $\binom{52}{5} =
 2\,598\,960$ Kungliga färgstege finns det fyra  kombinationer av i kortleken
 som kan räknas ut på följande sätt totala antal kombinationer av kungliga
@@ -425,13 +431,14 @@ $$ P(\text{Kunglig färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} =
 färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden i simulationen
 .
 
-\subsubsection{Val av datatyp \& rådatalagring} Efter teoretiska beräkningar av
-datamängden är det viktigt att välja lämplig datatyp att representera data i.
+\subsubsection{Val av datatyp \& rådatalagring} 
+Efter teoretiska beräkningar av
+datamängden är det viktigt att välja en lämplig datatyp att representera data i.
 Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
-betyder att minsta datatypen får användas som är 8 bit eller 1 byte långa som
+betyder att den minsta datatypen som får användas är 8 bit eller 1 byte långa som
 kan  innehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
 överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
-använda den  fundermantala datatypen som används i minnes adressen. Fördelen med
+använda den  fundermantala datatypen som används i minnesadressen. Fördelen med
 detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
 med NumPy.
 
@@ -443,8 +450,8 @@ $$ \frac{\text{totala bytes}}{\text{megabyte (MB)}} = \frac{52 \times m }{1024 \
 1024} = \frac{52 \times 3\,248\,700}{1024 \times 1024} = \frac{168\,932\,400}{1\,048\,576} \approx 161 MB 
 $$
 som det är enkelt att spara data i binärt format för att 8 bits eller 1 byte
-är en fundamental och uniform mått i minnesadressen. Med det sagt ingen data
-bearbetning behövs och det är enkelt att ladda in denna i till exempel Python
+är ett fundamentalt och uniformt mått i minnesadressen. Med det sagt, ingen
+bearbetning av data behövs och det är enkelt att ladda in denna i till exempel Python
 med numpy till statistiska testerna av rådata
 
 Därför att sista teoretiska delen att bestämma
@@ -454,7 +461,7 @@ hur många gånger kortleken blandas följande på varandra.
 \subsection{Kortblandings algoritmernas implemenation}
 
 Då tanken var att  algoritmerna skulle potentiellt användas i ett fysiskt
-inbäddad system fanns det vissa  kriterier som algoritmerna skulle följa: det
+inbäddat system fanns det vissa  kriterier som algoritmerna skulle följa: det
 skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
 
 \subsubsection{Implemenation av Riffle shuffle}
