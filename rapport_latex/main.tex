@@ -6,6 +6,7 @@
 \usepackage{csquotes} % Recommended
 \usepackage{graphicx}
 \usepackage{caption}
+\graphicspath{ {images/} }
 \usepackage[titletoc]{appendix}
 \usepackage{listings, listings-rust}
 \usepackage{longtable}
@@ -15,12 +16,12 @@
 \usepackage{pgfplots}
 \usepackage{color}
 \usepackage[margin=2cm]{geometry}
+\usepackage{subcaption}
 \usepackage[
 style=authoryear,
 sorting=nty,
 backend=biber, 
 natbib=true]{biblatex}
-
 
 \usepackage{hyperref}
 \usepackage[swedish]{cleveref}
@@ -28,22 +29,13 @@ natbib=true]{biblatex}
 \usepackage{float}
 % \overfullrule=5pt % diognosing overflow, draws an black line 
 
+
+
 \makeglossaries
 \glstoctrue
-\newglossaryentry{enarray}{
-  name=array,
-  description={En serie av värdena, där varje värde kallas för element}
-}
+\input{ordlista}
 
-\newglossaryentry{2darray}{
-  name=tvådimensionell array,
-  description={En indexerad samling av data i en serie}
-}
 
-\newglossaryentry{matris}{
-  name=matris,
-  description={Data i två dimensioner som en tabell}
-}
 
 \pgfplotsset{compat=1.14}
 \lstset{ % General settings for listings
@@ -61,6 +53,7 @@ breaklines=true
 % \crefname{lstinputlisting}{kodlistning}{kodlistningar} % For cleveref, singular and plural
 % \Crefname{lstinputlisting}{Kodlistning}{Kodlistningar} % For cleveref, singular and plural, capitalized
 
+
 \addbibresource{references.bib}
 \renewcommand{\appendixpagename}{Bilagor}
 \renewcommand*{\bibfont}{\small} % Adjust font size
@@ -73,57 +66,27 @@ breaklines=true
 
 \renewcommand*\contentsname{Innehåll}
 
-
-
 \begin{document}
-\begin{titlepage}
-	\begin{minipage}[t]{0.45\textwidth}
-		\raggedright
-		NTI Gymnasiet - Nacka Strand \\
-		Teknikprogrammet-Teknikvetenskap \\
-		Gymnasiearbete 100p \\
-		HT 2023 - VT 2024
-	\end{minipage}
-	% \hfill
-	\begin{minipage}[t]{0.5\textwidth}
-		\raggedleft
-		\begin{adjustbox}{valign=t}
-			\includegraphics[width=\linewidth]{images/logo.png}
-		\end{adjustbox}
-	\end{minipage}
 
-	\vspace*{\fill} % Add vertical space to center the title
+\input{titlepage}
 
-	\begin{center}
-		\Large\textbf{En ny potentiell automatiskt kortleksblandare}\\
-		\large\textit{Proof of Concept av en kortblandare}
-	\end{center}
-
-	\vspace*{\fill} % Add vertical space to center the title
-
-	\begin{minipage}[b]{0.45\textwidth}
-		\raggedright
-		Namn: Eduards Abisevs\\
-		E-post: eduards.abisevs@elev.ga.ntig.se\\
-		Namn: Leo Altebro\\
-		E-post: leo.altebro@elev.ga.ntig.se\\
-		Handledare: Elias
-	\end{minipage}
-	\begin{minipage}[b]{0.5\textwidth}
-		\raggedleft
-		Typsatt med \LaTeX. \\
-		Kompilerad \today.
-	\end{minipage}
-\end{titlepage}
-
-% \maketitle
+\begin{center}
+    \large
+    \vspace{0.9cm}
+    \textbf{Abstract}
+    \vspace{0.9cm}
+\end{center}
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 \tableofcontents
 \newpage
 
+\glsaddall[] % adds all ordlist.tex entries
+\printglossaries % Ordlista printas här
+\newpage
+
 \section{Inledning}
 \subsection{Introduktion till ämnet}
-
 Spelbranschen är en industri som omsätter miljardbelopp och precis som alla
 industrier utvecklas den med resten av världen. Industrier över hela världen har
 som mål att hitta nya sätt att effektivisera och sänka kostnad på det arbete som
@@ -229,8 +192,7 @@ Det finns många olika metoder att blanda kort med riffle shuffle. Undersökning
 	\label{fig:riffle_shuffle_1}
 \end{figure}
 
-\subsubsection{Spinny thingie shuffle}
-
+\subsubsection{Inblick i en professionell kortlkesblandare}
 
 
 \subsection{Klassiskt poker test}
@@ -254,11 +216,12 @@ De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 	Tretal & AAABC \\ \hline
 	Tvåpar & AABBC \\ \hline
 	Par & AABCD \\ \hline
-	Högt kort & ABCDE \\ \hline
+    Ingen mönster & ABCDE \\ \hline
 	
 \end{tabular}
 
 \end{table}
+
  Antalet mönster i varje kategori räknas för att få en distribution, som
  då jämförs med en distribution som stämmer överens med sannolikheten
  att få de olika mönstren. Om det total antalet mönster är $n$ och
@@ -317,9 +280,8 @@ simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
 skapa simulationer!
 \subsection{Programmerings verktyg}
 Python är en objektorienterad, dynamiskt typad programmerings språk med
-fokus på läsbarhet med en enkelt syntax som tillför att det finns stora
+fokus på läsbarhet med en enkelt syntax \parencite{python}. Detta  som tillför att det finns stora
 mängder av biblioteker (samling av färdig kod).
-% \parencite{python}. 
 Python används ofta i statiskt och numeriskt analys på grund av dens
 läsbarhet och lätt använding. På grund av Python är skriven i
 programmeringspråket C finns det också tilgännliga C API's med andra
@@ -527,11 +489,12 @@ perfekt blandnings resulat för samtliga metoder.
 % Scipy till statistisk analys och Matplotlib till visualisering av
 % resultat. 
 
-% \subsubsection*{Bearbetning av simulerade rådata}
 Rådata som sparades efter simulationen är laddat in som en dimensionell
 \gls{enarray} med hjälp av Numpy  efter det är rådata återställt tillbaka till
-tvådimensionell matris för vidare analys. Statiska tester delar
-datamängden.
+tvådimensionell matris för vidare bearbetning och analys med följande
+metoder: Klassisk Poker Test \ref{sec:poker_test} och medelvärde av
+korta positioner i kortleken över hela datamängden kalkylerad såsom
+avvikelser av dessa positioner. Utförligt beskrivning i underrubriker. 
 
 \subsubsection{Implemention av Klassiskt poker test}
 Poker Test utgår ifrån att man karaktäriserar typer av mönster till 
@@ -650,47 +613,150 @@ i, och om standaravviklse i figuren är höga torn har position 0 stort variatio
 av vilka kort som var där. Detta är då en indikator på en uniform distribution
 som betyder en slumpmässigt algoritm.
 
-\section{Resulat}
-Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. Dem
-viktigaste av simulationerna plockades ut och deras resultat presenteras
-här. Resultat av poker test samt medelvärde för algoritmers ledtid
-presenteras i tabeller. Resultaten för medelvärde av dem positioner ett
-kort har varit på och standardavvikelsen presenteras via punktdiagram.
-Vilket kort som en punkt i diagrammet representerar ges av punktes
-position på x-axeln, medelvärde är avläst från punktens position på
-y-axeln och standardavvikelse är givet av linjen som går genom punkten. 
+\section{Resultat}
+% Result är icke bestämt i vilken format kommer att skrivas
+% Men dem kommer att innehålla figur \ref{fig:test_figure}. Antagligen mest 
+%intresanta figurer kommer att visas här och alla andra Bilagas i Appendix.
+%För att det kommer att vara minst 30 figurer och chi två tabeller(dem 
+%kan göras i ett större tabell, antar jag)
 
-Resultate som inspekterades först blev dem algoritmerna vilka poker test
-resultate var signifikant. 
+Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. 15 simulationer per algoritm för att jämföra samma algoritm med olika antal iterationer, varje algoritm har alltså resultat som motsvarar utförelse med iterationer 1-15. Dem viktigaste av simulationerna plockades ut och deras resultat presenteras här. Resultat av poker test samt medelvärde för algoritmers ledtid presenteras i tabeller. Resultaten för medelvärde av dem positioner ett kort har varit på och standardavvikelsen presenteras via punktdiagram. Vilket kort som en punkt i diagrammet representerar ges av punktes position på x-axeln, medelvärde är avläst från punktens position på y-axeln och standardavvikelse är givet av linjen som går genom punkten. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \begin{center}
-        \input{images/figure_1.pgf}
+        \includegraphics{gsr_riffle_shuffle-1}
     \end{center}
-    \caption{Ett test resultat från StdMean testet}
+    \caption{STDMean-testests resultat för GSR- Riffle Shuffle med en iteration}
     \label{fig:test_figure}
 \end{figure}
 
-Och tabeller över resultat ifrån $\chi^2$ testet.
-\begin{table}[h]
+\begin{table}[H]
 	\centering
-	\caption{Test table resultat från v1 bin shuffle algoritmen}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
-		Pokerhand & Observerad frekvens & Förväntad frekvens & $\chi^2$ \\ \hline
-		Total & 3\,248\,700 & 3\,248\,700 & 8.85 \\ \hline
-		
+	\caption{Resultat från Klassikt Poker test och ledtidens medelvärde för en blandning från simulationen.}
+        \begin{subtable}[h]{0.45\textwidth}
+        \caption{GSR- Riffle Shuffle}
+        \begin{tabular}{c|c|c|c}
+		%\hline
+		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
+        \\ \hline \hline
+        3 & 233941.28 & 0.0 & 1681
+        \\ \hline \hline
+        4 & 7077.30 & 0.0 & 1687 
+        \\ \hline
+        5 & 449.67 & 3.38 & 1660 
+        \\ \hline
+        6 & 34.46 & 7.42 & 1667
+        \\ \hline
+        7 & 6.03 & 0.74 & 1654 
+        \\ \hline
+        8 & 8.50 & 0.48 & 1642 
+        \\ \hline
+        9 & 19.64 & 0.020 & 1582 
+        \\ \hline
+        10 & 8.88 & 0.45 & 1495 
+        \\ \hline
+        11 & 16.19 & 0.063 & 1432 
 	\end{tabular}
-	
+        \end{subtable}
+        \hfill
+	\begin{subtable}[h]{0.45\textwidth}
+        \caption{SOC- Pile Shuffle}
+        \centering
+        \begin{tabular}{c|c|c|c}
+		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
+
+        \\ \hline \hline
+        4 & 7077.30 & 0.0 & 1687 
+        \\ \hline
+        5 & 449.67 & 3.38 & 1660 
+        \\ \hline
+        6 & 34.46 & 7.42 & 1667
+        \\ \hline
+        7 & 6.03 & 0.74 & 1654 
+        \\ \hline
+        8 & 8.50 & 0.48 & 1642 
+        \\ \hline
+        9 & 19.64 & 0.020 & 1582 
+        \\ \hline
+        10 & 8.88 & 0.45 & 1495 
+        \\ \hline
+        11 & 16.19 & 0.063 & 1432 
+	\end{tabular}
+        \end{subtable}
+        
+        \vspace{2em}
+        
+        \begin{subtable}[h]{0.45\textwidth}
+        \caption{SOC- Pile Shuffle}
+        \centering
+        \begin{tabular}{c|c|c|c}
+		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
+
+        \\ \hline \hline
+        4 & 7077.30 & 0.0 & 1687 
+        \\ \hline
+        5 & 449.67 & 3.38 & 1660 
+        \\ \hline
+        6 & 34.46 & 7.42 & 1667
+        \\ \hline
+        7 & 6.03 & 0.74 & 1654 
+        \\ \hline
+        8 & 8.50 & 0.48 & 1642 
+        \\ \hline
+        9 & 19.64 & 0.020 & 1582 
+        \\ \hline
+        10 & 8.88 & 0.45 & 1495 
+        \\ \hline
+        11 & 16.19 & 0.063 & 1432 
+	\end{tabular}
+        \end{subtable}
+        \hfill
+        \begin{subtable}[h]{0.45\textwidth}
+        \caption{SOC- Pile Shuffle}
+        \centering
+        \begin{tabular}{c|c|c|c}
+		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
+
+        \\ \hline \hline
+        4 & 7077.30 & 0.0 & 1687 
+        \\ \hline
+        5 & 449.67 & 3.38 & 1660 
+        \\ \hline
+        6 & 34.46 & 7.42 & 1667
+        \\ \hline
+        7 & 6.03 & 0.74 & 1654 
+        \\ \hline
+        8 & 8.50 & 0.48 & 1642 
+        \\ \hline
+        9 & 19.64 & 0.020 & 1582 
+        \\ \hline
+        10 & 8.88 & 0.45 & 1495 
+        \\ \hline
+        11 & 16.19 & 0.063 & 1432 
+	\end{tabular}
+        \end{subtable}
+        
 \end{table}
+
 
 \section{Diskussion}
 Och sista sektionen här, men den är relativt straightforward. 
 
+\subsection{Den mest passande blandningsmetoden}
+
+\subsubsection{Preliminär gallring}
+
+\subsubsection{Jämförelse av blandningsmetoderna}
+
+
+\subsection{Felkällor och Källkritik}
+
+
+\subsection{Slutsats}
+
+
 %\nocite{*}
 
-\printglossaries
-\newpage
 
 \printbibliography[heading=bibintoc, title={Bibliografi}]
 \newpage
