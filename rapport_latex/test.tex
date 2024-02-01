@@ -342,11 +342,16 @@ inbyggda system som ett motkandidat till c/c++.
 
 \section{Metod} 
 Metoden kan indelas i tre huvudområden:
-1) framtagande av algoritmerna. 
-2) simulation av kortlkesblandningar. 
-3) statistiska tester av rådata.
-Målet är att besvara en av frågestälningens kriterium "Kortblandnings
-slumpmässighet ". Därför valdes det att utföra ett kvantitiv undersökning med
+(1) framtagande av algoritmerna. 
+(2) simulation av kortlkesblandningar. 
+(3) statistiska tester på rådata.
+% Målet är att besvara en av frågestälningens kriterium "Kortblandnings
+% slumpmässighet ".
+Simulationen omfatar ett kvantitativ undersökning för att minimera
+naturligt slumpmässighet med statiska metoder som Klassikt poker test
+med resultat som chi-två-fördelning och ett närmare undersökning av hur
+mycket varierar kort i olika positioner i kortleken.
+Detta metod valdes för att utföra ett kvantitiv undersökning med
 hjälp av simulation och statistiska tester. Simulation valdes till för
 att generera stora mängder av kortlkesblandningar med målet att
 simulationen (processmässight) skulle vara snarlik ett fysiskt
@@ -391,18 +396,26 @@ Operativsystem & \texttt{Arch Linux x86\_64, \newline Linux kernel
 
 \subsection{Simulation för kortblandningar och implementation}
 Simulations- och blandningsalgoritmerna implementerades i programmerings
-språk Rust.
-%Rådata ifrån simulationer sparades. Sedan lästes in i Python program.  
+språk Rust version 1.73.0. 
+% och användes bibliotek (Rust Crates) som Rand
+% version 0.8 för PRNG \parencite{rand_crate}.
+% Rayon för enkel användning av  parallell multiprocessing
+% \parencite{rayon_crate}.
+Simulationen avspeglar hur ett fysiskt
+kortleksblandare skulle fungera. För att göra att alla simulationer har
+ett och samma utgångspunkt valdes det att börja med ett fabriksordning
+för en standard 52-kortlek. Där korten är ordnade efter sitt färg i
+sekvensiell ordning två till ess (utan jokrarna). Matematiskt kan en
+sådan kortlek beskrivas som mängden $\{x \in \mathbb{N},  0 \leq x \leq 51
+\}$, där $x$ representerar en enskild kort. 
 
-Programmet utvecklades med Rust version 1.73.0 och användes bibliotek
-(Rust Crates) som Rand version 0.8 för PRNG \parencite{rand_crate}.
-Rayon för enkel användning av  parallell multiprocessing
-\parencite{rayon_crate}. Simulation utgår från att man genererar
-tvådimmensionella array, detta kan matematikst beskrivas som matris med
-bestämd mängd av kortlekar. Vart varje kort, låt kalla dem till $x$ som
-följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
-Resulterande datamängden är en \gls{matris} $D$ med 52 kolumner och $m$ antal
-rader, vart $m$ värde visar hur många kortlekar det finns i datamängden.
+
+% Simulation utgår från att man genererar
+% tvådimmensionella array, detta kan matematikst beskrivas som matris med
+% bestämd mängd av kortlekar. Vart varje kort, låt kalla dem till $x$ som
+% följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
+% Resulterande datamängden är en \gls{matris} $D$ med 52 kolumner och $m$ antal
+% rader, vart $m$ värde visar hur många kortlekar det finns i datamängden.
 
 \begin{equation*}
 	D = \begin{bmatrix}
@@ -638,11 +651,17 @@ av vilka kort som var där. Detta är då en indikator på en uniform distributi
 som betyder en slumpmässigt algoritm.
 
 \section{Resulat}
-Result är icke bestämt i vilken format kommer att skrivas
-Men dem kommer att innehålla figur \ref{fig:test_figure}. Antagligen mest 
-intresanta figurer kommer att visas här och alla andra Bilagas i Appendix.
-För att det kommer att vara minst 30 figurer och chi två tabeller(dem 
-kan göras i ett större tabel, antar jag)
+Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. Dem
+viktigaste av simulationerna plockades ut och deras resultat presenteras
+här. Resultat av poker test samt medelvärde för algoritmers ledtid
+presenteras i tabeller. Resultaten för medelvärde av dem positioner ett
+kort har varit på och standardavvikelsen presenteras via punktdiagram.
+Vilket kort som en punkt i diagrammet representerar ges av punktes
+position på x-axeln, medelvärde är avläst från punktens position på
+y-axeln och standardavvikelse är givet av linjen som går genom punkten. 
+
+Resultate som inspekterades först blev dem algoritmerna vilka poker test
+resultate var signifikant. 
 
 \begin{figure}[ht]
     \begin{center}
