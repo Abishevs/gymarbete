@@ -1,6 +1,6 @@
 # Makefile for LaTeX documents
 
-DOCNAME = test
+DOCNAME = main
 
 all: $(DOCNAME).pdf
 
