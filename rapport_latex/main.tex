@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{csquotes} % Recommended
 \usepackage{graphicx}
+\usepackage{wrapfig}
 \usepackage{caption}
 \graphicspath{ {images/} }
 \usepackage[titletoc]{appendix}
@@ -17,42 +18,36 @@
 \usepackage{color}
 \usepackage[margin=2cm]{geometry}
 \usepackage{subcaption}
-\usepackage[
-style=authoryear,
-sorting=nty,
-backend=biber, 
-natbib=true]{biblatex}
+\usepackage[style=authoryear,
+	    sorting=nty,
+ 	    backend=biber, 
+            natbib=true]{biblatex}
 
 \usepackage{hyperref}
 \usepackage[swedish]{cleveref}
 \usepackage{adjustbox}
 \usepackage{float}
-% \overfullrule=5pt % diognosing overflow, draws an black line 
-
-
+% \overfullrule=5pt % for diognosing overflow, draws an black line 
 
 \makeglossaries
 \glstoctrue
 \input{ordlista}
 
-
-
 \pgfplotsset{compat=1.14}
 \lstset{ % General settings for listings
-basicstyle=\ttfamily\small, 
-commentstyle=\color{green},
-keywordstyle=\color{blue},
-stringstyle=\color{red},
-tabsize=4,
-showstringspaces=false,
-breaklines=true
+	basicstyle=\ttfamily\small, 
+	commentstyle=\color{green},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	tabsize=4,
+	showstringspaces=false,
+	breaklines=true
 }
 
 % Redefine the listing name after loading cleveref
-% \renewcommand{\lstlistingname}{Kodlistning}
-% \crefname{lstinputlisting}{kodlistning}{kodlistningar} % For cleveref, singular and plural
-% \Crefname{lstinputlisting}{Kodlistning}{Kodlistningar} % For cleveref, singular and plural, capitalized
-
+\renewcommand{\lstlistingname}{Kodlistning}
+\crefname{lstinputlisting}{kodlistning}{kodlistningar} % For cleveref, singular and plural
+\Crefname{lstinputlisting}{Kodlistning}{Kodlistningar} % For cleveref, singular and plural, capitalized
 
 \addbibresource{references.bib}
 \renewcommand{\appendixpagename}{Bilagor}
@@ -60,11 +55,9 @@ breaklines=true
 \setlength{\bibitemsep}{1.5em} % Increase space between entries
 \setlength{\bibhang}{2em} % Indent bibliography entries
 
-\title{Vet inte än DEN kula TITLEN}
-\author{Leo Altebro & Eduards Abisevs}
-% \date{ }
-
 \renewcommand*\contentsname{Innehåll}
+
+\input{commands} % Custom commands
 
 \begin{document}
 
@@ -203,7 +196,7 @@ att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju
 kategorier beroende på mönstret som talen har.  Mönstren är baserade på händer i poker vilket är varför testet kallas poker test \parencite{Abdel2014}. 
 De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 
-\begin{table}[H] % h as i here, place it here (as in source code!)
+\begin{table}[H] 
 	\centering
         \caption{Vanliga kategorier till poker test}
         \label{tab:num_poker_hands}
@@ -216,7 +209,7 @@ De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 	Tretal & AAABC \\ \hline
 	Tvåpar & AABBC \\ \hline
 	Par & AABCD \\ \hline
-    Ingen mönster & ABCDE \\ \hline
+    	Ingen mönster & ABCDE \\ \hline
 	
 \end{tabular}
 
@@ -256,7 +249,7 @@ Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för
 %$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 %Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
 %frekvensen för kategorin $i$ \parencite{nist}.
-\subsection{StdMean-testet}
+\subsection{STDMean testet}
 Förklara logiken till stanardavvikelse och medelvärdet
 i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
 
@@ -278,6 +271,7 @@ senare tillfälle användas en hårdvara PRNG och icke software PRNG.
 Men på grund av detta undersökning handlar mesta dels om stora mängder av data
 simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
 skapa simulationer!
+
 \subsection{Programmerings verktyg}
 Python är en objektorienterad, dynamiskt typad programmerings språk med
 fokus på läsbarhet med en enkelt syntax \parencite{python}. Detta  som tillför att det finns stora
@@ -442,34 +436,41 @@ skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
 \subsubsection{Implemenation av Riffle shuffle}
 Mekaniskt och mjukvarumässigt enklaste versionen av riffle shuffle är perfekt riffle shuffle
 
-\subsubsection{Implementation av Pile shuffle}
-Inspiration att undersöka pile shuffle kom ifrån
+\subsubsection{Implementation av Pile Shuffles}
+% \lstinputlisting[language=Rust, caption={Pile Shuffle skriven i Rust},label=selection-sort, label={lst:algo_1},firstline=30, lastline=45]{../simulation_rust/src/main.rs}
 
+\boldsection{SOC Pile Shuffle}: Inspiration att undersöka pile shuffle kom ifrån
 \textcite{3DprintedLife2021},
 där pile shuffle implementerades i en 3d printat kortleksblandare.  
 
+\boldsection{Six Pile Shuffle}: 
+
+
+\boldsection{Ten Pile Shuffle}: 
 
 \subsection{Statistiska tester}
 Detta sektion handlar om hur statistiska metoder som Poker test och 
-StdMean-testet implementerades för att analyser slumpmässighet av valda
+\gls{stdmean} testet implementerades för att analyser slumpmässighet av valda
 och simulerade algoritmerna.
 
 Statistiska tester utfördes med Python version 3.11. Python valdes på
 grund av dens rika utbud av bibliotek, speciellt inom
 veten\-skaplig data\-behandling och data\-analys. Därför valdes det
-att utföra statistika tester som Poker test och StdMean-testet i Python.
+att utföra statistika tester som Poker test och \gls{stdmean} testet i Python.
 En till perspektiv till varför Python valdes är att analys och avgörande
-av slumpmässighet är fundementalt komplex process icke räknebart, men det som
+av slump\-mässighet är fundementalt komplex process icke räknebart, men det som
 underlättar framtagande av resulat är visuella grafer och tabeller. I
 denna studie saknas det erfaranhet och kunskaper inom högre grads
 områden inom matematiken som statistikt analys. Detta betyder att rent
-matematiska modeller till avgörande av slumpmässighet som entropi eller
-ApEn var för komplexa att förstå \parencite{ApEn}. Därför valdes dem
-bort på grund av bristande kunksper. Men för att avgörande av
-slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
-det högre förstålse i matematatikens området inom statistik.  Istället
-valdes det att fokuser på normal distrabition av kortlekar och kort.
-Dessutom implementerades det metoder som är visuellt representativa.
+matematiska modeller till avgörande av slumpmässighet som approximate
+entropi (\gls{apen})  \parencite{ApEn}. På grund av bristande kunskaper
+inom statiskt matematik valdes den bort i detta undersökningen. 
+
+% Men för att avgörande av
+% slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
+% det högre förstålse i matematatikens området inom statistik.  Istället
+% valdes det att fokuser på normal distrabition av kortlekar och kort.
+% Dessutom implementerades det metoder som är visuellt representativa.
 
 % Från
 % andra sidan är simulation enklare att utföra och analysera data med
@@ -490,7 +491,7 @@ perfekt blandnings resulat för samtliga metoder.
 % resultat. 
 
 Rådata som sparades efter simulationen är laddat in som en dimensionell
-\gls{enarray} med hjälp av Numpy  efter det är rådata återställt tillbaka till
+lista med hjälp av Numpy  efter det är rådata återställt tillbaka till
 tvådimensionell matris för vidare bearbetning och analys med följande
 metoder: Klassisk Poker Test \ref{sec:poker_test} och medelvärde av
 korta positioner i kortleken över hela datamängden kalkylerad såsom
@@ -604,7 +605,7 @@ vice versa.
 
 Testet utgår i två generella steg kategorisera fem kort och seden 
 
-\subsubsection{Implemention av StdMean testet}
+\subsubsection{Implemention av STDMean testet}
 Datamängden är utformat på sätt att kort värde är alltså dess position i
 kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
 columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
@@ -620,124 +621,20 @@ som betyder en slumpmässigt algoritm.
 %För att det kommer att vara minst 30 figurer och chi två tabeller(dem 
 %kan göras i ett större tabell, antar jag)
 
-Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. 15 simulationer per algoritm för att jämföra samma algoritm med olika antal iterationer, varje algoritm har alltså resultat som motsvarar utförelse med iterationer 1-15. Dem viktigaste av simulationerna plockades ut och deras resultat presenteras här. Resultat av poker test samt medelvärde för algoritmers ledtid presenteras i tabeller. Resultaten för medelvärde av dem positioner ett kort har varit på och standardavvikelsen presenteras via punktdiagram. Vilket kort som en punkt i diagrammet representerar ges av punktes position på x-axeln, medelvärde är avläst från punktens position på y-axeln och standardavvikelse är givet av linjen som går genom punkten. 
 
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics{gsr_riffle_shuffle-1}
-    \end{center}
-    \caption{STDMean-testests resultat för GSR- Riffle Shuffle med en iteration}
-    \label{fig:test_figure}
-\end{figure}
+Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. 15
+simulationer per algoritm för att jämföra samma algoritm med olika antal
+iterationer, varje algoritm har alltså resultat som motsvarar utförelse
+med iterationer 1-15. Dem viktigaste av simulationerna plockades ut och
+deras resultat presenteras här. Resultat av poker test samt medelvärde
+för algoritmers ledtid presenteras i tabeller. Resultaten för medelvärde
+av dem positioner ett kort har varit på och standardavvikelsen
+presenteras via punktdiagram. Vilket kort som en punkt i diagrammet
+representerar ges av punktes position på x-axeln, medelvärde är avläst
+från punktens position på y-axeln och standardavvikelse är givet av
+linjen som går genom punkten. 
 
-\begin{table}[H]
-	\centering
-	\caption{Resultat från Klassikt Poker test och ledtidens medelvärde för en blandning från simulationen.}
-        \begin{subtable}[h]{0.45\textwidth}
-        \caption{GSR- Riffle Shuffle}
-        \begin{tabular}{c|c|c|c}
-		%\hline
-		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
-        \\ \hline \hline
-        3 & 233941.28 & 0.0 & 1681
-        \\ \hline \hline
-        4 & 7077.30 & 0.0 & 1687 
-        \\ \hline
-        5 & 449.67 & 3.38 & 1660 
-        \\ \hline
-        6 & 34.46 & 7.42 & 1667
-        \\ \hline
-        7 & 6.03 & 0.74 & 1654 
-        \\ \hline
-        8 & 8.50 & 0.48 & 1642 
-        \\ \hline
-        9 & 19.64 & 0.020 & 1582 
-        \\ \hline
-        10 & 8.88 & 0.45 & 1495 
-        \\ \hline
-        11 & 16.19 & 0.063 & 1432 
-	\end{tabular}
-        \end{subtable}
-        \hfill
-	\begin{subtable}[h]{0.45\textwidth}
-        \caption{SOC- Pile Shuffle}
-        \centering
-        \begin{tabular}{c|c|c|c}
-		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
-
-        \\ \hline \hline
-        4 & 7077.30 & 0.0 & 1687 
-        \\ \hline
-        5 & 449.67 & 3.38 & 1660 
-        \\ \hline
-        6 & 34.46 & 7.42 & 1667
-        \\ \hline
-        7 & 6.03 & 0.74 & 1654 
-        \\ \hline
-        8 & 8.50 & 0.48 & 1642 
-        \\ \hline
-        9 & 19.64 & 0.020 & 1582 
-        \\ \hline
-        10 & 8.88 & 0.45 & 1495 
-        \\ \hline
-        11 & 16.19 & 0.063 & 1432 
-	\end{tabular}
-        \end{subtable}
-        
-        \vspace{2em}
-        
-        \begin{subtable}[h]{0.45\textwidth}
-        \caption{SOC- Pile Shuffle}
-        \centering
-        \begin{tabular}{c|c|c|c}
-		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
-
-        \\ \hline \hline
-        4 & 7077.30 & 0.0 & 1687 
-        \\ \hline
-        5 & 449.67 & 3.38 & 1660 
-        \\ \hline
-        6 & 34.46 & 7.42 & 1667
-        \\ \hline
-        7 & 6.03 & 0.74 & 1654 
-        \\ \hline
-        8 & 8.50 & 0.48 & 1642 
-        \\ \hline
-        9 & 19.64 & 0.020 & 1582 
-        \\ \hline
-        10 & 8.88 & 0.45 & 1495 
-        \\ \hline
-        11 & 16.19 & 0.063 & 1432 
-	\end{tabular}
-        \end{subtable}
-        \hfill
-        \begin{subtable}[h]{0.45\textwidth}
-        \caption{SOC- Pile Shuffle}
-        \centering
-        \begin{tabular}{c|c|c|c}
-		$\phantom{\bigg|}$ Iteration & $\chi^2$  & pvalue & Ledtid [ns]
-
-        \\ \hline \hline
-        4 & 7077.30 & 0.0 & 1687 
-        \\ \hline
-        5 & 449.67 & 3.38 & 1660 
-        \\ \hline
-        6 & 34.46 & 7.42 & 1667
-        \\ \hline
-        7 & 6.03 & 0.74 & 1654 
-        \\ \hline
-        8 & 8.50 & 0.48 & 1642 
-        \\ \hline
-        9 & 19.64 & 0.020 & 1582 
-        \\ \hline
-        10 & 8.88 & 0.45 & 1495 
-        \\ \hline
-        11 & 16.19 & 0.063 & 1432 
-	\end{tabular}
-        \end{subtable}
-        
-\end{table}
-
+\input{resultat}
 
 \section{Diskussion}
 Och sista sektionen här, men den är relativt straightforward. 
@@ -759,28 +656,28 @@ Och sista sektionen här, men den är relativt straightforward.
 
 
 \printbibliography[heading=bibintoc, title={Bibliografi}]
-\newpage
+% \newpage
 
 \appendix
 \section*{\appendixpagename} 
 \addcontentsline{toc}{section}{\appendixpagename} 
 
-\section{Github}
+\section{Källkod}
 \label{app:github}
 Länk till Github repository vart Rust och Python källkod till simulationen 
 respektive statistikst anlys är samlad, samt källkod till latex med
 vilken detta rapport hade skrivits
 länk: https://github.com/Abishevs/gymarbete
 
-\section{Template att bifoga ett inline kod}
-\label{sec:source_code}
-\begin{lstlisting}[language=Python, caption=Python example]
-# Your source code here
-print("Hello, World!")
-\end{lstlisting}
+% \section{Template att bifoga ett inline kod}
+% \label{sec:source_code}
+% \begin{lstlisting}[language=Python, caption=Python example]
+% # Your source code here
+% print("Hello, World!")
+% \end{lstlisting}
 
-\section{Template att bigoga källkod ifrån git repo}
-\label{app:source_code2}
+% \section{Template att bigoga källkod ifrån git repo}
+% \label{app:source_code2}
 %\lstinputlisting[language=Rust, caption={algorithm 1 implemention},label=selection-sort, label={lst:algo_1},firstline=24, lastline=50]{../simulation_rust/src/main.rs}
 
 
