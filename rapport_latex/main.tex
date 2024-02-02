@@ -273,6 +273,7 @@ simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
 skapa simulationer!
 
 \subsection{Programmerings verktyg}
+\label{sec:verktyg}
 Python är en objektorienterad, dynamiskt typad programmerings språk med
 fokus på läsbarhet med en enkelt syntax \parencite{python}. Detta  som tillför att det finns stora
 mängder av biblioteker (samling av färdig kod).
@@ -298,20 +299,39 @@ inbyggda system som ett motkandidat till c/c++.
 
 \section{Metod} 
 Metoden kan indelas i tre huvudområden:
-(1) framtagande av algoritmerna. 
-(2) simulation av kortlkesblandningar. 
-(3) statistiska tester på rådata.
+(1) Framtagande av algoritmerna. 
+(2) Simulering av kortblandningsprocesser. 
+(3) Statistisk analys av insamlad data.
 % Målet är att besvara en av frågestälningens kriterium "Kortblandnings
 % slumpmässighet ".
-Simulationen omfatar ett kvantitativ undersökning för att minimera
-naturligt slumpmässighet med statiska metoder som Klassikt poker test
-med resultat som chi-två-fördelning och ett närmare undersökning av hur
-mycket varierar kort i olika positioner i kortleken.
-Detta metod valdes för att utföra ett kvantitiv undersökning med
-hjälp av simulation och statistiska tester. Simulation valdes till för
-att generera stora mängder av kortlkesblandningar med målet att
+Målsättningen är att undersöka kortblandnings fysiskt tillämplighet, dess
+effektivitet och slumpmässighet, vilket är en central aspekt av studiens
+frågeställning. Simuleringsdelen innefattar en kvantitativ metodik för att
+reducera den inneboende slumpvariationen i de statistiska metoderna.
+Dessa statiska metoder omfattar det klassiska pokertestet,
+med resulat given av chi-två-fördelningen, samt standardavvikelse- och
+medelvärdestester (\gls{stdmean})  för att närmare
+studera normalfördelningen positioner av kort i kortleken.
+% position av kort (\gls{pk}), samt .  
+
+Valet av metodik syftar till att genomföra en kvantitativ analys med användning av 
+simuleringar och statiska utvärderingar. Simulationen valdes till för
+att generera ett bestämt datamängd av kortlkesblandningar med målet att
 simulationen (processmässight) skulle vara snarlik ett fysiskt
-kortleks\-blandare under sin livscykel. 
+kortleks\-blandare. Datamängden kakylerades med avseende på krav i det klassikta
+pokertestet. Dessa metoder är detaljerat beskrivna i respektive underrubrik.
+% under sin livscykel.
+%
+% Simulationen omfatar ett  för att minimera
+% naturligt slumpmässighet i statiska metoder som ska tillämpas. Dessa 
+% metoder är Klassikt poker test
+% med resultat given av chi-två-fördelning respektive \gls{stdmean} testet.
+% ett närmare undersökningen av 
+% korts variationen  i alla positioner i kortleken med statiska metoder som standardavvikelsen,
+% respektive medelvärdena av korts position.
+%
+% Detta metod valdes för att utföra ett kvantitiv undersökning med
+% hjälp av simulation och statistiska tester.  
 % dvs på liknande sätt hur ett fysiskt kortleks\-blandare skulle används under dens livscykel. 
 
 
@@ -320,9 +340,9 @@ kortleks\-blandare under sin livscykel.
 I valet av testmiljö prioriterades operativsystemets kompatabilitet av
 de utvecklingsverktyg som användes. Linux valdes på grund av dess
 robusta stöd för programmeringsmiljöer och breda stöd för
-mjukvaruutvecklingsverktyg. Dessutom erbjuder Linux bättre kontroll
+mjukvaruutvecklingsverktyg. Dessutom erbjuder operativsystem Linux bättre kontroll
 över systems\-resurer, vilket är avgörande för att uppnå följdriktiga
-och till\-för\-litliga testresulat. Därför kördes undersökningen på en
+och till\-för\-litliga testresulat. Därför utfördes undersökningen på en
  dator med  Linux som operativsystem med specifikationerna listade i Tabell \ref{tab:linux_env}.
 \begin{table}[H]
 \centering
@@ -350,20 +370,25 @@ Operativsystem & \texttt{Arch Linux x86\_64, \newline Linux kernel
 % resultat. 
 
 
-\subsection{Simulation för kortblandningar och implementation}
-Simulations- och blandningsalgoritmerna implementerades i programmerings
-språk Rust version 1.73.0. 
+\subsection{Simulation för kortblandningar och dess implementation}
+Simulations- och blandningsalgoritmerna implementerades i programmerings språk
+Rust version 1.73.0. Rust valdes p.g.a dess robusta stöd för abstraktioner utan bekostnad.  
+
+% Den Valdes på grund av dess breda användning inom vetenskapligt
+% forskning  och dess omfattande bibliotek för numerisk analys.  
+
 % och användes bibliotek (Rust Crates) som Rand
 % version 0.8 för PRNG \parencite{rand_crate}.
 % Rayon för enkel användning av  parallell multiprocessing
 % \parencite{rayon_crate}.
 Simulationen avspeglar hur ett fysiskt
-kortleksblandare skulle fungera. För att göra att alla simulationer har
-ett och samma utgångspunkt valdes det att börja med ett fabriksordning
-för en standard 52-kortlek. Där korten är ordnade efter sitt färg i
-sekvensiell ordning två till ess (utan jokrarna). Matematiskt kan en
-sådan kortlek beskrivas som mängden $\{x \in \mathbb{N},  0 \leq x \leq 51
-\}$, där $x$ representerar en enskild kort. 
+kortleksblandare skulle fungera. Togs logiska valet att alla simulationer ska ha 
+ett och samma utgångspunkt. Ett verkligt scenarium simulerades vart ett helt ny
+oöppnad kortlek skulle placeras i den potentiella kortleksblandare. Detta
+ordningen kallas för ett fabriksordning för en standard 52-kortlek. Där korterna
+är ordnade efter sitt färg i sekvensiell ordning från två till ess (utan jokrarna).
+Matematiskt kan detta ordningen beskrivas som mängden $\{x \in \mathbb{N},  0 \leq x \leq 51
+\}$, där $x$ representerar en enskild kort och ordningen spelar roll. 
 
 
 % Simulation utgår från att man genererar
@@ -463,8 +488,8 @@ underlättar framtagande av resulat är visuella grafer och tabeller. I
 denna studie saknas det erfaranhet och kunskaper inom högre grads
 områden inom matematiken som statistikt analys. Detta betyder att rent
 matematiska modeller till avgörande av slumpmässighet som approximate
-entropi (\gls{apen})  \parencite{ApEn}. På grund av bristande kunskaper
-inom statiskt matematik valdes den bort i detta undersökningen. 
+entropi (\gls{apen})  \parencite{ApEn}. Valdes bort på grund av bristande
+kunskaper.
 
 % Men för att avgörande av
 % slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
