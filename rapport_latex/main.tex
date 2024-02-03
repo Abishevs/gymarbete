@@ -146,6 +146,23 @@ det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av ob
 \subsection{Bakgrund av blandings metoder}
 Theoretical Whats, Whys and Hows angående algorithmer.
 
+\subsubsection{Riffle shuffle}
+\label{sec:riffle_shuffle}
+% Riffle Shuffle är den mest kända kortleksblandningsmetoden.
+Det finns många olika metoder att blanda kort med riffle shuffle. Undersökningar har genomförts och dem har kommit fram till att 
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics{images/rifflle-shuffle.pdf}
+	\end{center}
+	\captionsetup{justification=centering,margin=2cm}
+	\caption{Steg i processen för Riffle Shuffle. Illustrationen visar de
+	iterativa stegen från den ursprungliga högen (A), uppdelning i två
+	högar (B), infoga dem två högarna med varandra för att bilda en ny hög.
+        Pilar indikerar riktningen för blandningsprocessen.}
+	\label{fig:riffle_shuffle_1}
+\end{figure}
+
 \subsubsection{Pile shuffle}
 \label{sec:pile_shuffle}
 Pile shuffle är en kortleksblandingsmetod som genomförs med fysiska
@@ -169,23 +186,9 @@ läggs  alla högar ihop i en ny kortlek.
 	\label{fig:pile_shuffle_1}
 \end{figure}
 
-\subsubsection{Riffle shuffle}
-% Riffle Shuffle är den mest kända kortleksblandningsmetoden.
-Det finns många olika metoder att blanda kort med riffle shuffle. Undersökningar har genomförts och dem har kommit fram till att 
-
-\begin{figure}[H]
-	\begin{center}
-		\includegraphics{images/rifflle-shuffle.pdf}
-	\end{center}
-	\captionsetup{justification=centering,margin=2cm}
-	\caption{Steg i processen för Riffle Shuffle. Illustrationen visar de
-	iterativa stegen från den ursprungliga högen (A), uppdelning i två
-	högar (B), infoga dem två högarna med varandra för att bilda en ny hög.
-        Pilar indikerar riktningen för blandningsprocessen.}
-	\label{fig:riffle_shuffle_1}
-\end{figure}
 
 \subsubsection{Inblick i en professionell kortlkesblandare}
+\label{sec:wheel}
 
 
 \subsection{Klassiskt poker test}
@@ -194,8 +197,7 @@ Ett klassiskt poker test används att avgöra slump\-mässighet i numeriska
 sekvenser, oftast för att testa slumptalsgeneratorer. Testet utförs genom
 att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju
 kategorier beroende på mönstret som talen har.  Mönstren är baserade på händer i poker vilket är varför testet kallas poker test \parencite{Abdel2014}. 
-De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
-
+De olika mönster som letas efter i talen visas i Tabell \ref{tab:num_poker_hands}.
 \begin{table}[H] 
 	\centering
         \caption{Vanliga kategorier till poker test}
@@ -214,7 +216,7 @@ De olika mönster som letas efter i talen visas i \cref{tab:num_poker_hands}.
 \end{tabular}
 
 \end{table}
-
+\noindent
  Antalet mönster i varje kategori räknas för att få en distribution, som
  då jämförs med en distribution som stämmer överens med sannolikheten
  att få de olika mönstren. Om det total antalet mönster är $n$ och
@@ -249,11 +251,14 @@ Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för
 %$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 %Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
 %frekvensen för kategorin $i$ \parencite{nist}.
-\subsection{STDMean testet}
+\subsection{standardavvikelse- och medelvärdestestet (STDMean) testet}
+\label{sec:stdmean}
+
 Förklara logiken till stanardavvikelse och medelvärdet
 i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
 
 \subsection{Pseudoslumptalsgenerator (PRNG)}
+\label{sec:prng}
 Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
 \parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
 hands val
@@ -298,28 +303,58 @@ minneshantering utan en skräpsamlare (garbage collector)
 inbyggda system som ett motkandidat till c/c++. 
 
 \section{Metod} 
-Metoden kan indelas i tre huvudområden:
-(1) Framtagande av algoritmerna. 
-(2) Simulering av kortblandningsprocesser. 
-(3) Statistisk analys av insamlad data.
+Metoden för denna studie kan indelas i tre huvudområden
+1) Framtagande av  blandningsalgoritmerna. 
+2) Simulering av kortblandningsprocesser. 
+3) Statistisk analys av insamlad data.
 % Målet är att besvara en av frågestälningens kriterium "Kortblandnings
 % slumpmässighet ".
-Målsättningen är att undersöka kortblandnings fysiskt tillämplighet, dess
-effektivitet och slumpmässighet, vilket är en central aspekt av studiens
-frågeställning. Simuleringsdelen innefattar en kvantitativ metodik för att
-reducera den inneboende slumpvariationen i de statistiska metoderna.
-Dessa statiska metoder omfattar det klassiska pokertestet,
-med resulat given av chi-två-fördelningen, samt standardavvikelse- och
-medelvärdestester (\gls{stdmean})  för att närmare
-studera normalfördelningen positioner av kort i kortleken.
-% position av kort (\gls{pk}), samt .  
 
-Valet av metodik syftar till att genomföra en kvantitativ analys med användning av 
-simuleringar och statiska utvärderingar. Simulationen valdes till för
-att generera ett bestämt datamängd av kortlkesblandningar med målet att
-simulationen (processmässight) skulle vara snarlik ett fysiskt
-kortleks\-blandare. Datamängden kakylerades med avseende på krav i det klassikta
-pokertestet. Dessa metoder är detaljerat beskrivna i respektive underrubrik.
+Inledningsvis kommer att framtagande av blandningsalgoritmerna fokusera på
+utvecklingen av specifika kortblandningsmetoderna. Detta inkluderar både
+etablerade metoder som Riffle Shuffle (\ref{sec:riffle_shuffle}), samt nyare,
+innovativa tillvägagångssätt som Pile Shuffle (\ref{sec:pile_shuffle}). Såsom
+anpassning av design av en professionell kortleksblandare (\ref{sec:wheel}).
+Vilka valts ut baserat på deras potential i en potentiell kortleksblandare.
+Dessa algoritmer är kritiska för bedömningen av kortblandningsmotodens
+slumpmässighet och effektivitet, vilket är kärnan i studiens frågeställning. 
+% Samt att besvara
+% frågan om dess algoritmernas fysiskt tillämpning i en potentiell
+% kortleksblandare.
+
+Målsättningen med denna sektion är att djupgånade undersöka kortblandnings
+fysiskt tillämplighet, dess effektivitet och slumpmässighet. Att utföra 
+simulation valdes därmed att blandningsalgoritmerna
+(processmässigt) skulle vara snarlika till dess potentiella kortleks\-blandare.
+Därmed skulle det genereras mer tillförlitliga testresultat. Därför simuleringsdelen
+innefattar en kvantitativ metodik för att reducera den inneboendes
+slumpvariation i de simulerade blandningsalgoritmerna. Genoma att generera ett bestämt
+mängd av kortleksblandningar, där datamängder uppfyler kravet ifrån statistiska metoder. Dessa
+statistiska  analysmetoder omfattar det klassiska pokertestet (\ref{sec:poker_test}), med
+resulat given av chi-två-testet (\ref{sec:chi_square}). Samt \gls{stdmean} testet
+(\ref{sec:stdmean}), vilket ger ett närmare inblick i korts variation i specifika
+positioner i kortleken. Tillsammans dessa tester ger en tillfredsställande indikation på
+blandningsmetodens slumpmässighet. 
+
+Genom att välja denna metodik syftar studien till att utföra en omfattande
+kvantitativ analys som inte enbart bedömer algoritmernas teoretiska
+effektiviteten men även dess praktiska tillämplighet i en potentiell kortleks\-blandare.
+Detta tillvägagångssättet möjliggör en detaljerad utvärdering av varje algoritm,
+dess implementering och slutliga prestande, vilket är avgörande för att uppnå
+studiens mål. Mer detaljerad beskrivning av specifika algoritmerna,
+simuleringar av kortblandningar och statistiska utvärderingar presenteras i kommande 
+underrubriker. 
+
+För intresserade parter finns det källkod för algoritmernas implemention,
+programmet som användes för simulation, samt implementionen av analysmetoderna
+på Github se Bilaga \ref{app:github}.
+
+% Valet av metodik syftar till att implementera blandsnigsalgoritmerna med syfte
+% att motivera design valet och framställa dem med tanken att dessa skulle
+% implementeras i ett potentiell kortleksblandare. Sedan  genomföra en 
+% kvantitativ analys med användning av 
+% simuleringar och statiska utvärderingar. Simulationen  Datamängden kakylerades med avseende på krav i det klassika
+% pokertestet. Dessa metoder är detaljerat beskrivna i respektive underrubrik.
 % under sin livscykel.
 %
 % Simulationen omfatar ett  för att minimera
@@ -335,7 +370,6 @@ pokertestet. Dessa metoder är detaljerat beskrivna i respektive underrubrik.
 % dvs på liknande sätt hur ett fysiskt kortleks\-blandare skulle används under dens livscykel. 
 
 
-
 \subsection{Testmiljö} 
 I valet av testmiljö prioriterades operativsystemets kompatabilitet av
 de utvecklingsverktyg som användes. Linux valdes på grund av dess
@@ -343,43 +377,105 @@ robusta stöd för programmeringsmiljöer och breda stöd för
 mjukvaruutvecklingsverktyg. Dessutom erbjuder operativsystem Linux bättre kontroll
 över systems\-resurer, vilket är avgörande för att uppnå följdriktiga
 och till\-för\-litliga testresulat. Därför utfördes undersökningen på en
- dator med  Linux som operativsystem med specifikationerna listade i Tabell \ref{tab:linux_env}.
+ dator med  Linux som operativsystem. Se se Tabell \ref{tab:linux_env} för
+ testmiljös specifikationerna.
 \begin{table}[H]
 \centering
-\begin{tabular}{|l|p{7cm}|} 
-\hline
-Typ & Specification  \\ \hline
+\begin{tabular}{|l|p{5cm}|}  
+\hline 
+Typ & Specifikation  \\ \hline 
 Processor & AMD Ryzen 5 3600 \newline 6 cores / 12 threads \newline 3.6 GHz \\ \hline
 RAM & 15.93 GB \\ \hline
 Hårddisk & KINGSTON SA400S3, 447 GB \\ \hline
 Operativsystem & \texttt{Arch Linux x86\_64, \newline Linux kernel
 6.6.9-arch1-1} \\ \hline
 \end{tabular}
-\caption{Linux Dator}
+\captionsetup{width=0.5\textwidth}
+\caption{Testmiljö med Linux som operativsystem.}
 \label{tab:linux_env}
 \end{table}
 
+\subsection{Framtagande av blandningsalgoritmerna}
+I detta avsnitt presenteras processen av framtagande och 
+% kortblandningsalgoritmerna som utgör studies kärna. Här teoretiska grunden för
+% Riffle Shuffe (\ref{sec:riffle_shuffle}), Pile Shuffle (\ref{sec:pile_shuffle})
+% och design ifrån profesionell korleksblandare (\ref{sec:wheel}) kommer att
+% anpassas till en potentiell kortleksblandare och implementeras för vidare undersökning. 
+detaljerna kring varje algoritms kod och dess
+möjliga implementering i en potentiell kortleksblandare.
+% kommer att utforskas.
+% vilket lägger grunden för en djupare analys av deras prestanda i efterföljande
+% simulationer och analysmetoder.
+
+Algoritmerna implementerades i programmerings språk Rust version 1.73.0. Rust
+valdes p.g.a dess höga abstraktioner med närmare tillgång till systemresurer
+(för detaljer se avsnitt \ref{sec:verktyg}). Därmed att i ett fysiskt maskin
+skulle blandningsalgoritmeren köras i ett inbyggd miljö det vill säga i system med
+begränsade resurser. Dessutom på så sätt implicit skapas det en mer likvärdig till en
+potentiell kortblandingsmaskin miljö för efterföljande simulationer. 
+
+Kompromisen som togs i implementation av algoritmerna är att
+pseudoslumptalsgenerator (\gls{prng}) som används i denna studie kommer ifrån
+Rand \gls{crate} som har inbyggt implemention av ChaCha20 (se sektion
+\ref{sec:prng} för detaljer). Som tidigare nämnts behöver ChaCha20 mer
+systemresurer och därför är inte tillgängligt i ett inbyggt system. Men
+valet av att använda denna togs för att i simulerings miljö där \gls{prng} behövs
+successivt i små tids intervaller kommer den att generera bättre pseudoslumptal
+än en \gls{prng} som är anpassad till inbyggda system. Dessutom kommer den att
+generera mer trövärdiga kortblandingar som är mindre influenserade av dess
+underliggande \gls{prng} implemenation. 
+
+\subsubsection{Anpassning av Riffle Shuffle}
+Som det diskuterades tidigare är Riffle Shuffle den mest kända
+kortblandingsmetoden. I denna studie anpassades \gls{gsr} modelen (för matematiken bakom
+modellen se sektion \ref{sec:riffle_shuffle}). Den valdes för att utforska hur
+väl den presterar i kortleksblandingar. Och om den skulle vara en lämligt
+kandidat för den potentiella kortleksblandaren.
+
+\boldsection{Potentiell fysikt design} 
+
+
+
+\ref{app:gsr}
+
+\subsubsection{Anpassning av Pile Shuffle}
+
+\boldsection{SOC Pile Shuffle}: Inspiration att undersöka pile shuffle kom ifrån
+\textcite{3DprintedLife2021},
+där pile shuffle implementerades i en 3d printat kortleksblandare.  
+
+\boldsection{Six Pile Shuffle}: 
+
+
+\boldsection{Ten Pile Shuffle}: 
+
+\subsubsection{Anpassning av design av profesionell kortleksblandare}
+
+
+% \subsection{Simulation för kortblandningar och dess implementation}
+\subsection{Simulering av kortblandningsprocesser}
+Simulations- och blandningsalgoritmerna implementerades i programmerings språk
+Rust version 1.73.0. Rust valdes p.g.a dess robusta stöd för abstraktioner utan bekostnad.  
 % Datan insamlades från digitalt simulation på olika kortblandningsmetoder
 % i Rust version 1.73. De algoritmerna som undersöktes var skrivna i
 % programspråk Rust i försök att göra dem så likt verkligheten som
 % möjligt. 
+
+% \lstinputlisting[language=Python, caption={Pile Shuffle skriven i
+% Rust},label=selection-sort, label={lst:algo_2},firstline=329,
+% lastline=335]{../randomness/sim_stats.py}
 
 % För statistikst analys av data användes programmeringsspråket Python
 % 3.11 och utnyttjades bibliotek som Numpy till datamängd bearbetning,
 % Scipy till statistisk analys och Matplotlib till visualisering av
 % resultat. 
 
-
-\subsection{Simulation för kortblandningar och dess implementation}
-Simulations- och blandningsalgoritmerna implementerades i programmerings språk
-Rust version 1.73.0. Rust valdes p.g.a dess robusta stöd för abstraktioner utan bekostnad.  
-
 % Den Valdes på grund av dess breda användning inom vetenskapligt
 % forskning  och dess omfattande bibliotek för numerisk analys.  
 
-% och användes bibliotek (Rust Crates) som Rand
-% version 0.8 för PRNG \parencite{rand_crate}.
-% Rayon för enkel användning av  parallell multiprocessing
+% och användes bibliotek (Rust Crates) som Rand version 0.8 för PRNG
+% \parencite{rand_crate}. Rayon för enkel användning av  parallell
+% multiprocessing
 % \parencite{rayon_crate}.
 Simulationen avspeglar hur ett fysiskt
 kortleksblandare skulle fungera. Togs logiska valet att alla simulationer ska ha 
@@ -452,29 +548,9 @@ Därför att sista teoretiska delen att bestämma
 är hur många iterationer per algoritm ska genomföras. Med iterationer menas
 hur många gånger kortleken blandas följande på varandra.
 
-\subsection{Kortblandings algoritmernas implemenation}
 
-Då tanken var att  algoritmerna skulle potentiellt användas i ett fysiskt
-inbäddat system fanns det vissa  kriterier som algoritmerna skulle följa: det
-skulle gå att bygga en maskin, den skulle vara slumpmässig, dvs. simulation
-
-\subsubsection{Implemenation av Riffle shuffle}
-Mekaniskt och mjukvarumässigt enklaste versionen av riffle shuffle är perfekt riffle shuffle
-
-\subsubsection{Implementation av Pile Shuffles}
-% \lstinputlisting[language=Rust, caption={Pile Shuffle skriven i Rust},label=selection-sort, label={lst:algo_1},firstline=30, lastline=45]{../simulation_rust/src/main.rs}
-
-\boldsection{SOC Pile Shuffle}: Inspiration att undersöka pile shuffle kom ifrån
-\textcite{3DprintedLife2021},
-där pile shuffle implementerades i en 3d printat kortleksblandare.  
-
-\boldsection{Six Pile Shuffle}: 
-
-
-\boldsection{Ten Pile Shuffle}: 
-
-\subsection{Statistiska tester}
-Detta sektion handlar om hur statistiska metoder som Poker test och 
+\subsection{Statistisk analys av insamlad data.}
+Detta sektion handlar om hur statistiska metoder som Poker testet och 
 \gls{stdmean} testet implementerades för att analyser slumpmässighet av valda
 och simulerade algoritmerna.
 
@@ -488,8 +564,8 @@ underlättar framtagande av resulat är visuella grafer och tabeller. I
 denna studie saknas det erfaranhet och kunskaper inom högre grads
 områden inom matematiken som statistikt analys. Detta betyder att rent
 matematiska modeller till avgörande av slumpmässighet som approximate
-entropi (\gls{apen})  \parencite{ApEn}. Valdes bort på grund av bristande
-kunskaper.
+entropi (\gls{apen})  \parencite{ApEn}. Men den valdes bort på grund 
+av bristande kunskaper i detta området.
 
 % Men för att avgörande av
 % slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
@@ -544,7 +620,7 @@ Av skall att testerna utförs med standard kortleken,
 	% Header
 	\hline 
 	Pokerhand 
-	& Example på mönster 
+	& Example mönster 
 	& Antal kombinationer 
 	\\ \hline  
 
@@ -693,6 +769,20 @@ Länk till Github repository vart Rust och Python källkod till simulationen
 respektive statistikst anlys är samlad, samt källkod till latex med
 vilken detta rapport hade skrivits
 länk: https://github.com/Abishevs/gymarbete
+
+\section{Kod för GSR Riffle Shuffle}
+\label{app:gsr}
+% \lstinputlisting[language=Rust, caption={Pile Shuffle skriven i
+% Rust},label=selection-sort, label={lst:gsr},firstline=179, lastline=214]{../simulation_rust/src/main.rs}
+% \lstinputlisting[language=Rust, firstline=179, lastline=214]{../simulation_rust/src/main.rs}
+
+\section{Kod för Pile Shuffle}
+\label{app:pile}
+% \lstinputlisting[language=Rust, firstline=29, lastline=55]{../simulation_rust/src/main.rs}
+
+\section{Kod för Wheel Fisher-Yates shuffle}
+\label{app:wheel}
+% \lstinputlisting[language=Rust, firstline=147, lastline=167]{../simulation_rust/src/main.rs}
 
 % \section{Template att bifoga ett inline kod}
 % \label{sec:source_code}
