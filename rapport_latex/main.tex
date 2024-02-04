@@ -3,7 +3,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{csquotes} % Recommended
+\usepackage{algorithm}	   % CODEFormating
+\usepackage{algpseudocode} % CODEFormating
+\usepackage{csquotes}      % Recommended
 \usepackage{graphicx}
 \usepackage{wrapfig}
 \usepackage{caption}
@@ -40,14 +42,24 @@
 	keywordstyle=\color{blue},
 	stringstyle=\color{red},
 	tabsize=4,
+	% numbers=left,
+	% stepnumber=1,
+	% numbersep=-10pt,
+	% numberstyle=\small\color{gray},
 	showstringspaces=false,
-	breaklines=true
+	breaklines=true,
+	showspaces=false,
 }
 
 % Redefine the listing name after loading cleveref
 \renewcommand{\lstlistingname}{Kodlistning}
 \crefname{lstinputlisting}{kodlistning}{kodlistningar} % For cleveref, singular and plural
 \Crefname{lstinputlisting}{Kodlistning}{Kodlistningar} % For cleveref, singular and plural, capitalized
+
+\renewcommand{\algorithmicrequire}{\textbf{Indata:}}
+\renewcommand{\algorithmicensure}{\textbf{Utdata:}}
+\renewcommand{\listalgorithmname}{Algoritmlista} % Ändrar "List of Algorithms" titel
+\floatname{algorithm}{Algoritm} % Ändrar "Algorithm" till "Algoritm" i rubrike
 
 \addbibresource{references.bib}
 \renewcommand{\appendixpagename}{Bilagor}
@@ -149,7 +161,8 @@ Theoretical Whats, Whys and Hows angående algorithmer.
 \subsubsection{Riffle shuffle}
 \label{sec:riffle_shuffle}
 % Riffle Shuffle är den mest kända kortleksblandningsmetoden.
-Det finns många olika metoder att blanda kort med riffle shuffle. Undersökningar har genomförts och dem har kommit fram till att 
+Det finns många olika metoder att blanda kort med riffle shuffle. Gilbert-Shannon-Reeds-modellen är en 
+matematisk modell på riffle shuffle som ger resultat nära dem en riffle shuffle utförd av en människa ger.
 
 \begin{figure}[H]
 	\begin{center}
@@ -162,6 +175,28 @@ Det finns många olika metoder att blanda kort med riffle shuffle. Undersökning
         Pilar indikerar riktningen för blandningsprocessen.}
 	\label{fig:riffle_shuffle_1}
 \end{figure}
+
+% \begin{algorithm}
+% \caption{Riffle Shuffle Pseudokod}
+% \begin{algorithmic}[1]
+% \Require $Deck$
+% \Ensure Blandad $Deck$
+% \For {$card$ in len($Deck$)} { 
+% \State $DeckHalf1.push(card) $ 
+% \State $DeckHalf2 \gets $
+% }
+% \State Initialize an empty list $ShuffledDeck$
+% \While{both $DeckHalf1$ and $DeckHalf2$ are not empty}
+%     \State Generate a random number $RandId$ between 0 and 1
+%     \If{$RandId \leq$ length of $DeckHalf1$ divided by total length of both halves}
+%         \State Remove the top card from $DeckHalf1$ and add it to $ShuffledDeck$
+%     \Else
+%         \State Remove the top card from $DeckHalf2$ and add it to $ShuffledDeck$
+%     \EndIf
+% \EndWhile
+% \State Copy $ShuffledDeck$ back to $Deck$
+% \end{algorithmic}
+% \end{algorithm}
 
 \subsubsection{Pile shuffle}
 \label{sec:pile_shuffle}
@@ -426,20 +461,106 @@ generera mer trövärdiga kortblandingar som är mindre influenserade av dess
 underliggande \gls{prng} implemenation. 
 
 \subsubsection{Anpassning av Riffle Shuffle}
-Som det diskuterades tidigare är Riffle Shuffle den mest kända
-kortblandingsmetoden. I denna studie anpassades \gls{gsr} modelen (för matematiken bakom
-modellen se sektion \ref{sec:riffle_shuffle}). Den valdes för att utforska hur
-väl den presterar i kortleksblandingar. Och om den skulle vara en lämligt
-kandidat för den potentiella kortleksblandaren.
+Första blandningsmetoden som anpassades var den matematiska
+Gilbert–Shannon–Reeds modell till en praktisk Rust kod (för djupgående bakgrund
+om modellen se sektion \ref{sec:riffle_shuffle}). För enkelhetens skull ska denna metod
+betacknas \gls{gsr} Riffle Shuffle eller enbart \gls{gsr}. Motiveringen av att
+utforska denna var  p.g.a. dess lockande egenskaper i att hur matematiska
+modellen avspeglar människas kortblandningsprocess. Därför anpassades modellen för att
+utforska om den kan vara ett lämligt kandidat till den potentiella
+kortleksblandaren.
 
-\boldsection{Potentiell fysikt design} 
+Matematiska formeln för \gls{gsr} distrubution är anpassad på rad 6 se Algoritm
+\ref{alg:gsr}. För att inte distrahera med tekniska utmaningar implementation i
+Rust finns i Bilaga \ref{app:gsr}.
+% I implementeringen av detta algoritm inför simuleringen gjordes det några
+% optimeringar som 1)  
 
+\begin{algorithm}
+\caption{GSR Riffle Shuffle pseudokod}
+\label{alg:gsr}
+\begin{algorithmic}[1]
+\State $H1 \gets$ $OD$ \Comment{Alla kort från $OD$ (Original Deck) är placerade i $H1$}
+\State $H2 \gets \frac{H1}{2}$ \Comment{$H2$ får hälften av kort (i sekvensiell
+ordining)}
+\State $HM \gets tom lista$ \Comment{Mittersa högen}
+\While{$H1$ eller $H2$ inte är tomma}
+\State $r \gets$ slumpmässigt tal mellan 0.0 och 1.0 \Comment{\gls{prng} för att
+få ett slumpmässigt tal}
+    \If{$r \leq (\text{längden av } H1) / (\text{längden av } H1 + \text{längden av } H2)$}
+        \State flytta ett kort från $H1$ till $HM$
+    \Else
+        \State flytta ett kort från $H2$ till $HM$
+    \EndIf
+\EndWhile
+\State flytta alla kort från $HM$ tillbaka till $H1$
+\end{algorithmic}
+\end{algorithm}
+ 
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\centering
+	\includegraphics[width=0.85\linewidth]{irl_riffle_shuffle.pdf}
+	\captionsetup{width=0.8\linewidth} \caption{Ett ilustrativt blandingsprocess
+		diagram av
+	Riffle Shuffle fundamentala mekaniska komponenter till den potentiella
+	kortleksblandaren. Med 3 stycken högar $H1$, $HM$ respektive $H2$. Där sträckor representerar kort,
+	cirkelformen representerar en roterande kortmatningsmekanism och mittersta
+	högen är en höjbar mekanism i $y$-led.}
+	\label{fig:irl_gsr}
+\end{wrapfigure}
+\boldsection{Potentielt fysikt implementation}: Anpasnings metodiken av
+\gls{gsr} inledes med att det skisades upp ett potentiell fysikt implementation av
+Riffle Shuffle utifrån algoritmen, se Figur \ref{fig:irl_gsr}. Detta är ett
+simplifierad version. För att t.ex. det borde finnas ett mekanism att flytta
+kortet från $HM$ till $H1$ och $H2$. Kompliceringar i detta design kan inkludera
+timing problem d.v.s. att kortet från $H1$ träffar kortet från $H2$ på vägen
+till $HM$.
 
+\clearpage % To not weirdly wrap other text
 
-\ref{app:gsr}
+ % Först att testa hur väl den utför till att avspegla hur en människa blandar
+ % kort och att det krävs exakt 7 iterationer för en kortlekblanding att vara
+ % slumpmässigt 
+ % för att utforska hur väl den presterar i
+ % kortleksblandingar och om den skulle vara en lämligt kandidat för den
+ % potentiella kortleksblandaren.
 
 \subsubsection{Anpassning av Pile Shuffle}
 
+\begin{algorithm}
+\caption{Pile Shuffle pseudokod}
+\label{alg:pile}
+\begin{algorithmic}[1]
+\Require En kortlek $H1$
+\Ensure Blandad kortlek $H1$ 
+\State $n \gets num$ \Comment{Antal fack}
+\State $M \gets num $ \Comment{Max antal kort per facket}
+\State $H2 \gets$ lista av $n$ tomma listor % \Comment{Bins för korten}
+\For{$kort$ i $H1$}
+    \Loop
+        \State $sf \gets$ slumpmässigt fack index mellan $0$ och ($n-1$) \Comment{slumpmässigt fack (sf)}
+        \If{$\text{längden av } H2[sf] < M$}
+            \State Lägg $kort$ i $H2[sf]$
+            \State \textbf{break}
+        \EndIf
+    \EndLoop
+\EndFor
+\State $H1 \gets$ sammanfoga alla facken i $H2$ \Comment{Samla ihop alla fack till en kortlek}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\centering
+	\includegraphics[width=0.85\linewidth]{irl_pile_shuffle.pdf}
+	\captionsetup{width=0.8\linewidth} \caption{Ett ilustrativt diagram av
+		kortblandingsprocesen med 
+	Pile Shuffle metoden. Fundamentala mekaniska komponenter till den potentiella
+	kortleksblandaren, där sträckor är kort, cirkelformen är roterande
+kortmatningsmekanismen. Med två högar, $H1$ och $H2$. Där $H1$ har plats för en
+kortlek medans $H2$ har $n$ antal fack med maximalt $M$ antal kort per fack.}
+	\label{fig:irl_pile}
+\end{wrapfigure}
+\boldsection{Potentielt fysikt implementation}: Anpasnings metodiken av
 \boldsection{SOC Pile Shuffle}: Inspiration att undersöka pile shuffle kom ifrån
 \textcite{3DprintedLife2021},
 där pile shuffle implementerades i en 3d printat kortleksblandare.  
@@ -447,9 +568,28 @@ där pile shuffle implementerades i en 3d printat kortleksblandare.
 \boldsection{Six Pile Shuffle}: 
 
 
+
 \boldsection{Ten Pile Shuffle}: 
 
+\clearpage
+
 \subsubsection{Anpassning av design av profesionell kortleksblandare}
+\begin{algorithm}
+\caption{Wheel Fisher-Yates Shuffle pseudokod}
+\label{alg:wheel}
+\begin{algorithmic}[1]
+\Require En kortlek $D$
+\Ensure Blandad kortlek $D$ 
+\State $I \gets$ lista med index $0$ till $51$ \Comment{Skapa en lista med index}
+\State FisherYatesShuffle($I$) \Comment{Blanda indexen slumpmässigt}
+\State $W \gets$ ny lista med $52$ platser \Comment{Skapa 'wheel' med plats för varje kort}
+\For{$i \gets 0$ till $\text{längden av } D - 1$}
+    \State $idx \gets I[i]$ \Comment{Välj ett slumpmässigt index från $I$}
+    \State $W[idx] \gets D[i]$ \Comment{Placera kortet i 'wheel' baserat på slumpindex}
+\EndFor
+\State $D \gets W$ \Comment{Uppdatera $D$ med den nya ordningen från 'wheel'}
+\end{algorithmic}
+\end{algorithm}
 
 
 % \subsection{Simulation för kortblandningar och dess implementation}
