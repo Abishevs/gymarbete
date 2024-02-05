@@ -81,7 +81,12 @@
     \textbf{Abstract}
     \vspace{0.9cm}
 \end{center}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
 
 \tableofcontents
 \newpage
@@ -110,7 +115,7 @@ tredjepartsföretag. Faktumet att de kan kosta upp till 100 000 kr betyder att
 inte vem som helst kan ha tillgång till en kortblandningsmaskin.
 
 \subsection{Syfte}
-
+\label{sec:purpose}
 Syftet med denna undersökning är att ta fram den hypotetiskt bästa kortblandaren
 utifrån två faktorer: 1) hur slumpmässigt den algoritm som den byggs efter kan
 blanda kort; 2) till vilken grad den potentiella maskinen byggd efter algoritmen
@@ -145,7 +150,7 @@ grenar. En gren handlar om vad som går att bevisa inom matematik angående om
 nummer och funktioner är beräkneliga eller inte. Med beräknelig menas något som
 kan beräknas, det vill säga värderas, uppfattas eller förutses, när det kommer
 till matematik syftar det på att bestämma något via matematiska
-modeller/processer, alltså att kalkylera.
+modeller eller processer, alltså att kalkylera.
 
 \subsection{Slumpmässighet}
 
@@ -161,8 +166,9 @@ Theoretical Whats, Whys and Hows angående algorithmer.
 \subsubsection{Riffle shuffle}
 \label{sec:riffle_shuffle}
 % Riffle Shuffle är den mest kända kortleksblandningsmetoden.
-Det finns många olika metoder att blanda kort med riffle shuffle. Gilbert-Shannon-Reeds-modellen är en 
-matematisk modell på riffle shuffle som ger resultat nära dem en riffle shuffle utförd av en människa ger.
+Det finns många olika metoder att blanda kort med riffle shuffle.
+Gilbert-Shannon-Reeds-modellen är en matematisk modell på riffle shuffle som ger
+resultat nära dem en riffle shuffle utförd av en människa ger.
 
 \begin{figure}[H]
 	\begin{center}
@@ -279,7 +285,8 @@ Där $O_i$ är observerade frekvensen för en kategori av data $i$ och $E_i$
 Det kritiska värdet fås av antalet frihetsgrader(kategorier - parametrar)
 och signifikansnivån som bestämts för testet.
 
-Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för små. Det rekommenderas att $O_i$ inte är mindre en 5.
+Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för
+små. Det rekommenderas att $O_i$ inte är mindre en 5.
 
 %Chi-square, chi-två testing eller som den också betecknas $\chi^2$ är statistikt test
 %som oftas används till att definera och beräkna slumpmässighet av bestämd sannolikhet.
@@ -345,8 +352,8 @@ Metoden för denna studie kan indelas i tre huvudområden
 % Målet är att besvara en av frågestälningens kriterium "Kortblandnings
 % slumpmässighet ".
 
-Inledningsvis kommer att framtagande av blandningsalgoritmerna fokusera på
-utvecklingen av specifika kortblandningsmetoderna. Detta inkluderar både
+Inledningsvis kommer framtagande av blandningsalgoritmerna fokusera på
+utvecklingen av specifika kortblandningsmetoder. Detta inkluderar både
 etablerade metoder som Riffle Shuffle (\ref{sec:riffle_shuffle}), samt nyare,
 innovativa tillvägagångssätt som Pile Shuffle (\ref{sec:pile_shuffle}). Såsom
 anpassning av design av en professionell kortleksblandare (\ref{sec:wheel}).
@@ -553,23 +560,32 @@ till $HM$.
 	\centering
 	\includegraphics[width=0.85\linewidth]{irl_pile_shuffle.pdf}
 	\captionsetup{width=0.8\linewidth} \caption{Ett ilustrativt diagram av
-		kortblandingsprocesen med 
+		kortblandningsprocesen med 
 	Pile Shuffle metoden. Fundamentala mekaniska komponenter till den potentiella
 	kortleksblandaren, där sträckor är kort, cirkelformen är roterande
 kortmatningsmekanismen. Med två högar, $H1$ och $H2$. Där $H1$ har plats för en
 kortlek medans $H2$ har $n$ antal fack med maximalt $M$ antal kort per fack.}
 	\label{fig:irl_pile}
 \end{wrapfigure}
-\boldsection{Potentielt fysikt implementation}: Anpasnings metodiken av
-\boldsection{SOC Pile Shuffle}: Inspiration att undersöka pile shuffle kom ifrån
-\textcite{3DprintedLife2021},
-där pile shuffle implementerades i en 3d printat kortleksblandare.  
-
-\boldsection{Six Pile Shuffle}: 
-
-
-
-\boldsection{Ten Pile Shuffle}: 
+\noindent
+Andra blandningsmetoden som anpassades var Pile Shuffle.
+För att för det första är den metoden design mässig 
+annorlunda till Riffle Shuffle. Den har endast en roterande
+kortmatningsmekansim samt enbart två stora delar, se Figur
+\ref{fig:irl_pile}. Insparation av det potentiella designen 
+kom ifrån YouTube video 
+\textcite{3DprintedLife2021}. I videon visas det en 3D printat kortleksblandare med Pile Shuffle algoritmen. Förkortningsvis denna  metod 
+ska betecknas till \gls{soc} Pile Shuffle eller enbart 
+\gls{soc}. Denna metod har två variarande inställningar som 
+inkluderar 1) antal fack $n$ och 2) maximalt antal kort per
+fack $M$. I denna studie utforskades både \gls{soc} samt 
+två till variationer av denna Six Pile Shuffle respektive 
+Ten Pile Shuffle. Med följande inställningar:
+\textbf{\gls{soc} Pile Shuffle} med $n = 8$ och $M = 10$. Sedan utforskades hur påverkas slumpmässighet med färre fack
+därmed fysika designen kan vara mindre. Detta blev till 
+algoritmen som betcknas till 
+\textbf{Six Pile Shuffle} med $n = 6$ och $M = 10$. Sist undersöktes om vad sker om inställningar blir till $n = 10$ och $M = 10$ denna algoritm kallas till
+\textbf{Ten Pile Shuffle}.
 
 \clearpage
 
@@ -878,7 +894,19 @@ linjen som går genom punkten.
 \input{resultat}
 
 \section{Diskussion}
-Och sista sektionen här, men den är relativt straightforward. 
+Diskussion om resultaten av simulationerna är uppdelat i flera subsektioner i
+syfte att göra det enklare att följa tankeproccesen lättare att följa. Den
+första subsektionen handlar om hur den mest passade blandingsmetoden togs fram,
+den här sektionen är updelad i två delar. Den preliminära gallringen är där dem
+blandingsmetoder som är själklart ompassande gallras bort från undersökingen. I
+jämförelsen av blandingesmetoderna kommer vi närmare undersöka dem metoder som
+återstår efter gallringen för att komma fram till vilken av dem som passar bäst
+inpå dem krav som ställdes i syftet \ref{sec:purpose}. Felkällor och källkritik
+nämns efter att den mest passande blandningsmetoden tagit fram för att att
+diskutera deras påverkan på dem tidgare slutsaterna i diskussionen. I slutsatsen
+binds presenteras den blandningsmetod som undersökingen kom from till vad det
+innebär och vilka förbättringar som skulle kunna göras i potentiell framtida
+forskning.
 
 \subsection{Den mest passande blandningsmetoden}
 
