@@ -153,6 +153,7 @@ till matematik syftar det på att bestämma något via matematiska
 modeller eller processer, alltså att kalkylera.
 
 \subsection{Slumpmässighet}
+\label{sec:slump}
 
 Slumpmässighet är en egenskap som anger att något sker utan klart mönster. När
 något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
@@ -234,6 +235,20 @@ läggs  alla högar ihop i en ny kortlek.
 
 \subsection{Klassiskt poker test}
 \label{sec:poker_test}
+
+
+% Poker Test kan anpassas till vilken som helst sekvens av nummer 3-5 stora
+% mängder. Men för att vår simulation använder vi samma nummer som pokerkort
+% därför kan vi anpassa klassiska poker test var man använder alla möjliga
+% pokerhänder av sekvens av 5 kort. Resultatet från karakterisering av händer
+% använder man i en chi-square testet. För att göra testet rätt följde jag
+% Engineering Statistics handbok (NIST 2012). Dvs för att avgöra hur många 
+% händer
+% uppkom med avseende till teoretiska värdena EXPECTED vs OBSERVED värdena. sen
+% jämför man chi-square resultatet till en CRITICAL värde om den värden som vi
+% fick är mindre kan vi med säkerhet säga att algoritmen är slumpmässigt och 
+% vice versa.
+
 Ett klassiskt poker test används att avgöra slump\-mässighet i numeriska 
 sekvenser, oftast för att testa slumptalsgeneratorer. Testet utförs genom
 att 3 till 5 nummer väljs ut ur en sekvens och placeras i en av sju
@@ -293,8 +308,15 @@ små. Det rekommenderas att $O_i$ inte är mindre en 5.
 %$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 %Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
 %frekvensen för kategorin $i$ \parencite{nist}.
-\subsection{standardavvikelse- och medelvärdestestet (STDMean) testet}
+\subsection{Standardavvikelse- och medelvärdestest (STDMean) testet}
 \label{sec:stdmean}
+Datamängden är utformat på sätt att kort värde är alltså dess position i
+kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
+columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
+borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
+i, och om standaravviklse i figuren är höga torn har position 0 stort variation
+av vilka kort som var där. Detta är då en indikator på en uniform distribution
+som betyder en slumpmässigt algoritm.
 
 Förklara logiken till stanardavvikelse och medelvärdet
 i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
@@ -335,6 +357,22 @@ behövs att skrivas i färdigt program. Dem bibliotek som är speciellt
 intressenta i detta undersökning är NumPy, Matplotlib, SciPy och Numba.
 NumPy som är snabbt i vektoriserad aritmetik och SciPy som har många
 inbygga statistiska tester som $\chi^2$-testet \parencite{numpy, scipy}.
+
+
+% grund av dens rika utbud av bibliotek, speciellt inom
+% veten\-skaplig data\-behandling och data\-analys. Därför valdes det
+% att utföra statistika tester som Poker test och \gls{stdmean} testet i Python.
+% En till perspektiv till varför Python valdes är att analys och avgörande
+% av slump\-mässighet är fundementalt komplex process icke räknebart, men det som
+% underlättar framtagande av resulat är visuella grafer och tabeller. I
+
+% Med detta sagt Pythons Matplotlib bibliotek underlättar processen av
+% graf ritanade tillsammans i en symbious relation med NumPy som har styrka i
+% datamängd represention och vektoriserad data\-bearbetning. Utfördes det
+% mindre matematisk komplicerade tester med fokus på storleken av
+% datamägderna som ger en god överblick av slumpmässighet av dem olika
+% blandnings algoritmerna som simulerades. På avseende på ett teoretiskt
+% perfekt blandnings resulat för samtliga metoder.
 
 Rust är ett programmeringsspråk som fokuserar på
 minnessäkerhet, parallellism och minneseffektivitet. Rust är känt för
@@ -438,6 +476,7 @@ Operativsystem & \texttt{Arch Linux x86\_64, \newline Linux kernel
 \end{table}
 
 \subsection{Framtagande av blandningsalgoritmerna}
+\label{sec:algos}
 I detta avsnitt presenteras processen av framtagande och 
 % kortblandningsalgoritmerna som utgör studies kärna. Här teoretiska grunden för
 % Riffle Shuffe (\ref{sec:riffle_shuffle}), Pile Shuffle (\ref{sec:pile_shuffle})
@@ -468,8 +507,23 @@ generera mer trövärdiga kortblandingar som är mindre influenserade av dess
 underliggande \gls{prng} implemenation. 
 
 \subsubsection{Anpassning av Riffle Shuffle}
+
+ 
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\centering
+	\includegraphics[width=0.9\linewidth]{irl_riffle_shuffle.pdf}
+	\captionsetup{width=0.5\textwidth} \caption{Ett ilustrativt blandingsprocess
+		diagram av
+	Riffle Shuffle fundamentala mekaniska komponenter till den potentiella
+	kortleksblandaren. Med 3 stycken högar $H1$, $HM$ respektive $H2$. Där sträckor representerar kort,
+	cirkelformen representerar en roterande kortmatningsmekanism och mittersta
+	högen är en höjbar mekanism i $y$-led.}
+	\label{fig:irl_gsr}
+\end{wrapfigure}
+
+% \noindent
 Första blandningsmetoden som anpassades var den matematiska
-Gilbert–Shannon–Reeds modell till en praktisk Rust kod (för djupgående bakgrund
+Gilbert-Shannon–Reeds modell till en praktisk Rust kod (för djupgående bakgrund
 om modellen se sektion \ref{sec:riffle_shuffle}). För enkelhetens skull ska denna metod
 betacknas \gls{gsr} Riffle Shuffle eller enbart \gls{gsr}. Motiveringen av att
 utforska denna var  p.g.a. dess lockande egenskaper i att hur matematiska
@@ -482,6 +536,14 @@ Matematiska formeln för \gls{gsr} distrubution är anpassad på rad 6 se Algori
 Rust finns i Bilaga \ref{app:gsr}.
 % I implementeringen av detta algoritm inför simuleringen gjordes det några
 % optimeringar som 1)  
+
+\boldsection{Potentielt fysikt implementation}: Anpasnings metodiken av
+\gls{gsr} inledes med att det skisades upp ett potentiell fysikt implementation av
+Riffle Shuffle utifrån algoritmen, se Figur \ref{fig:irl_gsr}. Detta är ett
+simplifierad version. För att t.ex. det borde finnas ett mekanism att flytta
+kortet från $HM$ till $H1$ och $H2$. Kompliceringar i detta design kan inkludera
+timing problem d.v.s. att kortet från $H1$ träffar kortet från $H2$ på vägen
+till $HM$.
 
 \begin{algorithm}
 \caption{GSR Riffle Shuffle pseudokod}
@@ -503,25 +565,6 @@ få ett slumpmässigt tal}
 \State flytta alla kort från $HM$ tillbaka till $H1$
 \end{algorithmic}
 \end{algorithm}
- 
-\begin{wrapfigure}{r}{0.6\textwidth}
-	\centering
-	\includegraphics[width=0.85\linewidth]{irl_riffle_shuffle.pdf}
-	\captionsetup{width=0.8\linewidth} \caption{Ett ilustrativt blandingsprocess
-		diagram av
-	Riffle Shuffle fundamentala mekaniska komponenter till den potentiella
-	kortleksblandaren. Med 3 stycken högar $H1$, $HM$ respektive $H2$. Där sträckor representerar kort,
-	cirkelformen representerar en roterande kortmatningsmekanism och mittersta
-	högen är en höjbar mekanism i $y$-led.}
-	\label{fig:irl_gsr}
-\end{wrapfigure}
-\boldsection{Potentielt fysikt implementation}: Anpasnings metodiken av
-\gls{gsr} inledes med att det skisades upp ett potentiell fysikt implementation av
-Riffle Shuffle utifrån algoritmen, se Figur \ref{fig:irl_gsr}. Detta är ett
-simplifierad version. För att t.ex. det borde finnas ett mekanism att flytta
-kortet från $HM$ till $H1$ och $H2$. Kompliceringar i detta design kan inkludera
-timing problem d.v.s. att kortet från $H1$ träffar kortet från $H2$ på vägen
-till $HM$.
 
 \clearpage % To not weirdly wrap other text
 
@@ -533,6 +576,38 @@ till $HM$.
  % potentiella kortleksblandaren.
 
 \subsubsection{Anpassning av Pile Shuffle}
+\begin{wrapfigure}{r}{0.6\textwidth}
+% \begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{irl_pile_shuffle.pdf}
+	\captionsetup{width=0.5\textwidth} \caption{Ett ilustrativt diagram av
+		kortblandningsprocesen med 
+	Pile Shuffle metoden. Fundamentala mekaniska komponenter till den potentiella
+	kortleksblandaren, där sträckor är kort, cirkelformen är roterande
+kortmatningsmekanismen. Med två högar, $H1$ och $H2$. Där $H1$ har plats för en
+kortlek medans $H2$ har $n$ antal fack med maximalt $M$ antal kort per fack.}
+	\label{fig:irl_pile}
+	
+% \end{figure}
+\end{wrapfigure}
+Andra blandningsmetoden som anpassades var Pile Shuffle.
+För det första är den metoden design mässig 
+annorlunda till Riffle Shuffle. Den har endast en roterande
+kortmatningsmekansim samt enbart två stora delar, se Figur
+\ref{fig:irl_pile}. Insparation av det potentiella designen 
+kom ifrån YouTube video 
+\textcite{3DprintedLife2021}. I videon visas det en 3D printat kortleksblandare med Pile Shuffle algoritmen. Förkortningsvis denna  metod 
+ska betecknas till \gls{soc} Pile Shuffle eller enbart 
+\gls{soc}. Denna metod har två variarande inställningar som 
+inkluderar 1) antal fack $n$ och 2) maximalt antal kort per
+fack $M$. I denna studie utforskades både \gls{soc} samt 
+två till variationer av denna Six Pile Shuffle respektive 
+Ten Pile Shuffle. Med följande inställningar:
+\textbf{\gls{soc} Pile Shuffle} med $n = 8$ och $M = 10$. Sedan utforskades hur påverkas slumpmässighet med färre fack
+därmed fysiska designen kan vara mindre. Detta blev till 
+algoritmen som betcknas till 
+\textbf{Six Pile Shuffle} med $n = 6$ och $M = 10$. Sist undersöktes om vad sker om inställningar blir till $n = 10$ och $M = 10$ denna algoritm kallas till
+\textbf{Ten Pile Shuffle}.
 
 \begin{algorithm}
 \caption{Pile Shuffle pseudokod}
@@ -556,40 +631,17 @@ till $HM$.
 \end{algorithmic}
 \end{algorithm}
 
-\begin{wrapfigure}{r}{0.6\textwidth}
-	\centering
-	\includegraphics[width=0.85\linewidth]{irl_pile_shuffle.pdf}
-	\captionsetup{width=0.8\linewidth} \caption{Ett ilustrativt diagram av
-		kortblandningsprocesen med 
-	Pile Shuffle metoden. Fundamentala mekaniska komponenter till den potentiella
-	kortleksblandaren, där sträckor är kort, cirkelformen är roterande
-kortmatningsmekanismen. Med två högar, $H1$ och $H2$. Där $H1$ har plats för en
-kortlek medans $H2$ har $n$ antal fack med maximalt $M$ antal kort per fack.}
-	\label{fig:irl_pile}
-\end{wrapfigure}
-\noindent
-Andra blandningsmetoden som anpassades var Pile Shuffle.
-För att för det första är den metoden design mässig 
-annorlunda till Riffle Shuffle. Den har endast en roterande
-kortmatningsmekansim samt enbart två stora delar, se Figur
-\ref{fig:irl_pile}. Insparation av det potentiella designen 
-kom ifrån YouTube video 
-\textcite{3DprintedLife2021}. I videon visas det en 3D printat kortleksblandare med Pile Shuffle algoritmen. Förkortningsvis denna  metod 
-ska betecknas till \gls{soc} Pile Shuffle eller enbart 
-\gls{soc}. Denna metod har två variarande inställningar som 
-inkluderar 1) antal fack $n$ och 2) maximalt antal kort per
-fack $M$. I denna studie utforskades både \gls{soc} samt 
-två till variationer av denna Six Pile Shuffle respektive 
-Ten Pile Shuffle. Med följande inställningar:
-\textbf{\gls{soc} Pile Shuffle} med $n = 8$ och $M = 10$. Sedan utforskades hur påverkas slumpmässighet med färre fack
-därmed fysika designen kan vara mindre. Detta blev till 
-algoritmen som betcknas till 
-\textbf{Six Pile Shuffle} med $n = 6$ och $M = 10$. Sist undersöktes om vad sker om inställningar blir till $n = 10$ och $M = 10$ denna algoritm kallas till
-\textbf{Ten Pile Shuffle}.
 
-\clearpage
+\subsubsection{Anpassning av design av professionell kortleksblandare}
+Tredje blandningsmetoden som skapades var inspererad från en professionell
+kortleksblandare. P.g.a. denna design har den fack för varje kort därmed anpassades det
+Fisher-Yates Shuffle.
+% (för detaljerna se sektion \ref{sec:fisher_yates}).
+D.v.s. först blandades det en lista med indexes med
+Fisher-Yates algoritmen och sedan kortet från $H1$ flyttas till $H2$ baserat på
+slumpmässigt index se Figur \ref{fig:irl_wheel}. Detta metoden teoretiskt sätt
+skulle kräva endast en iteration för att blanda en kortlek.
 
-\subsubsection{Anpassning av design av profesionell kortleksblandare}
 \begin{algorithm}
 \caption{Wheel Fisher-Yates Shuffle pseudokod}
 \label{alg:wheel}
@@ -607,9 +659,25 @@ algoritmen som betcknas till
 \end{algorithmic}
 \end{algorithm}
 
+% \begin{wrapfigure}{r}{0.6\textwidth}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{irl_wheel_shuffle.pdf}
+	\captionsetup{width=0.6\textwidth} \caption{Ett ilustrativt diagram av
+		kortblandningsprocesen med 
+	Fisher-Yates metoden. Fundamentala mekaniska komponenter till den potentiella
+	kortleksblandaren, där sträck är kort, cirkelformen är roterande
+kortmatningsmekanismen. Med två högar, $H1$ och $H3$. Där $H2$ har ett fack för
+varje kort, d.v.s. 52 stycken. Och $H3$ är plats till en blandad kortlek.}
+	\label{fig:irl_wheel}
+\end{figure}
+% \end{wrapfigure}
+% \noindent
 
-% \subsection{Simulation för kortblandningar och dess implementation}
+% \clearpage
+
 \subsection{Simulering av kortblandningsprocesser}
+\label{sec:sim_kort}
 Simulations- och blandningsalgoritmerna implementerades i programmerings språk
 Rust version 1.73.0. Rust valdes p.g.a dess robusta stöd för abstraktioner utan bekostnad.  
 % Datan insamlades från digitalt simulation på olika kortblandningsmetoder
@@ -633,23 +701,51 @@ Rust version 1.73.0. Rust valdes p.g.a dess robusta stöd för abstraktioner uta
 % \parencite{rand_crate}. Rayon för enkel användning av  parallell
 % multiprocessing
 % \parencite{rayon_crate}.
-Simulationen avspeglar hur ett fysiskt
-kortleksblandare skulle fungera. Togs logiska valet att alla simulationer ska ha 
-ett och samma utgångspunkt. Ett verkligt scenarium simulerades vart ett helt ny
-oöppnad kortlek skulle placeras i den potentiella kortleksblandare. Detta
-ordningen kallas för ett fabriksordning för en standard 52-kortlek. Där korterna
-är ordnade efter sitt färg i sekvensiell ordning från två till ess (utan jokrarna).
-Matematiskt kan detta ordningen beskrivas som mängden $\{x \in \mathbb{N},  0 \leq x \leq 51
-\}$, där $x$ representerar en enskild kort och ordningen spelar roll. 
+Simulationen avspeglar hur ett fysiskt kortleksblandare skulle fungera. Därför
+togs det valet att alla simulationer ska ha ett och samma utgångspunkt. Därmed i
+analysen kan det jämföras olika metoder beroende på deras iterationer. D.v.s. ett verkligt
+scenarium simulerades vart ett helt ny oöppnad kortlek skulle placeras i den
+potentiella kortleksblandare. Detta ordningen kallas för ett fabriksordning för
+en standard 52-kortlek. Där korterna är ordnade efter sitt färg i sekvensiell
+ordning från två till ess (utan jokrarna). Matematiskt kan detta ordningen
+beskrivas som mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$, där $x$
+representerar en enskild kort och vart ordningen spelar roll. 
 
-
+För att bestäma datamängden d.v.s. antal kortlekar per en simulation. Användes
+det rekomendationen för chi-två-testet. Där NIST rådger att minsta förekommande
+kategorin för pokertest borde inte vara mindre än 5 stycken (se sektion
+\ref{sec:chi_square}). 
 % Simulation utgår från att man genererar
 % tvådimmensionella array, detta kan matematikst beskrivas som matris med
 % bestämd mängd av kortlekar. Vart varje kort, låt kalla dem till $x$ som
 % följer följande mängden $\{x \in \mathbb{N},  0 \leq x \leq 51 \}$
 % Resulterande datamängden är en \gls{matris} $D$ med 52 kolumner och $m$ antal
 % rader, vart $m$ värde visar hur många kortlekar det finns i datamängden.
-
+% För att bestämma värdet för $m$ följdes ett kriterium ifrån klassiskt
+% poker test (mer i  detalj beskriven i underrubriken
+% \ref{sec:chi_square}).
+% Till hjälps användes NIST internätkälla   i
+% denna nämns det att det är viktigt för chi-square approximationens trovärdighet
+% att minsta kategorin ska inte vara mindre än fem teoretiska framkommande i den
+% kategorin \parencite{nist}. Därför är det
+% viktigt att hitta den minsta kategorin som kan förekomma.
+I poker är den mest
+sällsynta pokerhanden den kungliga färgstegen (Royal Flush) och det finns 4
+stycken av dessa i en standardkortlek. Den teoretiska sannolikheten att
+få 5 Royal Flushes per $m$ kortdelnigar kan aproximeras på följande sätt: 
+% som kan räknas ut på
+% följande sätt antal av alla kortkombinationer med fem kort. $\binom{52}{5} =
+% 2\,598\,960$ Kungliga färgstege finns det fyra  kombinationer av i kortleken
+% som kan räknas ut på följande sätt totala antal kombinationer av kungliga
+% färgstege delat med totala antal femkorts kombinationer från standardkortlek.
+$$ P(\text{Kunglig färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} =
+\frac{4}{2\,598\,960} \approx \frac{1}{649\,740} $$ 
+Sedan denna  resultatet skalas med faktor av 5:
+$m = P(\text{Kunglig färgstege})^{-1}  \times 5 = 3\,248\,700$.
+Denna resulterande värden på $m$ används som den absoluta längden av datamängden i
+simulationen. För att visualisera detta, låt $D$ vara en \gls{matris} 
+med 52 kolumner (antal kort i standardkortleken) och $m$ antal rader (längden av
+datamänden), och där $x$ är en av talen ur den tidigare definerade mängden.
 \begin{equation*}
 	D = \begin{bmatrix}
 		x_{0,0} & x_{0,1} & x_{0,2} & \cdots & x_{0,51}\\ 
@@ -659,69 +755,102 @@ Matematiskt kan detta ordningen beskrivas som mängden $\{x \in \mathbb{N},  0 \
 		x_{m,0} & x_{m,1} & x_{m,2} & \cdots & x_{m,51}
 	\end{bmatrix}
 \end{equation*}
-För att bestämma värdet för $m$ följdes ett kriterium ifrån klassiskt
-poker test (mer i  detalj beskriven i underrubriken
-\ref{sec:chi_square}).
-Till hjälps användes NIST internätkälla   i
-denna nämns det att det är viktigt för chi-square approximationens trovärdighet
-att minsta kategorin ska inte vara mindre än fem teoretiska framkommande i den
-kategorin \parencite{nist}. Därför är det
-viktigt att hitta den minsta kategorin som kan förekomma. I poker är den mest
-sällsynta pokerhanden den kungliga färgstegen (Royal Flush) som kan räknas ut på
-följande sätt antal av alla kortkombinationer med fem kort. $\binom{52}{5} =
-2\,598\,960$ Kungliga färgstege finns det fyra  kombinationer av i kortleken
-som kan räknas ut på följande sätt totala antal kombinationer av kungliga
-färgstege delat med totala antal femkorts kombinationer från standardkortlek.
-$$ P(\text{Kunglig färgstege}) =  \frac{\binom{4}{1}}{\binom{52}{5}} =
-\frac{4}{2\,598\,960} \approx \frac{1}{649\,740} $$ $$m = P(\text{Kunglig
-färgstege})  \times 5 = 3\,248\,700$$ detta blir den minimala datamängden i simulationen
-.
 
-\subsubsection{Val av datatyp \& rådatalagring} 
-Efter teoretiska beräkningar av
-datamängden är det viktigt att välja en lämplig datatyp att representera data i.
-Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
-betyder att den minsta datatypen som får användas är 8 bit eller 1 byte långa som
-kan  innehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
-överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
-använda den  fundermantala datatypen som används i minnesadressen. Fördelen med
-detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
-med NumPy.
+% \subsubsection{Val av datatyp \& rådatalagring} 
 
-Andra aspekten till varför datatypen är viktigt är att spara minnen för att det
-kommer att simuleras och sparas tiotals rådata filer varje fil kommer att väga
-$161 MB$,
-detta kan räknas ut på följande sätt
+% Efter teoretiska beräkningar av
+% datamängden är det viktigt att välja en lämplig datatyp att representera data i.
+% Högsta talet som behövs är 51 definerad tidigare och betecknat med $x$. Detta
+% betyder att den minsta datatypen som får användas är 8 bit eller 1 byte långa som
+% kan  innehålla följande värden $$\{b \in \mathbb{N},  0 \leq b \leq 255 \}$$ som
+% överns\-stämmer med datamängdens högsta talet $x$. Detta ger möjligheten att
+% använda den  fundermantala datatypen som används i minnesadressen. Fördelen med
+% detta är det simplifierar lagring och inmatning av datamängder i t.ex Python
+% med NumPy.
+Via expermintell metodik valdes det att utföra 15 iterationer
+per algoritm. En iteration defineras till att kortleken blandas successiv på
+föregånde blandning. Detta gjordes 
+för att senare kunna jämföra hur algoritmens slumpmässighet påverkas av ökande 
+antal iterationer. Dessutom kan detta valet motiveras av att \gls{gsr}s matematiska
+modellen visar sig att vara mest effektiv vid 7 och 11 iterationer (se sektion
+\ref{sec:riffle_shuffle}). Detta antal iterationer kunde
+ske p.g.a att simulationsprocessen effektiviserades med Rayon \gls{crate}.
+% simulationen 
+Med denna verktyg utfördes programmet i parallelt exekvering. 
+% På ett
+% effektivt sätt simulerades det mer data.
+% Detta valet
+% togs för att algoritmerna är oberoende av varandra.
+% och att på detta sättet
+% .  
+% Därfor mer iterationer utfördes och
+% på så sätt mer data insamlades.
+% Därför infördes
+% det 4 iterationer till för mer analysdata.
+
+För att förutspå hur mycket RAM och hårddisk minne  skulle eventuellt användas vid
+lagring och datanalys. Räknades det ut tynged av en datamängd ska väga 
+% Där ett kort är representerat i uint8
+% (8-bit lång datatyp)
+% användes. Tynged av datan räknades till
+% Andra aspekten till varför datatypen är viktigt är att spara minnen för att det
+% kommer att simuleras och sparas tiotals rådata filer varje fil kommer att väga
+$161 MB$ vid använding av 8bit datatypen.
 $$ \frac{\text{totala bytes}}{\text{megabyte (MB)}} = \frac{52 \times m }{1024 \times
 1024} = \frac{52 \times 3\,248\,700}{1024 \times 1024} = \frac{168\,932\,400}{1\,048\,576} \approx 161 MB 
 $$
-som det är enkelt att spara data i binärt format för att 8 bits eller 1 byte
-är ett fundamentalt och uniformt mått i minnesadressen. Med det sagt, ingen
-bearbetning av data behövs och det är enkelt att ladda in denna i till exempel Python
-med numpy till statistiska testerna av rådata
+Detta steget behövdes för att ta ett informativ beslut senare. D.v.s. hur data ska
+analysers och eventuella anpassas.
+% och proccessen effektiviseras.   
 
-Därför att sista teoretiska delen att bestämma
-är hur många iterationer per algoritm ska genomföras. Med iterationer menas
-hur många gånger kortleken blandas följande på varandra.
+Som det tidagare nämndes utfördes simulationen parallelt där varje algoritm
+exekverades på egen tråd, oberoende av varandra.
+Simulationen utfördes i följande steg: 
+1) Algoritmenerna sparades i en lista;
+2) En lista av kortlekar, motsvarande matrisen $D$ med $m$ antal kortlekar, initierades till fabriksordningen; 
+3) Algoritmerna itererades i en nästlad loop från $i = 1$ till $i = 15$; 
+4) Ledtidsmätaren sätts igång;
+5) Denna iteratinsvariabel $i$ användes för att iterera över listan av kortlekar
+och utföra blandningen $i$ gånger;
+6) Efter varje iteration $i$ adderades ledtiden;
+7) Efter avklarad iteration $i$ medelvärde av ledtiden kalkylerades och
+sparades i en csv fil;
+8) Resulterande blandade kortlekarna utplattedes till en endimensionell lista;
+9) Denna endimensionella lista sparades som en binärfil för statistiskanalys.
+
+% som det är enkelt att spara data i binärt format för att 8 bits eller 1 byte
+% är ett fundamentalt och uniformt mått i minnesadressen. Med det sagt, ingen
+% bearbetning av data behövs och det är enkelt att ladda in denna i till exempel Python
+% med numpy till statistiska testerna av rådata
+%
+% Därför att sista teoretiska delen att bestämma
+% är hur många iterationer per algoritm ska genomföras. Med iterationer menas
+% hur många gånger kortleken blandas följande på varandra.
 
 
 \subsection{Statistisk analys av insamlad data.}
-Detta sektion handlar om hur statistiska metoder som Poker testet och 
-\gls{stdmean} testet implementerades för att analyser slumpmässighet av valda
-och simulerade algoritmerna.
+Detta sektion handlar om hur statistiska metoder som Poker test och
+\gls{stdmean} test implementerades för att analyser slumpmässighet av valda och
+simulerade algoritmerna. Statistiska tester utfördes med Python version 3.11.
+Python valdes p.g.a dens breda använding vid statistisk analys (se sektion
+\ref{sec:verktyg}).
 
-Statistiska tester utfördes med Python version 3.11. Python valdes på
-grund av dens rika utbud av bibliotek, speciellt inom
-veten\-skaplig data\-behandling och data\-analys. Därför valdes det
-att utföra statistika tester som Poker test och \gls{stdmean} testet i Python.
-En till perspektiv till varför Python valdes är att analys och avgörande
-av slump\-mässighet är fundementalt komplex process icke räknebart, men det som
-underlättar framtagande av resulat är visuella grafer och tabeller. I
-denna studie saknas det erfaranhet och kunskaper inom högre grads
-områden inom matematiken som statistikt analys. Detta betyder att rent
-matematiska modeller till avgörande av slumpmässighet som approximate
-entropi (\gls{apen})  \parencite{ApEn}. Men den valdes bort på grund 
-av bristande kunskaper i detta området.
+Efter simulationen, insamlad data är laddat in och återställt tillbaka till
+formen av matrisen $D$ från sektion \ref{sec:sim_kort} med hjälp av NumPy för vidare
+bearbetning. Analysmetoderna delar inladdat data p.g.a. optimeringskall som e.g.
+spara minnen och minimisera initial exekveringstid.
+
+På grund av begränsad kunskap och expertis inom avancerad statistisk matematik,
+även om metoder såsom Aproximate Entropi (\gls{apen}) skulle kunna erbjuda
+ytterligare insikter i slumpmässighetsanalys \parencite{ApEn}, valdes det att
+inte använda dem i denna studie. Detta beslut baserades på bristen på fördjupade
+kunskaper inom detta område samt tidsbegränsingen. Istället fokus ligger på en
+annan branch av slumpmässighet baserad på
+sannolikhetslära. % (se \ref{sec:slump})
+
+% områden inom matematiken som statistikt analys. Detta betyder att rent
+% matematiska modeller till avgörande av slumpmässighet som approximate
+% entropi (\gls{apen})   Men den 
 
 % Men för att avgörande av
 % slumpmässighet är domän specifikt och rent matematiskt komplex då krävs
@@ -734,142 +863,190 @@ av bristande kunskaper i detta området.
 % avseende på förväntade frekvensen ($\chi^2$-testet) samt enklare
 % statistiska koncept som mediana och standardavviklse (StdMean-testet).
 
-Med detta sagt Pythons Matplotlib bibliotek underlättar processen av
-graf ritanade tillsammans i en symbious relation med NumPy som har styrka i
-datamängd represention och vektoriserad data\-bearbetning. Utfördes det
-mindre matematisk komplicerade tester med fokus på storleken av
-datamägderna som ger en god överblick av slumpmässighet av dem olika
-blandnings algoritmerna som simulerades. På avseende på ett teoretiskt
-perfekt blandnings resulat för samtliga metoder.
 
 % För statistikst analys av data användes programmeringsspråket Python
 % 3.11 och utnyttjades bibliotek som Numpy till datamängd bearbetning,
 % Scipy till statistisk analys och Matplotlib till visualisering av
 % resultat. 
 
-Rådata som sparades efter simulationen är laddat in som en dimensionell
-lista med hjälp av Numpy  efter det är rådata återställt tillbaka till
-tvådimensionell matris för vidare bearbetning och analys med följande
-metoder: Klassisk Poker Test \ref{sec:poker_test} och medelvärde av
-korta positioner i kortleken över hela datamängden kalkylerad såsom
-avvikelser av dessa positioner. Utförligt beskrivning i underrubriker. 
+% med följande
+% metoder: Klassisk Poker Test \ref{sec:poker_test} och medelvärde av
+% korta positioner i kortleken över hela datamängden kalkylerad såsom
+% avvikelser av dessa positioner. Utförligt beskrivning i underrubriker. 
 
-\subsubsection{Implemention av Klassiskt poker test}
-Poker Test utgår ifrån att man karaktäriserar typer av mönster till 
-pokerhänder och kalkylerar  den absolutvärdet $\chi^2$ i detalj beskrevs
-teorin bakom $\chi^2$ testet i sektion
-\ref{sec:poker_test}. 
+\subsubsection{Implemention av den klassiska poker testet}
+Syfte med denna metod är att utföra preliminär galring av algoritmernas
+iterationer som har betyande avvikelser från dem förväntade värdena av en slumpmässigt
+blandningsalgoritm.  
 
-\subsubsection*{Kategorisering}
-I standardkortlek finns det 52 kort med fyra olika 
-färger (Spader, Hjärter, Ruter och klöver) och 13 valörer 
-(2, 3, 4, 5, 6, 7, 8, 9, 10, Knekt, Dam, Kung, Ess).
-Av skall att testerna utförs med standard kortleken,
+Den klassiska poker test utgår ifrån att man karaktäriserar typer av mönster
+till pokerhänder och kalkylerar  den absolut värde av $\chi^2$ i detalj beskrevs
+teorin bakom chi-två-test  i sektion \ref{sec:poker_test}. Den klassiska poker
+testet i denna studie baseras på faktumet att simuleringar utfördes med en
+standard kortlek. Därför valdes det att anpassa chi-två-testet att använda alla
+poker händer. Matematiken, speciellt kombinatoriken att räkna ut sannolikheter
+och frekvensen av alla poker\- händer är relativt svår uppdrag därför
+addopterdes det uträkningar ifrån studie av \textcite{Drew2006}, se tabell
+\ref{tab:all_poker_hands}. Detta metodiken medföljde med mer komplex
+karakterisering av poker\-händer än när man använder chi-två-testet till att
+e.g. testa slumptalsgeneratorer. Motiveringen till komplixiteten var att i denna
+studie utforskas särkilt kortlekar till spel vart kombinationer av kort ofta
+spelar betyande roll och därför var det särkilt viktigt att anpassa
+slumpmässighets analysmetoderna till hur den potentiella kortleksblandare skulle
+fungera i drift.
 
-\begin{table}[ht] 
-\captionsetup{justification=centering,margin=4cm}
-\caption{Alla pokerhänders namn, relativt mönster och antal av kombinationer }
+\begin{table}[H] 
+\captionsetup{width=0.5\textwidth, justification=centering}
+\caption{Namn på alla pokerhänder och dess relativ mönster. Antal$_1$ är 
+teoretisk framkommande kombinationer med en standard kortlek. Antal$_2$ är 
+faktoriserade kombinationer d.v.s \\ Antal$_2 = $ Antal$_1 \times 1.25$ }
 \label{tab:all_poker_hands}
 	\centering
-	\begin{tabular}{|l|c|r|}
+	\begin{tabular}{|l|c|r|r|}
 	
 	% Header
 	\hline 
 	Pokerhand 
-	& Example mönster 
-	& Antal kombinationer 
+	& Example mönstren 
+	& Antal$_1$ 
+	& Antal$_2$ 
 	\\ \hline  
 
 	% rows
-	Royal flush 
+	Royal Flush 
 	& $A\spadesuit\, K\spadesuit\, Q\spadesuit\, J\spadesuit\, 10\spadesuit$
 	& 4 
+	& 5
 	\\ \hline
 
 	Färgstege
 	& $K\spadesuit\, Q\spadesuit\, J\spadesuit\, 10\spadesuit\, 9\spadesuit$
 	& 36 
+	& 45
 	\\ \hline
 
 	Fyrtal 
 	& $A\spadesuit\,A\heartsuit\,A\diamondsuit\,A\clubsuit\, K\spadesuit$ 
 	& 624 
+	& 780
 	\\ \hline
 
 	Kåk 
 	& $A\spadesuit\, A\heartsuit\, A\diamondsuit\, K\clubsuit\,K\spadesuit$ 
 	& 3\,744
+	& 4\,680
 	\\ \hline
 
 	Färg
 	& $K\spadesuit\, Q\spadesuit\, J\spadesuit, 10\spadesuit\, 8\spadesuit$
 	& 5\,108
+	& 6\,385
 	\\ \hline
 
 	Stege 
 	& $K\spadesuit\, Q\heartsuit\, J\diamondsuit\, 10\clubsuit\,9\spadesuit$ 
 	& 10\,200
+	& 12\,750
 	\\ \hline
 	Triss 
 	& $A\spadesuit\, A\heartsuit\, A\diamondsuit\, K\clubsuit\, Q\spadesuit$
 	& 54\,912
+	& 68\,640
 	\\ \hline
 
 	Två par 
 	& $A\spadesuit\, A\heartsuit\, K\diamondsuit\, K\clubsuit\, Q\spadesuit$
 	& 123\,552
+	& 154\,440
 	\\ \hline
 
 	Ett par 
 	& $A\spadesuit\, A\heartsuit, K\diamondsuit\, Q\clubsuit\, J\spadesuit$ 
 	& 1\,098\,240 
+	& 1\,372\,800
 	\\ \hline
 
 	Högt kort
 	& $A\spadesuit\, Q\heartsuit\, J\diamondsuit\, 5\clubsuit\, 4\spadesuit$
 	& 1\,302\,540
+	& 1\,628\,175
 	\\ \hline
 
 	 
 	\multicolumn{2}{|r|}{Summan:} 
 	& 2\,598\,960 
+	& 3\,248\,700
 	\\ \hline
 \end{tabular}
 \end{table}
 
-valdes det att anpassa $\chi^2$ testet att använda alla poker händer. Matematiken
-speciellt kombinatoriken att räkna ut sannolikheter och frekvensen av alla poker\-
-händer är relativt svårt uppdrag därför addopterdes det \textcite{Drew2006} 
-uträkningar se tabell \ref{tab:all_poker_hands}. Detta medföljde med mer komplex
-karakterisering av poker\-händer än när man använder $\chi^2$ testet 
-att till example testa slumptalsgeneratorer. Valet log med att datamängderna 
-innehåller kortlekar till att göra simulationer mer  realistiska och anpassade
-till hur ett riktigt kortleksblandare skulle fungera i drift. Därför valet att
-anpassa statistiska tester till slutmål användnings sätt verkade vara ett
-logiskt steg att ta.
+\noindent
+Kategeriseringsprocessen till att få ett hand till ett pokerhand börjades med
+att det uttnytjades NumPy vektoriserad aritmetik funktionalitet. Med denna
+funktionen på ett effektivt sätt valdes ut 5 kort i.e en hand och kördes igenom
+en katigoriserings funktion om denna senare. Dem 5 kort valdes ut på ett
+speciellt sätt för att göra denna likvärdig verkligheten. D.v.s. pokerspel med 2
+spelare. Där valdes det kort med index 0, 2, 5, 6 och 7 (spelare-ett:  2 kort i
+handen, spelare-2 kort förkastas och 3 sista kort är flop) med NumPy funktionalitet
+kördes katigoriserings funktionen rad mässigt.
 
-Poker Test kan anpassas till vilken som helst sekvens av nummer 3-5 stora
-mängder. Men för att vår simulation använder vi samma nummer som pokerkort
-därför kan vi anpassa klassiska poker test var man använder alla möjliga
-pokerhänder av sekvens av 5 kort. Resultatet från karakterisering av händer
-använder man i en chi-square testet. För att göra testet rätt följde jag
-Engineering Statistics handbok (NIST 2012). Dvs för att avgöra hur många 
-händer
-uppkom med avseende till teoretiska värdena EXPECTED vs OBSERVED värdena. sen
-jämför man chi-square resultatet till en CRITICAL värde om den värden som vi
-fick är mindre kan vi med säkerhet säga att algoritmen är slumpmässigt och 
-vice versa.
+\textbf{katigoriserings funktion:}
+I standardkortlek finns det 52 kort med fyra olika 
+färger (Spader, Hjärter, Ruter och klöver) och 13 valörer 
+(2, 3, 4, 5, 6, 7, 8, 9, 10, Knekt, Dam, Kung, Ess). Konvertering av tidigare
+definerade mängden av kort $x$, i.e. (0, 1, 2, $\dots$, 51) till katgeriserbart
+kort utfördes. För att optimera kategoriseringsproccessen användes Numba för att skapa en
+ny tråd, detta kunde enbart göras p.g.a. att det användes den fundamentala 8bit
+datatypen, som definerades tidigare. Efter att ett ny tråd skapades proccessen
+försattes på följande sätt: 
+\begin{equation*}
+    \text{valör}(x) = x \mod 13
+\end{equation*}
+\begin{equation*}
+    \text{färg}(x) = \left\lfloor \frac{x}{13} \right\rfloor
+\end{equation*}
+där $\text{valör}(x)$ ger värde från 0-12 och $\text{färg}(x)$ ger värde från
+0-3. För dem intresserade av specifika kod detaljerna se Bilaga
+\ref{app:github}. Försättningsvis denna funktion gav tillbaka ett värde från
+0-9 som indikerar ett pokerhand ifrån Tabell \ref{tab:all_poker_hands}, där 0 är
+Högt kort och 9 Royal Flush. För att denna funktionen kördes kolumn mässigt över
+hela datamängded var denna resulterande 
+lista med antal observerade pokerhänder från varje rad, låt denna lista betecknas till
+$O$ (Observerat frekvens). I bästa fall skulle denna lista
+fått likadana värdena som kolumnen Antal$_2$ i Tabell \ref{tab:all_poker_hands}.
 
-Testet utgår i två generella steg kategorisera fem kort och seden 
+
+\textbf{Chi-två-test}: Inställningar till testet var $\alpha = 0.05$
+(\gls{alfa}), df $= 10 -
+1 = 9$ (frihetsgrader), där $10$ är den antal pokerhänder givna av Tabell
+\ref{tab:all_poker_hands}. Sedan beräknades gränsvärde med SciPy \gls{bibliotek}s
+funktionen $Chi2.ppf( 1 - \alpha, df)$. Sedan används det \textit{chisquare}
+funktionen ifrån SciPy för att beräkna \gls{pvalue} och $\chi^2$ värde. För att
+kalkylera denna användes tidigare genererade listan $O$ och dem förväntade värden given av
+kolumnen Antal$_2$ i Tabell \ref{tab:all_poker_hands}. Resulterande värdena på
+\gls{pvalue} och $\chi^2$ sparades i en csv fil för redovisningen i Resultat
+sektionen.
 
 \subsubsection{Implemention av STDMean testet}
-Datamängden är utformat på sätt att kort värde är alltså dess position i
-kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
-columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
-borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
-i, och om standaravviklse i figuren är höga torn har position 0 stort variation
-av vilka kort som var där. Detta är då en indikator på en uniform distribution
-som betyder en slumpmässigt algoritm.
+Syfte med denna analysmetod är att utforska hur enskild kort rör sig genom
+kortleken när den blandas. Därmed avgöra om algoritmen har eller har inte ett
+tendens att blanda specifika delar av kortleken mer än dem andra. Detta i sin
+tur är viktigt i kortspel där positioner på första korterna är viktiga för
+kortspels rätvisshet. Snedvridning kan alltså potentiell indikera logiska fell i
+implementionen av en algoritm. I initiala tester användes \gls{stdmean} testet
+för att upptäcka logiska fel. Detta hände i den första versionen av
+implementation av \gls{gsr} Riffle Shuffle, där det på fell sätt användes indexering
+i iterationen, felet upptäcktes med hjälp av denna analysmetoden. 
+
+För att förstå metoden är det relevant att återbesöka konceptet med matrisen $D$ i sektion 
+\ref{sec:sim_kort}. Därför att det uttnytjade NumPy vektoriserad aritmetik i
+simbios med dens inbyggda funktioner som medelvärde och standardavvikelse. Både
+funktionera utfärdes kolumn vis på $m$ antal rader. Denna resultatet användes sedan till
+att rita punktdiagram av Medelvärde av Position på y-led (\gls{mp}) och
+Position av Kort på x-led (\gls{pk}). Standardavviklse från medelvärdet visas
+som symetrisk linje ifrån denna punkten. Den teoretiska medelvärdet i 
+en slumpmässigt blanding borde ligga runt $51 \div 2 = 25.5$ och den
+experimentellt testade standardavvikelse ifrån medelvärdet $\approx 15$.
 
 \section{Resultat}
 % Result är icke bestämt i vilken format kommer att skrivas
@@ -911,6 +1088,11 @@ forskning.
 \subsection{Den mest passande blandningsmetoden}
 
 \subsubsection{Preliminär gallring}
+Dem algoritmer som gallras är dem som helt säkert inte kommer vara bättre en dem
+andra i dem färdigheterna som blandningsmetoderna jämförs på. Alla
+blandningsmetoder som var signifikanta enligt chi-två-testet kan gallras då dem
+inte uppnår en av kraven för blandningsmetoder, dem blandar inte på ett helt
+slumpmässigt sätt.
 
 \subsubsection{Jämförelse av blandningsmetoderna}
 
