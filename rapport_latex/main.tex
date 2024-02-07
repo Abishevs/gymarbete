@@ -92,7 +92,7 @@ culpa qui officia deserunt mollit anim id est laborum.
 \newpage
 
 \glsaddall[] % adds all ordlist.tex entries
-\printglossaries % Ordlista printas här
+\printglossary[title=Ordlista] % Ordlista printas här
 \newpage
 
 \section{Inledning}
@@ -268,7 +268,7 @@ inte bevisat på ett eller ett annat sätt.
 \end{figure}
 \end{minipage}
 
-\subsection{Klassiskt poker test}
+\subsection{Den Klassiska poker testet}
 \label{sec:poker_test}
 
 
@@ -304,7 +304,7 @@ De olika mönster som letas efter i talen visas i Tabell \ref{tab:num_poker_hand
 	\centering
 	\captionsetup{width=0.5\textwidth}
 	\captionof{table}{Vanliga kategorier till poker test}
-        \label{tab:num_poker_hands}
+    \label{tab:num_poker_hands}
 	\begin{tabular}{|l|c|}
 	\hline 
 	Pokerhand & Mönster \\ \hline  
@@ -349,20 +349,20 @@ små. Det rekommenderas att $O_i$ inte är mindre en 5.
 %$$ \chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$
 %Vart $O_i$ är observerade frekvensen för kategorin $i$ och $E_i$ är förväntade
 %frekvensen för kategorin $i$ \parencite{nist}.
-\subsection{Standardavvikelse- och medelvärdestest (STDMean) testet}
-\label{sec:stdmean}
-Datamängden är utformat på sätt att kort värde är alltså dess position i
-kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
-columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
-borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
-i, och om standaravviklse i figuren är höga torn har position 0 stort variation
-av vilka kort som var där. Detta är då en indikator på en uniform distribution
-som betyder en slumpmässigt algoritm.
+%\subsection{ testet}
+%\label{sec:stdmean}
+%Datamängden är utformat på sätt att kort värde är alltså dess position i
+%kortleken. Första kort är 0 dvs position 0 i kortleken. Kalkylerar varje
+%columns korts medelvärde och standaravvikelse ska man förustpå att medelvärde
+%borde ligga nära $51/2= 25.5$ detta betyder att i position 0 har alla kort varit
+%i, och om standaravviklse i figuren är höga torn har position 0 stort variation
+%av vilka kort som var där. Detta är då en indikator på en uniform distribution
+%som betyder en slumpmässigt algoritm.
 
-Förklara logiken till stanardavvikelse och medelvärdet
-i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
+%Förklara logiken till stanardavvikelse och medelvärdet
+%i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
 
-\subsection{Slumptalsgeneratorer (RNG)}
+\subsection{Slumptalsgeneratorer}
 \label{sec:prng}
 Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
 \parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
@@ -424,11 +424,13 @@ hjälper till att förhindra minnesläckor och tillåter säker
 minneshantering utan en skräpsamlare (garbage collector)
 \parencite{rust}. 
 P.g.a. dessa egenskaper har det ökats populariteten av användning av Rust i
-inbyggda system som ett motkandidat till C \parencite{sharma2023rust}.
+inbyggda system som ett motkandidat till C som undersöktes av \textcite{sharma2023rust}.
 
-\textbf{Rand} \gls{crate} \parencite{rand_crate}.
+\textbf{Rand} \gls{crate} är för pseoduslumtal generering med enkelt använding via \textit{Rng} trait. Samt säker och snabb behandling av fröet med \textit{thread\_rng} \parencite{rand_crate}.
 
-\textbf{Rayon} \gls{crate} \parencite{rayon_crate}. 
+\textbf{Rayon} \gls{crate}  är för att konvertera sekvensiella 
+iterationer i Rust till parallellt och säker exekvering 
+\parencite{rayon_crate}.
 
 Genom att använda dessa verktyg har denna studie kunnat utföra omfattande
 simuleringar och dataanalyser på ett effektivt sätt. Deras tillgänglighet och
@@ -468,7 +470,7 @@ slumpmässighet och effektivitet, vilket är kärnan i studiens frågeställning
 % frågan om dess algoritmernas fysiskt tillämpning i en potentiell
 % kortleksblandare.
 
-Målsättningen med denna sektion är att djupgånade undersöka kortblandnings
+Målsättningen är att djupgånade undersöka kortblandnings
 fysiskt tillämplighet, dess effektivitet och slumpmässighet. Att utföra 
 simulation valdes därmed att blandningsalgoritmerna
 (processmässigt) skulle vara snarlika till dess potentiella kortleks\-blandare.
@@ -477,8 +479,7 @@ innefattar en kvantitativ metodik för att reducera den inneboendes
 slumpvariation i de simulerade blandningsalgoritmerna. Genoma att generera ett bestämt
 mängd av kortleksblandningar, där datamängder uppfyler kravet ifrån statistiska metoder. Dessa
 statistiska  analysmetoder omfattar det klassiska pokertestet (\ref{sec:poker_test}), med
-resulat given av chi-två-testet (\ref{sec:chi_square}). Samt \gls{stdmean} testet
-(\ref{sec:stdmean}), vilket ger ett närmare inblick i korts variation i specifika
+resulat given av chi-två-testet (\ref{sec:chi_square}). Samt standardavvikelse- och medelvärdestest (\gls{stdmean}), vilket ger ett närmare inblick i korts variation i specifika
 positioner i kortleken. Tillsammans dessa tester ger en tillfredsställande indikation på
 blandningsmetodens slumpmässighet. 
 
