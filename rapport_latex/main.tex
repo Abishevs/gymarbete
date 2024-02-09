@@ -161,6 +161,48 @@ inom matematik är byggd beräknings\-teori och den delas upp i två beroende p�
 det gäller slumpmässighet av en bestämd mängd eller en oändlig mängd av objekt
 \parencite[49-66]{Terwijn2016}.
 
+\subsection{Slumptalsgeneratorer}
+\label{sec:prng}
+
+Som det nämndes i sektion \ref{sec:slump}  finns det olika typer av slump.
+Följaktligen finns det olika typer av slumptalsgeneratorer. Dem kan indelas i två
+typer icke-deterministiska och deterministiska så kallade \textit{äkta
+slumptalsgeneratorer} (true random number generators- TRNG) respektive 
+\textit{pseudo slumptalsgeneratorer} (psuedo random number
+generators- PRNG). Icke-deterministiska processer använder sig av naturliga
+fenomen e.g. termisk natur, kosmisk strålning eller radioktivt sönderfall.
+Därför denna metod behöver en speciellt utrustining. Å andra sidan
+deterministiska processer är när en slumptal algoritm simulerar en slumpmässigt
+händelse. Men den behöver ett start data som sedan utför ett kedja av
+operationer. Därför deterministiska slumptalgenerator behöver ett frö (seed) att
+utgå ifrån. På så sätt kan exakt samma sekvens av slumpmässiga sekvenser
+återskapas om fröet
+är känd \parencite{salinhanes2011}.
+
+% \textbf{TRNG} är till när den absolut säkraste slumptal ska genereras
+Det finns olika områden när TRNG eller PRNG är lämligast att använda.
+Enligt \textit{random.org} sammanfattar dem dessa till följande PRNG vid simulationer och
+TRNG vid casino spel \parencite{randomorg}. 
+
+
+% Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
+% \parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
+% hands val
+% \parencite{mersenne_twister} men som vi sedan bytte till ChaCha för att i rust
+% är det relativt svårt att  implementera och använda mersenne twister. Berätta om
+% dem skillnaderna som finns.
+% \parencite{salinhanes2011}.
+%
+% En väldigt känd och testad algoritm är Mersenne Twister (MT 19937) som
+% har en väldigt långt period innan siffrorna börjar att upprepa sig, mer
+% exakt $2^{19937}$ \parencite{mersenne_twister}.
+%
+% lltså nämn att för att det här är som et proof of concept, borde vid
+% senare tillfälle användas en hårdvara PRNG och icke software PRNG.
+% Men på grund av detta undersökning handlar mesta dels om stora mängder av data
+% simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
+% skapa simulationer!
+
 \subsection{Bakgrund av blandings metoder}
 
 \subsubsection{Riffle shuffle}
@@ -216,6 +258,13 @@ tills alla kort från kortleken har flyttats till en av högarna. Sedan
 läggs  alla högar ihop i en ny kortlek. Flöde av en sådan metod visas i Figur
 \ref{fig:pile_shuffle}.
 
+Att hitta en kortleksblandare som hade implementerat en Pile Shuffle metoden var
+inte enkelt uppdrag. Men det hittades en kortleksblandare som lyckades med det.
+Källan hittades på YouTube  och var skapad av \textcite{3DprintedLife2021}.
+Blandingsmaskinen kallas till Shuffle-o-matic (SOC). I denna YouTube videon visas
+det upp hur en sådan maskin fungerar och hur kan denna 3D printas.  Där meddelas
+det att kortmatningsmekanismen var svårt att implementera p.g.a. hur tunna
+spelkort är.
 
 \begin{figure}[H]
 	\begin{center}
@@ -362,32 +411,13 @@ små. Det rekommenderas att $O_i$ inte är mindre en 5.
 %Förklara logiken till stanardavvikelse och medelvärdet
 %i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
 
-\subsection{Slumptalsgeneratorer}
-\label{sec:prng}
-Här berätta om ChaCha20 \parencite{chacha} den som är biobliotekes rand
-\parencite{rand_crate} default PRNG och mersenne twister som egentligen var första
-hands val
-\parencite{mersenne_twister} men som vi sedan bytte till ChaCha för att i rust
-är det relativt svårt att  implementera och använda mersenne twister. Berätta om
-dem skillnaderna som finns.
-
-
-En väldigt känd och testad algoritm är Mersenne Twister (MT 19937) som
-har en väldigt långt period innan siffrorna börjar att upprepa sig, mer
-exakt $2^{19937}$ \parencite{mersenne_twister}.
-
-lltså nämn att för att det här är som et proof of concept, borde vid
-senare tillfälle användas en hårdvara PRNG och icke software PRNG.
-Men på grund av detta undersökning handlar mesta dels om stora mängder av data
-simulationer så måste vi använda och "Sacrifice" verkliga till att lättare
-skapa simulationer!
 
 \subsection{Programmerings verktyg}
 \label{sec:verktyg}
 Inom ramen för denna studie är användningen av programmeringsverktyg som Python
 och Rust av stor betydelse. Detta sektion inkluderar beskrivnigar av alla
 verktyg som ska användas. Tyngden betonas på den tidigare forsknings yttersts
-utmärkta arbete inom datanalys verktyg som gjorts till öppen kälkod  för alla att
+utmärkta arbete inom datanalys verktyg som publicerats till öppen kälkod  för alla att
 använda. För att utan dessa verktyg skulle denna studie inte
 vara möjlig att utföra. 
 
@@ -405,28 +435,31 @@ forskning \parencite{numpy}.
 \textbf{SciPy}, ett stort samling av öppen källkod-programvara för matematik och
 vetenskap. Det är resultatet av samarbete mellan hundratals forskare och bidrar
 till att göra komplexa matematiska beräkningar tillgängliga och effektiva
-\parencite{scipy}. E.g. funktioner för chi-två-tests utförandet.
+\parencite{scipy}. E.g. funktioner för chi-två-tests utförande.
 
 \textbf{Numba} är ett kompilatorbibliotek som översätter Python-kod till snabb,
 maskinkod som körs på egen tråd. Detta projekt, som drivs av Anaconda, Inc.,
 möjliggör betydande hastighetsförbättringar för dataintensiva implementationer 
-förutsatt att det används fundementala datatyper och funktioner \parencite{numba}.  
+förutsatt att det används fundementala datatyper och operationer \parencite{numba}.  
 
 \textbf{Matplotlib}, skapat av John D. Hunter och nu underhållet av en stor
 utvecklargemenskap, är det ledande biblioteket för datavisualisering i Python.
 Det gör det möjligt att enkelt skapa en mängd olika grafik och plotter, vilket
-är kritiskt för analys och presentation av data \parencite{matplotlib}.
+är kritiskt för analys och presentation av data \textcite{matplotlib}.
 
-\textbf{Rust} är ett programmeringsspråk som fokuserar på
-minnessäkerhet, parallellism samt minneseffektivitet. Rust är känt för
+\textbf{Rust} är ett kompilerad statisk programmeringsspråk som fokuserar på
+minnessäkerhet, samt minneseffektivitet och parallellism. Rust är känt för
 sina avancerade funktioner som ägarskapssystemet (ownership), vilket
 hjälper till att förhindra minnesläckor och tillåter säker
 minneshantering utan en skräpsamlare (garbage collector)
 \parencite{rust}. 
 P.g.a. dessa egenskaper har det ökats populariteten av användning av Rust i
-inbyggda system som ett motkandidat till C som undersöktes av \textcite{sharma2023rust}.
+inbyggda system som ett motkandidat till programmeringsspråk C, detta  undersöktes
+ på djupet av \textcite{sharma2023rust}.
 
-\textbf{Rand} \gls{crate} är för pseoduslumtal generering med enkelt använding via \textit{Rng} trait. Samt säker och snabb behandling av fröet med \textit{thread\_rng} \parencite{rand_crate}.
+\textbf{Rand} \gls{crate} är för pseoduslumtal generering med enkelt använding
+via \textit{Rng} trait. Samt säker och snabb behandling av fröet med
+\textit{thread\_rng}, den använder algoritm ChaCha20 \parencite{rand_crate}.
 
 \textbf{Rayon} \gls{crate}  är för att konvertera sekvensiella 
 iterationer i Rust till parallellt och säker exekvering 
@@ -1112,11 +1145,11 @@ i sektion \ref{sec:sim_kort}. Därför att det uttnytjade NumPy vektoriserad
 aritmetik i simbios med dens inbyggda funktioner som medelvärde och
 standardavvikelse. Både funktionera utfärdes kolumn vis på $m$ antal rader.
 Denna resultatet användes sedan till att rita punktdiagram av Medelvärde av
-Position på y-led (\gls{mp}) och Position av Kort på x-led (\gls{pk}).
-Standardavviklse från medelvärdet visas som symetrisk linje ifrån denna punkten.
-Den teoretiska medelvärdet i en slumpmässigt blanding borde ligga runt $51 \div
-2 = 25.5$ och den experimentellt testade standardavvikelse ifrån medelvärdet
-$\approx 15$.
+Position (\gls{mp}) på y-led  och Position av Kort (\gls{pk}) på x-led med hjälp
+av matplotlib. Standardavviklse av \gls{pk} visas som vertikal symetrisk linje
+ifrån \gls{pk} punkten. Den teoretiska medelvärdet i en slumpmässigt blanding
+borde ligga runt $51 \div 2 = 25.5$ och den experimentellt testade \gls{sd}
+ifrån \gls{pk} $\approx 15$.
 
 \section{Resultat}
 % Result är icke bestämt i vilken format kommer att skrivas
@@ -1126,17 +1159,80 @@ $\approx 15$.
 %kan göras i ett större tabell, antar jag)
 
 
-Totalt 75 simulationer av olika kortblandnings algoritmer utfördes. 15
-simulationer per algoritm för att jämföra samma algoritm med olika antal
-iterationer, varje algoritm har alltså resultat som motsvarar utförelse
-med iterationer 1-15. Dem viktigaste av simulationerna plockades ut och
-deras resultat presenteras här. Resultat av poker test samt medelvärde
-för algoritmers ledtid presenteras i tabeller. Resultaten för medelvärde
-av dem positioner ett kort har varit på och standardavvikelsen
-presenteras via punktdiagram. Vilket kort som en punkt i diagrammet
-representerar ges av punktes position på x-axeln, medelvärde är avläst
-från punktens position på y-axeln och standardavvikelse är givet av
-linjen som går genom punkten. I Bilaga \ref{app:stdmean} Figur \ref{fig:gsr-1}
+Totalt 50 simulationer utfördes. 15 simulationer per algoritm för att jämföra
+samma algoritm med olika antal iterationer, varje algoritm har alltså resultat
+som motsvarar utförelse med iterationer 1-15. Dem mest relevanta resultat av
+simulationerna plockades ur och presenteras här. Resultat av poker test samt
+medelvärde för algoritmers ledtid presenteras i tabellen nedan. Resultaten
+av STDMean testet visas i Bilaga \ref{app:stdmean}. Vilket kort som en punkt i
+diagrammet representerar ges av punktes position på x-axeln, medelvärde är
+avläst från punktens position på y-axeln och standardavvikelse är givet av den
+symetriska vertikala linjen som går genom punkten.
+
+\textbf{\gls{gsr} Riffle Shuffle}:  Pokertest visade en variarande slumpmässighet
+med första giltiga resultat vid iteration 7. Efter det slumpmässighet
+försämrades.
+Speciellt iteration 9 som överstig gränsvärden på 16.92 men efter denna iteration
+resultat förbätrades igen. Ledtiden visade en stabil värde men efter iteration 9
+ledtiden minskade med ca 15\% relativt till iteration 3 (se Tabell
+\ref{tab:gsr}).
+Resulat av STDMean testet visade en stigande trend av medelvärde av position
+(\gls{mp}) över positon av kort (\gls{pk}) samt dess standardavvikelse
+(\gls{sd}) var jämnt för all \gls{pk}. Iteration 3 visade ett stigande trend (se
+Bilaga \ref{app:stdmean} \ref{fig:gsr-3}) men vid iteration 7 normaliserades denna
+till den teoretiska beräknade värden av \gls{mp} = 25.5 (se Bilaga
+\ref{app:stdmean} Tabell \ref{fig:gsr-7}). 
+
+\textbf{Six Pile Shuffle}: Iteration 1 och 2, pokertestet visade att $\chi^2$
+värdena låg över gränsvärden. Iteration 3 visade det första giltiga resultat.
+Vid nästkommande iterationer låg gränsvärden inom normen, med ingen
+tydlig trend. Vid ökade iterationer  ledtidenerna verkar varit konstanta med
+minimal variation på ca +8\% mellan iteration 1 och 7 (se Tabell \ref{tab:six}).
+STDMean testet vid iteration 1 visade värdena av stor betydlse, var \gls{pk} 0-2
+hade låg \gls{sd} värde ca 5.4 vid \gls{pk} 1 och ca \gls{sd} 9.0 vid \gls{pk} 2
+d.v.s. värden ökade i denna intervall med \gls{sd} ca 2.0
+(se Bilaga \ref{app:stdmean} Tabell  \ref{fig:six-1}).
+Sedan dess värdena varit variarande som liknade sinusfunktion. Men vid \gls{pk}
+49-51 visades det exakt likadan mönster som i \gls{pk} 0-2. Vid iteration 2 uttpladades
+värdena men vart tionde \gls{pk} hade avvikelser i \gls{mp} 
+(Bilaga \ref{app:stdmean} Tabell  \ref{fig:six-2}). Sedan vid iteration 3, detta
+mönstren minskades (Bilaga \ref{app:stdmean} Tabell \ref{fig:six-3}).
+Sedan vid iteration 4 uttplatades \gls{mp} värdena helt och var
+vid den teoretiska värden av \gls{mp} (Bilaga \ref{app:stdmean} Tabell \ref{fig:six-4}).
+
+\textbf{\gls{soc} Pile Shuffle}: Från pokertestet, första giltiga resultat
+visades
+vid iteration 2. Medans i iteration 3 överstig gränsvärden medans dem
+succsesiva iterationer låg $\chi^2$ värdena inom den kalkylerade
+gränsvärden. Ledtiden från iteration 7 visade likadan  variation på +8\% relativt
+till iteration 1 (se Tabell \ref{tab:soc}). Resultatet av STDMean testet iteration 1 
+visade samma mönster som i Six Pile Shuffle. För \gls{pk} 0-2 och
+49-51 men \gls{sd} av \gls{pk} 0 och 51 var med ca 2.0 större än i Six Pile
+Shuffle. Medans \gls{pk} från 15-36 hade \gls{mp} som låg runt 25.4.
+Iteration 2 hade synlig avvikelse av \gls{mp} för \gls{pk} 0 och 51. Annars enbart
+\gls{pk} 10 och 41 hade synlig avvikelse från den teoretiska \gls{mp}. Iteration
+3 hade endast första och sista \gls{pk} som hade synlig avvikelse från \gls{mp}.
+Medans vid iteration 4 låg alla \gls{mp} på den teoretiska värden.
+
+\textbf{Ten Pile Shuffle}: Iteration 1 enligt resultatet av pokertestet visade
+ett icke slumpmässigt iteration. Med första giltiga resultat var vid iteration
+2. Dessutom iteration 2 till 5 visade stabila $\chi^2$ värden runt 5.28
+(medelvärde av dess 4 iterationer). Ledtiden hade likadan trend som föregånde
+Pile Shuffles d.v.s. ökat värde på ca 8\% från iteration 1 till 7 (se Tabell
+\ref{tab:ten}). \gls{stdmean} testet vid iteration 1 visade likadan \gls{sd}
+mönster för \gls{pk} men vid högre \gls{mp} värdena än SOC Pile Shuffle. Samt
+iteration 2 hade likadan mönster. Medans iteration 3 hade väldigt liten avvikelse
+i \gls{pk} 0 och 51. Vid iteration 4 var alla \gls{mp} värdena vid den
+teoretiska värden.
+
+
+\textbf{Wheel Fisher-Yates Shuffle}: Alla iteration var inom gränsvärden d.v.s.
+hade giltiga result enligt pokertestet. Men vid iteration 3 och 6 $\chi^2$
+värdena var relativt lägre än dem andra. Ledtiden från iteration 1 till 7 hade
+ett ökat värde på ca 9\% (se Tabell \ref{tab:wheel}). STDMean testet visade att
+dess \gls{mp} låg vid den beräknade värde redan vid första iteration såsom vid
+samtilga successiva iterationer (se Bilaga \ref{app:stdmean} Tabell
+\ref{fig:wheel-1}). 
 
 \input{resultat_chi_square}
 
