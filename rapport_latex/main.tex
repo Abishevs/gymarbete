@@ -142,8 +142,20 @@ en potentiell spelkortsblandare som uppfyller följande:
 
 
 \section{Teori}
-\subsection{Beräkningsteori}
+%\subsection{Beräkningsteori}
+%
+%Beräkningsteori är en del av matematik vars syfte är grundat i hur och om
+%problem kan bli lösta på olika beräkningssätt. Beräkningsteori har flera olika
+%grenar. En gren handlar om vad som går att bevisa inom matematik angående om
+%nummer och funktioner är beräkneliga eller inte. Med beräknelig menas något som
+%kan beräknas, det vill säga värderas, uppfattas eller förutses, när det kommer
+%till matematik syftar det på att bestämma något via matematiska
+%modeller eller processer, alltså att kalkylera.
 
+\subsection{Slumpmässighet}
+\label{sec:slump}
+%todo: edit text below to fit more with the overal topic "randomness"
+%and to fit more seamlessly together
 Beräkningsteori är en del av matematik vars syfte är grundat i hur och om
 problem kan bli lösta på olika beräkningssätt. Beräkningsteori har flera olika
 grenar. En gren handlar om vad som går att bevisa inom matematik angående om
@@ -151,9 +163,6 @@ nummer och funktioner är beräkneliga eller inte. Med beräknelig menas något 
 kan beräknas, det vill säga värderas, uppfattas eller förutses, när det kommer
 till matematik syftar det på att bestämma något via matematiska
 modeller eller processer, alltså att kalkylera.
-
-\subsection{Slumpmässighet}
-\label{sec:slump}
 
 Slumpmässighet är en egenskap som anger att något sker utan klart mönster. När
 något är helt slumpmässigt är det i princip omöjligt att förutse. Slumpmässighet
@@ -386,12 +395,10 @@ kritiskt värde för att bestäma om den observerade följer den förväntade
 fördelningen. $\chi^2$ beräknas enligt formeln
 $$\chi^2 = \sum_{i=1}^k\frac{(O_i - E_i)^2}{E_i}$$
 Där $O_i$ är observerade frekvensen för en kategori av data $i$ och $E_i$
-är förväntade frekvensen för kategorin $i$ \parencite{nist}.
+är förväntade frekvensen för kategorin $i$.
 Det kritiska värdet fås av antalet frihetsgrader(kategorier - parametrar)
-och signifikansnivån som bestämts för testet.
-
-Ett aspekt i chi-två-test är att data mängderna som testas inte kan vara för
-små. Det rekommenderas att $O_i$ inte är mindre en 5.
+och signifikansnivån som bestämts för testet. Såsom ett viktigt aspekt i chi-två-test är att data mängderna som testas inte kan vara för
+små. Det rekommenderas att $O_i$ inte är mindre en 5 \parencite{nist}.
 
 %Chi-square, chi-två testing eller som den också betecknas $\chi^2$ är statistikt test
 %som oftas används till att definera och beräkna slumpmässighet av bestämd sannolikhet.
@@ -410,7 +417,6 @@ små. Det rekommenderas att $O_i$ inte är mindre en 5.
 
 %Förklara logiken till stanardavvikelse och medelvärdet
 %i logiken med avgörande av normal distribitution och hur den ger ett mått/bild på randomness
-
 
 \subsection{Programmerings verktyg}
 \label{sec:verktyg}
@@ -449,11 +455,12 @@ Det gör det möjligt att enkelt skapa en mängd olika grafik och plotter, vilke
 
 \textbf{Rust} är ett kompilerad statisk programmeringsspråk som fokuserar på
 minnessäkerhet, samt minneseffektivitet och parallellism. Rust är känt för
+
 sina avancerade funktioner som ägarskapssystemet (ownership), vilket
 hjälper till att förhindra minnesläckor och tillåter säker
 minneshantering utan en skräpsamlare (garbage collector)
 \parencite{rust}. 
-P.g.a. dessa egenskaper har det ökats populariteten av användning av Rust i
+P.g.a. dessa egenskaper har det ökats popularitet av användning av Rust i
 inbyggda system som ett motkandidat till programmeringsspråk C, detta  undersöktes
  på djupet av \textcite{sharma2023rust}.
 
@@ -976,6 +983,7 @@ sannolikhetslära. % (se \ref{sec:slump})
 % avvikelser av dessa positioner. Utförligt beskrivning i underrubriker. 
 
 \subsubsection{Implemention av den klassiska poker testet}
+\label{sec:poker_test_M}
 Syfte med denna metod är att utföra preliminär galring av algoritmernas
 iterationer som har betyande avvikelser från dem förväntade värdena av en slumpmässigt
 blandningsalgoritm.  
@@ -1201,18 +1209,20 @@ Sedan vid iteration 4 uttplatades \gls{mp} värdena helt och var
 vid den teoretiska värden av \gls{mp} (Bilaga \ref{app:stdmean} Tabell \ref{fig:six-4}).
 
 \textbf{\gls{soc} Pile Shuffle}: Från pokertestet, första giltiga resultat
-visades
-vid iteration 2. Medans i iteration 3 överstig gränsvärden medans dem
-succsesiva iterationer låg $\chi^2$ värdena inom den kalkylerade
-gränsvärden. Ledtiden från iteration 7 visade likadan  variation på +8\% relativt
-till iteration 1 (se Tabell \ref{tab:soc}). Resultatet av STDMean testet iteration 1 
-visade samma mönster som i Six Pile Shuffle. För \gls{pk} 0-2 och
-49-51 men \gls{sd} av \gls{pk} 0 och 51 var med ca 2.0 större än i Six Pile
-Shuffle. Medans \gls{pk} från 15-36 hade \gls{mp} som låg runt 25.4.
-Iteration 2 hade synlig avvikelse av \gls{mp} för \gls{pk} 0 och 51. Annars enbart
-\gls{pk} 10 och 41 hade synlig avvikelse från den teoretiska \gls{mp}. Iteration
-3 hade endast första och sista \gls{pk} som hade synlig avvikelse från \gls{mp}.
-Medans vid iteration 4 låg alla \gls{mp} på den teoretiska värden.
+visades vid iteration 2. Medans i iteration 3 överstig gränsvärden medans dem
+succsesiva iterationer låg $\chi^2$ värdena inom den kalkylerade gränsvärden.
+Ledtiden från iteration 7 visade likadan  variation på +8\% relativt till
+iteration 1 (se Tabell \ref{tab:soc}). Resultatet av STDMean testet iteration 1
+visade samma mönster som i Six Pile Shuffle. För \gls{pk} 0-2 och 49-51 men
+\gls{sd} av \gls{pk} 0 och 51 var med ca 2.0 större än i Six Pile Shuffle
+(Bilaga \ref{app:stdmean} Tabell \ref{fig:soc-1}). Medans \gls{pk} från 15-36
+hade \gls{mp} som låg runt 25.4. Iteration 2 hade synlig avvikelse av \gls{mp}
+för \gls{pk} 0 och 51. Annars enbart \gls{pk} 10 och 41 hade synlig avvikelse
+från den teoretiska \gls{mp} (Bilaga \ref{app:stdmean} Tabell \ref{fig:soc-2}).
+Iteration 3 hade endast första och sista \gls{pk} som hade synlig avvikelse från
+\gls{mp} (Bilaga \ref{app:stdmean} Tabell \ref{fig:soc-3}). Medans vid iteration
+4 låg alla \gls{mp} på den teoretiska värden (Bilaga \ref{app:stdmean} Tabell
+\ref{fig:soc-4}).
 
 \textbf{Ten Pile Shuffle}: Iteration 1 enligt resultatet av pokertestet visade
 ett icke slumpmässigt iteration. Med första giltiga resultat var vid iteration
@@ -1220,10 +1230,12 @@ ett icke slumpmässigt iteration. Med första giltiga resultat var vid iteration
 (medelvärde av dess 4 iterationer). Ledtiden hade likadan trend som föregånde
 Pile Shuffles d.v.s. ökat värde på ca 8\% från iteration 1 till 7 (se Tabell
 \ref{tab:ten}). \gls{stdmean} testet vid iteration 1 visade likadan \gls{sd}
-mönster för \gls{pk} men vid högre \gls{mp} värdena än SOC Pile Shuffle. Samt
-iteration 2 hade likadan mönster. Medans iteration 3 hade väldigt liten avvikelse
-i \gls{pk} 0 och 51. Vid iteration 4 var alla \gls{mp} värdena vid den
-teoretiska värden.
+mönster för \gls{pk} men vid högre \gls{mp} värdena än SOC Pile Shuffle (Bilaga
+\ref{app:stdmean} Tabell \ref{fig:ten-1}). Samt iteration 2 hade likadan mönster
+(Bilaga \ref{app:stdmean} Tabell \ref{fig:ten-2}). Medans iteration 3 hade
+väldigt liten avvikelse i \gls{pk} 0 och 51 (Bilaga \ref{app:stdmean} Tabell
+\ref{fig:soc-3}). Vid iteration 4 var alla \gls{mp} värdena vid den teoretiska
+värden (Bilaga \ref{app:stdmean} Tabell \ref{fig:soc-4}).
 
 
 \textbf{Wheel Fisher-Yates Shuffle}: Alla iteration var inom gränsvärden d.v.s.
@@ -1239,34 +1251,47 @@ samtilga successiva iterationer (se Bilaga \ref{app:stdmean} Tabell
 \section{Diskussion}
 Diskussion om resultaten av simulationerna är uppdelat i flera subsektioner i
 syfte att göra det enklare att följa tankeproccesen lättare att följa. Den
-första subsektionen handlar om hur den mest passade blandingsmetoden togs fram,
-den här sektionen är updelad i två delar. Den preliminära gallringen är där dem
-blandingsmetoder som är själklart ompassande gallras bort från undersökingen. I
-jämförelsen av blandingesmetoderna kommer vi närmare undersöka dem metoder som
-återstår efter gallringen för att komma fram till vilken av dem som passar bäst
-inpå dem krav som ställdes i syftet \ref{sec:purpose}. Felkällor och källkritik
-nämns efter att den mest passande blandningsmetoden tagit fram för att att
-diskutera deras påverkan på dem tidgare slutsaterna i diskussionen. I slutsatsen
-binds presenteras den blandningsmetod som undersökingen kom from till vad det
+första subsektionen \ref{sec:d_bm} handlar om hur den mest passade blandningsmetoden
+togs fram, den är uppdelad i två delar. Den preliminära gallringen \ref{sec:d_bm_pg}
+är där dem blandningsmetoder som är självklart opassande gallras bort från undersökingen. I
+jämförelsen av blandningsmetoderna \ref{sec:d_bm_jbm} kommer vi närmare undersöka dem
+metoder som återstår efter gallringen för att komma fram till vilken av dem som passar
+bäst inpå dem krav som ställdes i syftet \ref{sec:purpose}. Felkällor och källkritik 
+\ref{sec:d_fk} nämns efter att den mest passande blandningsmetoden tagit fram för att att
+diskutera deras påverkan på dem tidigare slutsatserna i diskussionen. I slutsatsen 
+\ref{sec:d_s} återpresenteras den blandningsmetod som undersökingen kom from till vad det
 innebär och vilka förbättringar som skulle kunna göras i potentiell framtida
 forskning.
 
 \subsection{Den mest passande blandningsmetoden}
+\label{sec:d_bm}
 
 \subsubsection{Preliminär gallring}
+\label{sec:d_bm_pg}
 Dem algoritmer som gallras är dem som helt säkert inte kommer vara bättre en dem
-andra i dem färdigheterna som blandningsmetoderna jämförs på. Alla
-blandningsmetoder som var signifikanta enligt chi-två-testet kan gallras då dem
-inte uppnår en av kraven för blandningsmetoder, dem blandar inte på ett helt
-slumpmässigt sätt.
+andra i dem färdigheterna som blandningsmetoderna jämförs på. Alla blandningsmetoder 
+som var signifikanta enligt det klassiska poker testet \ref{sec:poker_test_M} kan 
+gallras då dem inte uppnår ett av kraven för blandningsmetoder \ref{sec:purpose},
+dem blandar inte på ett helt slumpmässigt sätt. Effektivitet är också viktigt för den
+mest passande blandningsmetoden som undersökingen syftar på att ta fram \ref{sec:purpose},
+därför är det logiskt att preliminärt gallra blandningsmetoder vars effektivitet är
+sämre till en grad som inte kan kompenseras för av dess andra egenskaper. Blandningsmetoderna
+som kan konstateras innehava en underlägsen effektivitet utan noggrannare analys är
+alla metoder med mer än tio iterationer. Metoder med 11 till och med 15 iterationer
+är alltså inte inkluderade i den närmare analysen och jämförelsen av blandningsmetoder.
 
 \subsubsection{Jämförelse av blandningsmetoderna}
+\label{sec:d_bm_jbm}
+%no.1 priority probably
 
 
 \subsection{Felkällor och Källkritik}
+\label{sec:d_fk}
 
 
 \subsection{Slutsats}
+\label{sec:d_s}
+%this section is kerkalicious
 
 
 %\nocite{*}
