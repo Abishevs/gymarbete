@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{changepage}
 \usepackage{algorithm}	   % CODEFormating
 \usepackage{algpseudocode} % CODEFormating
 \usepackage{csquotes}      % Recommended
@@ -77,16 +78,23 @@
 
 \begin{center}
     \large
-    \vspace{0.9cm}
     \textbf{Abstract}
-    \vspace{0.9cm}
 \end{center}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+\vspace{0.5cm} 
+\begin{adjustwidth}{2cm}{2cm} 
+This study presents a comprehensive analysis of different card shuffling algorithms with the aim of evaluating their efficiency, randomness, and practical applicability in the design of a potential card shuffler machine.
+
+\vspace{1cm} 
+\begin{center}
+    \large
+    \textbf{Acknowledgment}
+\end{center}
+\vspace{0.5cm} 
+I will thank my mom for raising such an arrogant, one sided dork.
+\newpage
+
+\end{adjustwidth}
+
 
 \tableofcontents
 \newpage
@@ -135,7 +143,8 @@ Vi söker med hjälp av data svaret på frågan:
 Utifrån slumpmässighet och effektivitet, vilken kortblandningsmetod är bäst för
 en potentiell spelkortsblandare som uppfyller följande:
 \begin{itemize}
-	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
+	\item Fysiskt tillämplighet: Hur väl kan den framställas i verkligheten 
+
 	\item Effektivitet: Utifrån mjukvaras och hårdvaras perspektiv
         \item Kortblandnings slumpmässighet
 \end{itemize}
@@ -1251,48 +1260,152 @@ samtilga successiva iterationer (se Bilaga \ref{app:stdmean} Tabell
 \section{Diskussion}
 Diskussion om resultaten av simulationerna är uppdelat i flera subsektioner i
 syfte att göra det enklare att följa tankeproccesen lättare att följa. Den
-första subsektionen \ref{sec:d_bm} handlar om hur den mest passade blandningsmetoden
-togs fram, den är uppdelad i två delar. Den preliminära gallringen \ref{sec:d_bm_pg}
-är där dem blandningsmetoder som är självklart opassande gallras bort från undersökingen. I
-jämförelsen av blandningsmetoderna \ref{sec:d_bm_jbm} kommer vi närmare undersöka dem
-metoder som återstår efter gallringen för att komma fram till vilken av dem som passar
-bäst inpå dem krav som ställdes i syftet \ref{sec:purpose}. Felkällor och källkritik 
-\ref{sec:d_fk} nämns efter att den mest passande blandningsmetoden tagit fram för att att
-diskutera deras påverkan på dem tidigare slutsatserna i diskussionen. I slutsatsen 
-\ref{sec:d_s} återpresenteras den blandningsmetod som undersökingen kom from till vad det
+första subsektionen(\ref{sec:d_bm}) handlar om hur den mest passade blandningsmetoden
+togs fram, den är uppdelad i två delar. I jämförelsen av blandningsmetoderna(\ref{sec:d_bm_jbm}) kommer närmare undersökning av metoderna komma fram till vilken av dem som passar
+bäst inpå dem krav som ställdes i syftet(\ref{sec:purpose}). Felkällor (\ref{sec:d_fk}) nämns efter att den mest passande blandningsmetoden tagit fram för att
+diskutera deras påverkan på dem tidigare slutsatserna i diskussionen. I slutsatsen(\ref{sec:d_s}) återpresenteras den blandningsmetod som undersökingen kom from till vad det
 innebär och vilka förbättringar som skulle kunna göras i potentiell framtida
 forskning.
 
 \subsection{Den mest passande blandningsmetoden}
 \label{sec:d_bm}
 
-\subsubsection{Preliminär gallring}
-\label{sec:d_bm_pg}
-Dem algoritmer som gallras är dem som helt säkert inte kommer vara bättre en dem
-andra i dem färdigheterna som blandningsmetoderna jämförs på. Alla blandningsmetoder 
-som var signifikanta enligt det klassiska poker testet \ref{sec:poker_test_M} kan 
-gallras då dem inte uppnår ett av kraven för blandningsmetoder \ref{sec:purpose},
-dem blandar inte på ett helt slumpmässigt sätt. Effektivitet är också viktigt för den
-mest passande blandningsmetoden som undersökingen syftar på att ta fram \ref{sec:purpose},
-därför är det logiskt att preliminärt gallra blandningsmetoder vars effektivitet är
-sämre till en grad som inte kan kompenseras för av dess andra egenskaper. Blandningsmetoderna
-som kan konstateras innehava en underlägsen effektivitet utan noggrannare analys är
-alla metoder med mer än tio iterationer. Metoder med 11 till och med 15 iterationer
-är alltså inte inkluderade i den närmare analysen och jämförelsen av blandningsmetoder.
-
 \subsubsection{Jämförelse av blandningsmetoderna}
 \label{sec:d_bm_jbm}
 %no.1 priority probably
+\textbf{Utifrån slumpmässighet}: Resultaten av det klassisk pokertestet (Tabell
+\ref{tab:res-pokertest}) ger ut vilka av blandningsmetoderna som kan definitivt
+inte sägas ge slumpmässigt blandade kortlekar.
+% dem som var signifikanta.
+Eftersom den bästa blandningsmetoden måste kunna slumpmässigt blanda en kortlek.
+Därför är ingen av metoderna som gav signifikanta resultat d.v.s. dessa som
+överstiger gränsvärde på 16.92 värda att tänka på, dem kan gallras från
+populationen av metoderna som behöver vidare analys. För GSR riffle shuffle
+betyder det att alla innan 7 kan gallras bort, det är ett logisk resultat då det
+stämmer överens med tidigare undersökningar på GSR vars resultat också medför
+att 7 upprepningar av riffle shuffle krävs för att få en helt slumpmässig
+blandning \parencite{dovetaillair}. Ten Pile Shuffle visade det mest säkraste
+indikation på hög slumpmässighet vid iterationer 2 till 5 men enligt
+STDMean testet endast iteration 4 visade att alla kort i kortleken har
+tillräckligt stort variation d.v.s. ingen avviklse från dem teoretiska värdena.
+SOC Pile shuffle visade också giltigt slumpmässighets värde vid iteration 2 men
+såsom med Ten Pile Shuffle endast iteration 4 visade helt slumpmässigt resultat
+från STDMean testet. Six Pile Shuffle vid pokertestet gav giltiga värdena som
+dem andra variationer endast iteration 5 visade giltigt resultat enligt STDMean
+testet.  
+
+%Dem algoritmer som gallras är dem som helt säkert inte kommer vara bättre en dem
+%andra i dem färdigheterna som blandningsmetoderna jämförs på. Alla blandningsmetoder 
+%som var signifikanta enligt det klassiska poker testet(\ref{sec:poker_test_M}) kan 
+%gallras då dem inte uppnår ett av kraven för blandningsmetoder(\ref{sec:purpose}),
+%dem blandar inte på ett helt slumpmässigt sätt.
+
+\textbf{Baserad på dess effektivitet}: För att i
+den potentiella kortleksblandare minsta antal iterationer ska prioriteras d.v.s.
+endast då högsta effektivitet kan nås- om det behövs färre suksessiva
+blandningar. Därför blandningsmetoderna som kan konstateras innehava en
+underlägsen effektivitet utan noggrannare analys är alla metoder med mer än tio
+iterationer. Dessutom visades dem inte ökat slumpmässighet med över 11
+iterationer. Med detta sagt iterationer från 11 till och med 15 iterationer är
+alltså inte inkluderade i den närmare analysen.
+
+Algoritmerna presterade med olika slags mjuvarassnabbhet. GSR Riffle Shuffle var
+den näst långsammaste men ledtiden minskade vid mer iterationer. Detta kan
+beror på att alla algoritmerna kördes i paralelt simulation därför friades det
+mer resurser åt dem sista iterationer. Six Pile Shuffle enligt ledtiderna var
+den snabbaste detta kan bero på att algoritmen hade mindre fack att välja mellan
+dessutom stannade algoritm färre gånger. D.v.s. när ett annat fack är redan
+fullt av dem max 10 kort per fack. SOC Pile Shuffle presterade sämre än GSR. Ten
+Pile Shuffle var den mest långsammaste och dess ledtid ökade vid fler
+iterationer. Detta kunde också påverkas av faktumet på inte tillräckligt likt
+till den potentiella kortleksblandare metod.
+
+Ledtiderna för Wheel Fisher-Yates  proccessmässigt kunde inte simuleras på likt
+som den potentiella blandingsmaskinen,. För att processen att simulera detta
+blev svårare och löstes inte.  Därför dess ledtiden kan inte vara ett mått på
+dess effektivitet.
+
+Dessutom ledtiderna kan vara vilse ledande. Detta kan beror på att
+simulerings miljö inte riktigt avspeglade hur den potentiella kortleksblandare
+skulle ha fungerat. Därför blandingsmetoderna effektivitet diskuteras i nästa
+del.
 
 
-\subsection{Felkällor och Källkritik}
+\textbf{Ifrån dess fysiskt tillämplighet}:
+Som det nämndes i sektion \ref{sec:algos} dessa tre undersökta algoritmerna har
+väldigt annorlunda design principer därmed behöver olika antal av rörliga delar
+involverade i processen för att imitera dess underliggande algoritm. Dessa
+faktorer kommer att påverka dess fysiska tilllämplighet i den potentiella
+blandningsmaskinen. Därför önskade faktorerna som storlek, snabbhet och
+framställbarhet (hur enkelt är dess design och  hur framgångsrik kan den utföra
+successiva iterationer utan problem) ska tänkas innan valet görs. Men för att
+dessa krav undersöks inte i denna studie kan inte den bästa blandingsmetod tas
+fram. Därför i denna studie har det kommits fram till att det finns ingen
+definitiv svar men snarare ett eller annat metod kan vara mer eller mindre
+passande. GSR visade att den behöver 7 iterationer för att nå slumpmässight
+blandning. Effektivitet mässigt innebär det ett långt blandningsproccess. Dess
+fysiska tillämlighet är komplex. Den behöver två kortmatningsmekanismer som
+fungerar i symbios med varandra för att eliminera timing problem. Pile Shuffle
+har relativt lätt framtagnigs proccess och som har redan 3D printats av
+\parencite{3DprintedLife2021}. Den är effektivt för att den kräver endast en
+kortmatningsmekanism, ingen timing problem finns för att det är endast ett kort
+som rör sig i taget. Men för den mest slumpmässiga resulat med minsta antal
+iterationer ska SOC inte användes. Istället Ten Pile Shuffle ska tilämpas för
+att den visade mer stabila resulat i pokertestet. Därför är denna algoritm mer
+pålitlig att ha högre slumpmässighet. Om kravet är att blanda flera
+kortlekar kan Wheel Fisher-Yates Shuffle tillverkas. Effektivitets mässigt kommer
+denna att vara långsamt p.g.a. den måste snurre för att mata in en kort i
+rätt position. Men den behöver endast en kortmatningsmekanism. Samt endast ett
+iteration för att nå slumpmässgt blandning.
+
+
+\subsection{Felkällor}
 \label{sec:d_fk}
+Som det nämndes i föregånde sektion ledtiderna visar inte rätt representation av
+hur långt tid det tar för att utföra en blanding. Samt simulatationen avspeglar
+inte hur långt tid denna skulle ta i verkligheten. Därför ledtiderna blev
+relativa men kunde inte användes för att argumentera för en eller annan
+kortleksblandare skulle vare mer effektiv.
+
+I denna studie saknades det kunskaper om andra statistiska analysmetoder som
+ApEn som skulle ha gett inblick i andra aspekter av algoritmens slumpmässighet.
+Dessutom datamänged som valdes ifrån i krav pokertestet skulle ha varit högre
+för att uppnå mer testdata. På så sätt få att Royal Flush, matematiskt skulle ha
+uppkommit fler än 5 gånger. Detta skulle ha get mer pålitliga testresulat.
+
+% Simulerings proccesesn aviker från verklighet. Generel kunnigethet om området
+% under framtällandet av metod och analys av resulat. Datamängden skulle vara
+% högre, vi gjorde att det teoritsk kan framkomma 5 Royal flushes men det kan vara
+% en större mängd då kanske blir pokertestresultat mer pålitliga.
 
 
 \subsection{Slutsats}
 \label{sec:d_s}
 %this section is kerkalicious
+I studien undersöktes 3 olika design av blandsmetoderna- Riffle Shuffle, Pile
+Shuffle (med 3 olika variationer) och Wheel shuffle. Utifrån resultat av
+statistiska analysmetoder som Pokertest och STDMean testet har det kommits fram
+till mest passande antal iterationer. Men en definitivt bästa blandningsmetod
+till den potentiella kortleksblandare kunde inte tas fram. Istället varje
+blandningsmetod kan användes vid specifika krav, dessa krav undersöktes inte.
+Därför den mest enkelt tillverkbar metod är Pile Shuffle med 10 fack och 10 max
+kort per fack. Dessutom för den mest slumpmässiga kortleksblanding ska
+kortleken blandas 4 gånger. Om istället kravet ligger att blanda mer en
+kortlek då skulle Wheel Shuffle med Fisher-Yates blandningsalgoritm passa bäst
+den skulle endast kräva 1 iterationer för att vara tillräckligt slumpmässig.
+Slutligen Riffle Shuffle kräver mer undersökningar därför att 7 iterationer är
+tidskrävande d.v.s. inte effektivt samt design av en sådan maskin är mest komplex
+av dem 3. Såsom denna metod ska behöva 2 kortmatningsmekanismer samt ska denna
+kunna utföra blandningar utan att få timing problem.
 
+I framtidaforskning skulle Riffle shuffle undersökas närmare, andra variationer i
+algoritmen testas för att nå tillräckligt stort slumpmässighet med färre
+iterationer på så sätt dess effektivit förbättras. För Pile Shuffle and Wheel
+Shuffle skulle prototyper byggas för att undersöka dess riktiga ledtider i ett
+fysiskt maskin. På så sätt dess fysiskt tillämlighet undersökas närmare. Samt
+protyper skulle byggas i 3D moddelerings program och sedan program som Robot
+Operative System (ROS) användas för att simulera dessa i sin fysiska form men i
+en simulation som simulerar vår fysiska värld på mer tillfredställande sätt.
 
 %\nocite{*}
 
