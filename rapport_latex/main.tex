@@ -82,15 +82,33 @@
 \end{center}
 \vspace{0.5cm} 
 \begin{adjustwidth}{2cm}{2cm} 
-This study presents a comprehensive analysis of different card shuffling algorithms with the aim of evaluating their efficiency, randomness, and practical applicability in the design of a potential card shuffler machine.
-
+This study presents a comprehensive analysis of three card shuffling algorithms:
+Riffle Shuffle, Pile Shuffle (in three variations) and Wheel Fisher-Yates
+Shuffle. The objective is to assess their statistical randomness, efficiency,
+and practical applicability in the design of a potential card shuffler machine.
+Large-scale simulations were performed to generate extensive shuffling datasets,
+with the classical poker test and STDMean test applied to assess their
+randomness. The practical feasibility was theorized, supported by conceptual
+diagrams. The results did not favor a singular method as superior in all
+aspects. Instead, the Pile Shuffle with 10 bins and 4 iterations emerged as the
+most balanced choice, offering optimal randomness and practicality for
+construction. While the Wheel Fisher-Yates Shuffle presents a more complex
+design, it uniquely facilitates the shuffling of multiple decks in a single
+iteration. The Riffle Shuffle, while traditional, requires further investigation
+to optimize its implementation.
 \vspace{1cm} 
 \begin{center}
     \large
     \textbf{Acknowledgment}
 \end{center}
 \vspace{0.5cm} 
-I will thank my mom for raising such an arrogant, one sided dork.
+% We will thank our moms for raising such an arrogant, one sided dorks.
+Special thanks to our mentor, Elias Lindqvist, for his invaluable guidance and
+dedication to our development as writers. His expertise, passion for grammar,
+and rigorous approach to research and citation have profoundly impacted us,
+pushing our boundaries to new heights and instilling a meticulous and analytical
+mindset. His countless hours of feedback and support have been crucial to our
+growth and the success of this project.
 \newpage
 
 \end{adjustwidth}
@@ -143,8 +161,7 @@ Vi söker med hjälp av data svaret på frågan:
 Utifrån slumpmässighet och effektivitet, vilken kortblandningsmetod är bäst för
 en potentiell spelkortsblandare som uppfyller följande:
 \begin{itemize}
-	\item Fysiskt tillämplighet: Hur väl kan den framställas i verkligheten 
-
+	\item Fysiskt tillämpning: Hur pass väl den kan framställas i verkligheten 
 	\item Effektivitet: Utifrån mjukvaras och hårdvaras perspektiv
         \item Kortblandnings slumpmässighet
 \end{itemize}
@@ -225,10 +242,8 @@ TRNG vid casino spel \parencite{randomorg}.
 
 \subsubsection{Riffle shuffle}
 \label{sec:riffle_shuffle}
-Riffle Shuffle är den mest kända kortleksblandningsmetoden. 
-Riffle shuffle har undersökts över långt tidsperiod. Den matematiska modellen
-utvecklades av Gilbert och Shannon 1955 och senare oberoende av Reeds 1981 
-\parencite[77-79]{gsr2003mathematical}. 
+Riffle Shuffle är den vanligaste kortblandningsmetoden. Riffle shuffle är utförda genom att dela upp en kortlek i två delar och sedan interfoliera dem för att få ut en blandad kortlek.
+Riffle shuffle har undersökts över en lång tidsperiod. För matematiska syften angående riffle shuffle finns det en modell, Gilbert-Shannon-Reeds-modellen.  Gilbert-Shannon-Reeds-modellen är en matematisk modell vars resultat är lika dem från riffle shuffle utförd av en människa. Modellen utvecklades av Gilbert och Shannon \parencite{gilbertshuftheo}, och senare oberoende av Reeds 1981 i ett verk som inte publicerades \parencite[77-79]{gsr2003mathematical}.  Mycket tidigare forskning om riffle shuffles egenskaper bygger på Gilbert-Shannon-Reeds-modellen till exempel \textcite{dovetaillair}, en studie vars resultat verkar medföra att riffle shuffle borde göras sju gånger för att få en helt slumpmässig blandning. 
 % Det finns många olika metoder att blanda kort med riffle shuffle.
 % Gilbert-Shannon-Reeds-modellen är en matematisk modell på riffle shuffle som ger
 % resultat nära dem en riffle shuffle utförd av en människa ger.
@@ -1259,18 +1274,24 @@ samtilga successiva iterationer (se Bilaga \ref{app:stdmean} Tabell
 
 \section{Diskussion}
 Diskussion om resultaten av simulationerna är uppdelat i flera subsektioner i
-syfte att göra det enklare att följa tankeproccesen lättare att följa. Den
-första subsektionen(\ref{sec:d_bm}) handlar om hur den mest passade blandningsmetoden
-togs fram, den är uppdelad i två delar. I jämförelsen av blandningsmetoderna(\ref{sec:d_bm_jbm}) kommer närmare undersökning av metoderna komma fram till vilken av dem som passar
-bäst inpå dem krav som ställdes i syftet(\ref{sec:purpose}). Felkällor (\ref{sec:d_fk}) nämns efter att den mest passande blandningsmetoden tagit fram för att
-diskutera deras påverkan på dem tidigare slutsatserna i diskussionen. I slutsatsen(\ref{sec:d_s}) återpresenteras den blandningsmetod som undersökingen kom from till vad det
+syfte att göra det enklare att följa tankeproccesen.
+% Den
+% första subsektionen(\ref{sec:d_bm}) handlar om hur den mest passade
+% blandningsmetoden togs fram, den är uppdelad i två delar. 
+I jämförelsen av
+blandningsmetoderna(\ref{sec:d_bm_jbm}) kommer närmare undersökning av metoderna
+komma fram till vilken av dem som passar bäst inpå dem krav som ställdes i
+syftet (\ref{sec:purpose}). Felkällor (\ref{sec:d_fk}) nämns efter att den mest
+passande blandningsmetoden tagits fram för att diskutera deras påverkan på dem
+tidigare slutsatserna i diskussionen. I slutsatsen (\ref{sec:d_s})
+återpresenteras den blandningsmetod som undersökingen kom fram till vad det
 innebär och vilka förbättringar som skulle kunna göras i potentiell framtida
 forskning.
 
-\subsection{Den mest passande blandningsmetoden}
-\label{sec:d_bm}
+% \subsection{Den mest passande blandningsmetoden}
+% \label{sec:d_bm}
 
-\subsubsection{Jämförelse av blandningsmetoderna}
+\subsection{Jämförelse av blandningsmetoderna}
 \label{sec:d_bm_jbm}
 %no.1 priority probably
 \textbf{Utifrån slumpmässighet}: Resultaten av det klassisk pokertestet (Tabell
@@ -1426,17 +1447,17 @@ länk: https://github.com/Abishevs/gymarbete
 
 \section{Kod för GSR Riffle Shuffle}
 \label{app:gsr}
-% \lstinputlisting[language=Rust, caption={Pile Shuffle skriven i
-% Rust},label=selection-sort, label={lst:gsr},firstline=179, lastline=214]{../simulation_rust/src/main.rs}
-% \lstinputlisting[language=Rust, firstline=179, lastline=214]{../simulation_rust/src/main.rs}
+\lstinputlisting[language=Rust, caption={Pile Shuffle skriven i
+Rust},label=selection-sort, label={lst:gsr},firstline=179, lastline=214]{../simulation_rust/src/main.rs}
+\lstinputlisting[language=Rust, firstline=179, lastline=214]{../simulation_rust/src/main.rs}
 
 \section{Kod för Pile Shuffle}
 \label{app:pile}
-% \lstinputlisting[language=Rust, firstline=29, lastline=55]{../simulation_rust/src/main.rs}
+\lstinputlisting[language=Rust, firstline=29, lastline=55]{../simulation_rust/src/main.rs}
 
 \section{Kod för Wheel Fisher-Yates shuffle}
 \label{app:wheel}
-% \lstinputlisting[language=Rust, firstline=147, lastline=167]{../simulation_rust/src/main.rs}
+\lstinputlisting[language=Rust, firstline=147, lastline=167]{../simulation_rust/src/main.rs}
 
 \section{Resultat av STDMean test}
 \label{app:stdmean}
